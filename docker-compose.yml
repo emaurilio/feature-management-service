@@ -55,10 +55,14 @@ services:
       - ff-network
 
   grafana:
-    image: grafana/grafana:3.19.1-alpine
+    image: grafana/grafana:latest
     container_name: ff-grafana
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
     networks:
       - ff-network
 
@@ -80,9 +84,9 @@ services:
       - ff-network
 
   app:
-    build: .
-    context: .
-    dockerfile: Dockerfile.dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: ff-nestjs
     ports:
       - "3001:3001"
@@ -112,3 +116,4 @@ networks:
 volumes:
   mysql_data:
   es_data:
+  grafana_data:
