@@ -1,0 +1,24 @@
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { BullModule } from '@nestjs/bullmq';
+import { FeatureFlagModule } from './FeatureFlagModule/feature-flag.module';
+import { MetricsModule } from './common/metrics/metrics.module';
+import { AuthModule } from './common/auth/auth.module';
+
+@Module({
+  imports: [
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+      },
+    }),
+    AuthModule,
+    FeatureFlagModule,
+    MetricsModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}

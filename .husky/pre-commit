@@ -1,0 +1,20 @@
+#!/bin/sh
+. "$(dirname "$0")/_/h"
+
+# 1. Bloquear o arquivo .env de ser commitado
+if git diff --cached --name-only | grep -q "^.env$"; then
+  echo "❌ ERRO: Você está tentando commitar o arquivo .env!"
+  echo "Remova-o do stage com: git restore --staged .env"
+  exit 1
+fi
+
+# 2. Validar se o .env.example contém valores reais (tokens/keys)
+# O script procura por padrões comuns como '123', 'abc', ou valores que não sejam vazios/placeholders
+if grep -qE "=[a-zA-Z0-9]{10,}" .env.example; then
+  echo "⚠️ AVISO: Detectamos possíveis tokens reais no seu .env.example!"
+  echo "Certifique-se de que o .env.example contenha apenas placeholders (ex: API_KEY=sua_chave_aqui)."
+  exit 1
+fi
+
+# 3. Rodar os testes antes de permitir o commit
+npm run test
