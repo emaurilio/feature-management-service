@@ -5,6 +5,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { FeatureFlagModule } from './FeatureFlagModule/feature-flag.module';
 import { MetricsModule } from './common/metrics/metrics.module';
 import { AuthModule } from './common/auth/auth.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PrometheusInterceptor } from './common/metrics/prometheus.interceptor';
 
 @Module({
   imports: [
@@ -19,6 +21,12 @@ import { AuthModule } from './common/auth/auth.module';
     MetricsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PrometheusInterceptor,
+    },
+  ],
 })
 export class AppModule {}

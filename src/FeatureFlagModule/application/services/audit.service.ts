@@ -20,7 +20,7 @@ export class AuditService {
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       this.logger.error(
-        `Falha ao enfileirar log para flag: ${payload.flagName}`,
+        `Falha ao enfileirar log para entidade: ${payload.entity}`,
         errorMessage,
       );
       return false;

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { getQueueToken } from '@nestjs/bullmq';
@@ -25,10 +27,9 @@ const createMockJob = (
 const createPayload = (
   overrides?: Partial<AuditLogPayload>,
 ): AuditLogPayload => ({
-  flagName: 'test-flag',
-  flagId: 'flag-123',
-  newValue: true,
-  updatedBy: 123,
+  action: 'test-flag',
+  entity: 'flag-123',
+  entityId: 'flag-123',
   timestamp: new Date().toISOString(),
   ...overrides,
 });
@@ -73,7 +74,7 @@ describe('AuditLogsProcessor', () => {
 
   describe('process', () => {
     it('should index document and record success metrics when processing succeeds', async () => {
-      const payload = createPayload();
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload);
 
       await processor.process(job);
@@ -82,11 +83,11 @@ describe('AuditLogsProcessor', () => {
         index: 'audit-feature-flags',
         document: expect.objectContaining({
           ...payload,
-          processedAt: expect.any(String),
+          timestamp: expect.any(String),
         }),
       });
       expect(prometheusService.recordProcessingTime).toHaveBeenCalledWith(
-        payload.flagName,
+        payload.action,
         'success',
         expect.any(Number),
       );
@@ -97,7 +98,7 @@ describe('AuditLogsProcessor', () => {
     });
 
     it('should record failure metrics and rethrow when Elasticsearch fails', async () => {
-      const payload = createPayload();
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload);
       const error = new Error('Elasticsearch connection failed');
       elasticsearchService.index.mockRejectedValueOnce(error);
@@ -107,19 +108,19 @@ describe('AuditLogsProcessor', () => {
       );
 
       expect(prometheusService.recordProcessingTime).toHaveBeenCalledWith(
-        payload.flagName,
+        payload.action,
         'failure',
         expect.any(Number),
       );
       expect(prometheusService.recordElasticsearchFailure).toHaveBeenCalledWith(
-        payload.flagName,
+        payload.action,
         'Error',
       );
       expect(deadletterQueue.add).not.toHaveBeenCalled();
     });
 
     it('should send to deadletter when max attempts is reached', async () => {
-      const payload = createPayload();
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload, {
         attemptsMade: 3,
         opts: { attempts: 3 },
@@ -137,13 +138,13 @@ describe('AuditLogsProcessor', () => {
         expect.objectContaining({
           originalPayload: payload,
           error: 'Elasticsearch error',
-          failedAt: expect.any(String),
+          failedAt: expect.stringContaining('T'),
         }),
       );
     });
 
     it('should not send to deadletter when attempts remain', async () => {
-      const payload = createPayload();
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload, {
         attemptsMade: 1,
         opts: { attempts: 3 },
@@ -160,7 +161,7 @@ describe('AuditLogsProcessor', () => {
     });
 
     it('should record error type when error is not Error instance', async () => {
-      const payload = createPayload();
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload, {
         attemptsMade: 3,
         opts: { attempts: 3 },
@@ -170,13 +171,13 @@ describe('AuditLogsProcessor', () => {
       await expect(processor.process(job)).rejects.toBe('string error');
 
       expect(prometheusService.recordElasticsearchFailure).toHaveBeenCalledWith(
-        payload.flagName,
+        payload.action,
         'Unknown',
       );
     });
 
     it('should use 1 as default max attempts when opts.attempts is undefined', async () => {
-      const payload = createPayload();
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload, { attemptsMade: 1, opts: {} });
       elasticsearchService.index.mockRejectedValue(new Error('fail'));
 
@@ -188,7 +189,7 @@ describe('AuditLogsProcessor', () => {
 
   describe('sendToElastic (via process)', () => {
     it('should index with correct structure including processedAt', async () => {
-      const payload = createPayload({ flagName: 'my-flag' });
+      const payload = createPayload({ action: 'my-flag' });
       const job = createMockJob(payload);
 
       const beforeCall = Date.now();

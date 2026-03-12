@@ -1,3 +1,4 @@
+import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
 import {
   Entity,
   Column,
@@ -24,10 +25,13 @@ export class FeatureFlagEntity {
   percentage: number;
 
   @Column()
-  version: string;
+  version: number;
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ default: FeatureFlagType.PERCENTAGE })
+  type: FeatureFlagType;
 
   @CreateDateColumn()
   createdAt: Date;

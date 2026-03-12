@@ -1,4 +1,5 @@
 import { FeatureFlag } from 'src/FeatureFlagModule/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
 import { FeatureFlagEntity } from 'src/FeatureFlagModule/infraestructure/persistence/entities/FeatureFlag.entity';
 import { FeatureFlagMapper } from 'src/FeatureFlagModule/infraestructure/persistence/mappers/feature-flag.mapper';
 
@@ -19,13 +20,14 @@ describe('FeatureFlagMapper', () => {
       ...overrides,
     }) as FeatureFlagEntity;
 
-  const createDomain = (overrides?: Partial<FeatureFlag>): FeatureFlag =>
+  const createDomain = (): FeatureFlag =>
     new FeatureFlag(
       'feature-v1',
       'feature',
       50,
-      '1.0',
+      1,
       true,
+      FeatureFlagType.PERCENTAGE,
       'uuid-1',
       new Date('2025-01-01T00:00:00Z'),
       new Date('2025-01-02T00:00:00Z'),
@@ -39,15 +41,16 @@ describe('FeatureFlagMapper', () => {
       const domain = FeatureFlagMapper.toDomain(entity);
 
       expect(domain).toBeInstanceOf(FeatureFlag);
-      expect(domain.id).toBe(entity.id);
-      expect(domain.nameVersion).toBe(entity.nameVersion);
-      expect(domain.name).toBe(entity.name);
-      expect(domain.percentage).toBe(entity.percentage);
-      expect(domain.version).toBe(entity.version);
-      expect(domain.isActive).toBe(entity.isActive);
-      expect(domain.createdAt).toEqual(entity.createdAt);
-      expect(domain.updatedAt).toEqual(entity.updatedAt);
-      expect(domain.deletedAt).toEqual(entity.deletedAt);
+      expect(domain?.id).toBe(entity.id);
+      expect(domain?.nameVersion).toBe(entity.nameVersion);
+      expect(domain?.name).toBe(entity.name);
+      expect(domain?.percentage).toBe(entity.percentage);
+      expect(domain?.version).toBe(entity.version);
+      expect(domain?.isActive).toBe(entity.isActive);
+      expect(domain?.type).toBe(entity.type);
+      expect(domain?.createdAt).toEqual(entity.createdAt);
+      expect(domain?.updatedAt).toEqual(entity.updatedAt);
+      expect(domain?.deletedAt).toEqual(entity.deletedAt);
     });
 
     it('should handle deletedAt when set', () => {
@@ -56,7 +59,7 @@ describe('FeatureFlagMapper', () => {
 
       const domain = FeatureFlagMapper.toDomain(entity);
 
-      expect(domain.deletedAt).toEqual(deletedAt);
+      expect(domain?.deletedAt).toEqual(deletedAt);
     });
   });
 

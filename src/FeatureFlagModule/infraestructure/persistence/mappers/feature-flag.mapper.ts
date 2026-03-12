@@ -9,6 +9,7 @@ export class FeatureFlagMapper {
       entity.percentage,
       entity.version,
       entity.isActive,
+      entity.type,
       entity.id,
       entity.createdAt,
       entity.updatedAt,

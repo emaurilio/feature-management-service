@@ -1,7 +1,7 @@
 export interface AuditLogPayload {
-  flagName: string;
-  flagId: string;
-  newValue: boolean;
-  updatedBy: number;
+  action: string;
+  entity: string;
+  entityId?: string;
   timestamp: string;
+  data?: object;
 }

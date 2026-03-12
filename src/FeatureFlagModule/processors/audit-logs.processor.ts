@@ -23,13 +23,13 @@ export class AuditLogsProcessor extends WorkerHost {
 
   async process(job: Job<AuditLogPayload, void, string>): Promise<void> {
     const startTime = Date.now();
-    this.logger.log(`Processando log para a flag: ${job.data.flagName}`);
+    this.logger.log(`Processando log para a ação: ${job.data.action}`);
 
     try {
       await this.sendToElastic(job.data);
       const duration = Date.now() - startTime;
       this.prometheusService.recordProcessingTime(
-        job.data.flagName,
+        job.data.action,
         'success',
         duration,
       );
@@ -39,13 +39,13 @@ export class AuditLogsProcessor extends WorkerHost {
 
       const duration = Date.now() - startTime;
       this.prometheusService.recordProcessingTime(
-        job.data.flagName,
+        job.data.action,
         'failure',
         duration,
       );
 
       this.prometheusService.recordElasticsearchFailure(
-        job.data.flagName,
+        job.data.action,
         error instanceof Error ? error.constructor.name : 'Unknown',
       );
 
@@ -78,7 +78,7 @@ export class AuditLogsProcessor extends WorkerHost {
         error,
         failedAt: new Date().toISOString(),
       });
-      this.logger.warn(`Log enviado para deadletter: ${payload.flagName}`);
+      this.logger.warn(`Log enviado para deadletter: ${payload.action}`);
     } catch (deadletterError) {
       this.logger.error(
         'Falha crítica ao enviar para deadletter',
