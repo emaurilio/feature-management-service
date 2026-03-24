@@ -22,7 +22,6 @@ describe('UserFeatureFlagMapper', () => {
   ): UserFeatureFlag =>
     new UserFeatureFlag(
       'flag-123',
-      'company-456',
       'user-789',
       'uuid-1',
       new Date('2025-01-01T00:00:00Z'),
@@ -39,7 +38,6 @@ describe('UserFeatureFlagMapper', () => {
       expect(domain).toBeInstanceOf(UserFeatureFlag);
       expect(domain.id).toBe(entity.id);
       expect(domain.featureId).toBe(entity.featureId);
-      expect(domain.companyId).toBe(entity.companyId);
       expect(domain.userId).toBe(entity.userId);
       expect(domain.createdAt).toEqual(entity.createdAt);
       expect(domain.updatedAt).toEqual(entity.updatedAt);
@@ -56,7 +54,6 @@ describe('UserFeatureFlagMapper', () => {
       const domain = UserFeatureFlagMapper.toDomain(entity);
 
       expect(domain.featureId).toBe('other-flag');
-      expect(domain.companyId).toBe('other-company');
       expect(domain.userId).toBe('other-user');
     });
   });
@@ -70,7 +67,6 @@ describe('UserFeatureFlagMapper', () => {
       expect(persistence).toEqual({
         id: domain.id,
         featureId: domain.featureId,
-        companyId: domain.companyId,
         userId: domain.userId,
       });
     });

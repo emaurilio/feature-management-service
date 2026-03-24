@@ -1,7 +1,6 @@
 export class UserFeatureFlag {
   constructor(
     public readonly featureId: string,
-    public readonly companyId: string,
     public readonly userId: string,
     public readonly id?: string,
     public readonly createdAt?: Date,

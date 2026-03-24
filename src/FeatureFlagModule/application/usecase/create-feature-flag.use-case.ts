@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
-import { CreateFeatureFlagDto } from '../dto/CreateFeatureFlag.dto';
+import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
 import { AuditService } from '../services/audit.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { FeatureFlag } from 'src/FeatureFlagModule/domain/entities/FeatureFlag';
@@ -31,17 +31,18 @@ export class CreateFeatureFlagUseCase {
         const result =
           await this.featureFlagRespository.createFeatureFlag(newFeatureFlag);
 
-        await this.auditService.dispatchLog({
+        void this.auditService.dispatchLog({
           action: 'create',
           entity: 'FeatureFlag',
           entityId: result.id,
           timestamp: new Date().toISOString(),
           data: {
-            user: {
-              userId: createFeatureFlagDto.userData.userId,
-              email: createFeatureFlagDto.userData.email,
-              name: createFeatureFlagDto.userData.name,
-            },
+            user: createFeatureFlagDto.userData,
+            name: createFeatureFlagDto.name,
+            percentage: createFeatureFlagDto.percentage,
+            version: 1,
+            active: true,
+            type: createFeatureFlagDto.type,
           },
         });
 
@@ -58,32 +59,29 @@ export class CreateFeatureFlagUseCase {
       const result =
         await this.featureFlagRespository.createFeatureFlag(newFeatureFlag);
 
-      await this.auditService.dispatchLog({
+      void this.auditService.dispatchLog({
         action: 'create',
         entity: 'FeatureFlag',
         entityId: result.id,
         timestamp: new Date().toISOString(),
         data: {
-          user: {
-            userId: createFeatureFlagDto.userData.userId,
-            email: createFeatureFlagDto.userData.email,
-            name: createFeatureFlagDto.userData.name,
-          },
+          user: createFeatureFlagDto.userData,
+          name: createFeatureFlagDto.name,
+          percentage: createFeatureFlagDto.percentage,
+          version: 1,
+          active: true,
+          type: createFeatureFlagDto.type,
         },
       });
 
       return result;
     } catch (error) {
-      await this.auditService.dispatchLog({
+      void this.auditService.dispatchLog({
         action: 'create',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          user: {
-            userId: createFeatureFlagDto.userData.userId,
-            email: createFeatureFlagDto.userData.email,
-            name: createFeatureFlagDto.userData.name,
-          },
+          user: createFeatureFlagDto.userData,
           error: getErrorMessage(error),
         },
       });

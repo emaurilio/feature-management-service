@@ -16,7 +16,7 @@ export class DeadletterLogsProcessor extends WorkerHost {
 
   async process(job: Job<DeadLetterLogPayload, void, string>): Promise<void> {
     this.logger.warn(
-      `Processando deadletter para flag: ${job.data.originalPayload.flagName}`,
+      `Processando deadletter para flag: ${job.data.originalPayload.entity}`,
     );
 
     try {
@@ -42,7 +42,7 @@ export class DeadletterLogsProcessor extends WorkerHost {
     });
 
     this.logger.log(
-      `Deadletter salvo em Elasticsearch para flag: ${data.originalPayload.flagName}`,
+      `Deadletter salvo em Elasticsearch para flag: ${data.originalPayload.entity}`,
     );
   }
 }

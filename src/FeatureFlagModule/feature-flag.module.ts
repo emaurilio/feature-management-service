@@ -12,6 +12,9 @@ import { FeatureFlagRepository } from './infraestructure/persistence/repositorie
 import { UserFeatureFlagRepository } from './infraestructure/persistence/repositories/user-feature-flag.respository';
 import { CompanyFeatureFlagRepository } from './infraestructure/persistence/repositories/company-feature-flag.repository';
 import { CreateFeatureFlagUseCase } from './application/usecase/create-feature-flag.use-case';
+import { ImportCompaniesIdsUseCase } from './application/usecase/import-companies-ids.use-case';
+import { ImportUsersIdsUseCase } from './application/usecase/import-users-ids.use-case';
+import { FeatureFlagExistsConstraint } from './infraestructure/validators/feature-flag-exists.validator';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { CreateFeatureFlagUseCase } from './application/usecase/create-feature-f
     AuditLogsProcessor,
     DeadletterLogsProcessor,
     CreateFeatureFlagUseCase,
+    ImportCompaniesIdsUseCase,
+    ImportUsersIdsUseCase,
+    FeatureFlagExistsConstraint,
   ],
 })
 export class FeatureFlagModule {

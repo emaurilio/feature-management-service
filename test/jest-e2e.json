@@ -6,7 +6,7 @@
   "rootDir": "..",
   "roots": ["<rootDir>/test/e2e", "<rootDir>/test/utils", "<rootDir>/test"],
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".e2e.spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }

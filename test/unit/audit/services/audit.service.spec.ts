@@ -6,11 +6,14 @@ import { AuditService } from 'src/FeatureFlagModule/application/services/audit.s
 const createPayload = (
   overrides?: Partial<AuditLogPayload>,
 ): AuditLogPayload => ({
-  flagName: 'test-flag',
-  flagId: 'flag-123',
-  newValue: true,
-  updatedBy: 543,
+  action: 'import',
+  entity: 'FeatureFlag',
+  entityId: 'flag-123',
   timestamp: new Date().toISOString(),
+  data: {
+    featureFlagName: 'test-flag',
+    updatedBy: 543,
+  },
   ...overrides,
 });
 
@@ -86,10 +89,11 @@ describe('AuditService', () => {
 
     it('should handle different payload shapes', async () => {
       const payload = createPayload({
-        flagName: 'other-flag',
-        flagId: 'xyz',
-        newValue: false,
-        updatedBy: 4353,
+        entityId: 'xyz',
+        data: {
+          featureFlagName: 'other-flag',
+          updatedBy: 4353,
+        },
         timestamp: '2025-01-01T00:00:00.000Z',
       });
 

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateFeatureFlagDto } from 'src/FeatureFlagModule/application/dto/CreateFeatureFlag.dto';
+import { CreateFeatureFlagDto } from 'src/FeatureFlagModule/application/dto/create-feature-flag.dto';
 import { AuditService } from 'src/FeatureFlagModule/application/services/audit.service';
 import { CreateFeatureFlagUseCase } from 'src/FeatureFlagModule/application/usecase/create-feature-flag.use-case';
 import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
