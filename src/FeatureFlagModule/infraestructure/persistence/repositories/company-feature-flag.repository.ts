@@ -28,4 +28,8 @@ export class CompanyFeatureFlagRepository extends Repository<CompanyFeatureFlagE
   async findByCompanyIdAndFeatureFlagId(companyId: string, featureId: string) {
     return this.findOne({ where: { companyId, featureId } });
   }
+
+  async deleteByFeatureFlagId(featureId: string) {
+    return this.delete({ featureId });
+  }
 }

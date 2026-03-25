@@ -9,14 +9,14 @@ import { CompanyFeatureFlag } from 'src/FeatureFlagModule/domain/entities/Compan
 @Injectable()
 export class ImportCompaniesIdsUseCase {
   constructor(
-    private readonly featureFlagRespository: FeatureFlagRepository,
+    private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly companyRepository: CompanyFeatureFlagRepository,
     private readonly auditService: AuditService,
   ) {}
 
   async execute(importCompanyIdsDto: ImportCompaniesIdsDto) {
     try {
-      const featureFlagExists = await this.featureFlagRespository.findByName(
+      const featureFlagExists = await this.featureFlagRepository.findByName(
         importCompanyIdsDto.featureFlagName,
       );
 

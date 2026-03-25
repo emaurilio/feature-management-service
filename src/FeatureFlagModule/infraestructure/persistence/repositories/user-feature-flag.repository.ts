@@ -28,4 +28,8 @@ export class UserFeatureFlagRepository extends Repository<UserFeatureFlagEntity>
     );
     return this.save(entities);
   }
+
+  async deleteByFeatureFlagId(featureId: string) {
+    return this.delete({ featureId });
+  }
 }

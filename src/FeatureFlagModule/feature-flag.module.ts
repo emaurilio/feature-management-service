@@ -9,12 +9,13 @@ import { MetricsModule } from '../common/metrics/metrics.module';
 import { PrometheusInterceptor } from '../common/metrics/prometheus.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeatureFlagRepository } from './infraestructure/persistence/repositories/feature-flag.repository';
-import { UserFeatureFlagRepository } from './infraestructure/persistence/repositories/user-feature-flag.respository';
 import { CompanyFeatureFlagRepository } from './infraestructure/persistence/repositories/company-feature-flag.repository';
 import { CreateFeatureFlagUseCase } from './application/usecase/create-feature-flag.use-case';
 import { ImportCompaniesIdsUseCase } from './application/usecase/import-companies-ids.use-case';
 import { ImportUsersIdsUseCase } from './application/usecase/import-users-ids.use-case';
 import { FeatureFlagExistsConstraint } from './infraestructure/validators/feature-flag-exists.validator';
+import { DeleteFeatureFlagUseCase } from './application/usecase/delete-feature-flag.use-case';
+import { UserFeatureFlagRepository } from './infraestructure/persistence/repositories/user-feature-flag.repository';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { FeatureFlagExistsConstraint } from './infraestructure/validators/featur
     CreateFeatureFlagUseCase,
     ImportCompaniesIdsUseCase,
     ImportUsersIdsUseCase,
+    DeleteFeatureFlagUseCase,
     FeatureFlagExistsConstraint,
   ],
 })

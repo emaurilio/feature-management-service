@@ -6,7 +6,7 @@ import { UserFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure
 import { UserFeatureFlag } from 'src/FeatureFlagModule/domain/entities/UserFeatureFlag';
 import { UserFeatureFlagEntity } from 'src/FeatureFlagModule/infraestructure/persistence/entities/UserFeatureFlag.entity';
 
-describe('UserFeatureFlagRepository - createMany', () => {
+describe('UserFeatureFlagRepository - deleteByFeatureFlagId', () => {
   let repository: UserFeatureFlagRepository;
 
   beforeEach(async () => {
@@ -31,11 +31,12 @@ describe('UserFeatureFlagRepository - createMany', () => {
     expect(repository).toBeDefined();
   });
 
-  it('should create multiple user feature flags', async () => {
+  it('should delete multiple user feature flags by feature flag id', async () => {
     const domainFlags = [
       new UserFeatureFlag('feature-1', 'user-1'),
-      new UserFeatureFlag('feature-2', 'user-2'),
+      new UserFeatureFlag('feature-1', 'user-2'),
     ];
+    new UserFeatureFlag('feature-2', 'user-3');
 
     const entities = domainFlags.map((df) => {
       const entity = new UserFeatureFlagEntity();
@@ -44,22 +45,23 @@ describe('UserFeatureFlagRepository - createMany', () => {
       return entity;
     });
 
-    jest.spyOn(repository, 'save').mockResolvedValue(entities as any);
+    jest.spyOn(repository, 'delete').mockResolvedValue(entities as any);
 
-    const result = await repository.createMany(domainFlags);
+    const result = await repository.deleteByFeatureFlagId('feature-1');
 
     expect(result).toHaveLength(2);
-    expect(repository.save).toHaveBeenCalledWith(expect.any(Array));
-    expect(result[0].featureId).toBe('feature-1');
-    expect(result[1].featureId).toBe('feature-2');
+    expect(repository.delete)
+      .toHaveBeenCalledWith(expect.any(String))
+      .callCount(2);
   });
 
-  it('should throw an error if save fails', async () => {
-    const domainFlags = [new UserFeatureFlag('feature-1', 'user-1')];
-    jest.spyOn(repository, 'save').mockRejectedValue(new Error('Save Error'));
+  it('should throw an error if delete fails', async () => {
+    jest
+      .spyOn(repository, 'delete')
+      .mockRejectedValue(new Error('Delete Error'));
 
-    await expect(repository.createMany(domainFlags)).rejects.toThrow(
-      'Save Error',
+    await expect(repository.deleteByFeatureFlagId('feature-1')).rejects.toThrow(
+      'Delete Error',
     );
   });
 });

@@ -6,6 +6,8 @@ import { ImportCompaniesIdsUseCase } from './application/usecase/import-companie
 import { ImportCompaniesIdsDto } from './application/dto/import-companies-ids.dto';
 import { ImportUsersIdsDto } from './application/dto/import-users-ids.dto';
 import { ImportUsersIdsUseCase } from './application/usecase/import-users-ids.use-case';
+import { DeleteFeatureFlagDto } from './application/dto/delete-feature-flag.dto';
+import { DeleteFeatureFlagUseCase } from './application/usecase/delete-feature-flag.use-case';
 
 @Controller('feature-flags')
 export class FeatureFlagController {
@@ -13,6 +15,7 @@ export class FeatureFlagController {
     private readonly createFeatureFlagUseCase: CreateFeatureFlagUseCase,
     private readonly importCompaniesIdsUseCase: ImportCompaniesIdsUseCase,
     private readonly importUsersIdsUseCase: ImportUsersIdsUseCase,
+    private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
   ) {}
 
   @UseGuards(SimpleTokenGuard)
@@ -33,5 +36,11 @@ export class FeatureFlagController {
   @Post('import-users-ids')
   async importUsersIds(@Body() importUsersIdsDto: ImportUsersIdsDto) {
     return this.importUsersIdsUseCase.execute(importUsersIdsDto);
+  }
+
+  @UseGuards(SimpleTokenGuard)
+  @Post('delete')
+  async delete(@Body() deleteFeatureFlagDto: DeleteFeatureFlagDto) {
+    return await this.deleteFeatureFlagUseCase.execute(deleteFeatureFlagDto);
   }
 }

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { UserFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/user-feature-flag.respository';
+import { UserFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/user-feature-flag.repository';
 import { UserFeatureFlagEntity } from 'src/FeatureFlagModule/infraestructure/persistence/entities/UserFeatureFlag.entity';
 
 describe('UserFeatureFlagRepository - findByUserIdAndFeatureFlagId', () => {

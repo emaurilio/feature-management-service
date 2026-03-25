@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
 import { AuditService } from '../services/audit.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
-import { UserFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/user-feature-flag.respository';
+import { UserFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/user-feature-flag.repository';
 import { UserFeatureFlag } from 'src/FeatureFlagModule/domain/entities/UserFeatureFlag';
 import { ImportUsersIdsDto } from '../dto/import-users-ids.dto';
 
 @Injectable()
 export class ImportUsersIdsUseCase {
   constructor(
-    private readonly featureFlagRespository: FeatureFlagRepository,
+    private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly userRepository: UserFeatureFlagRepository,
     private readonly auditService: AuditService,
   ) {}
 
   async execute(importUsersIdsDto: ImportUsersIdsDto) {
     try {
-      const featureFlagExists = await this.featureFlagRespository.findByName(
+      const featureFlagExists = await this.featureFlagRepository.findByName(
         importUsersIdsDto.featureFlagName,
       );
 
