@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from 'src/FeatureFlagModule/application/services/audit.service';
-import { FeatureFlag } from 'src/FeatureFlagModule/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
-import { CompanyFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/company-feature-flag.repository';
-import { ImportCompaniesIdsUseCase } from 'src/FeatureFlagModule/application/usecase/import-companies-ids.use-case';
-import { ImportCompaniesIdsDto } from 'src/FeatureFlagModule/application/dto/import-companies-ids.dto';
+import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { AuditService } from 'src/feature-flag/application/services/audit.service';
+import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
+import { ImportCompaniesIdsUseCase } from 'src/feature-flag/application/use-cases/import-companies-ids.use-case';
+import { ImportCompaniesIdsDto } from 'src/feature-flag/application/dto/import-companies-ids.dto';
 
 describe('ImportCompaniesIdsUseCase', () => {
   let useCase: ImportCompaniesIdsUseCase;

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateFeatureFlagDto } from 'src/FeatureFlagModule/application/dto/create-feature-flag.dto';
-import { AuditService } from 'src/FeatureFlagModule/application/services/audit.service';
-import { CreateFeatureFlagUseCase } from 'src/FeatureFlagModule/application/usecase/create-feature-flag.use-case';
-import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
-import { FeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
+import { CreateFeatureFlagDto } from 'src/feature-flag/application/dto/create-feature-flag.dto';
+import { AuditService } from 'src/feature-flag/application/services/audit.service';
+import { CreateFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/create-feature-flag.use-case';
+import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 
 describe('CreateFeatureFlagUseCase', () => {
   let useCase: CreateFeatureFlagUseCase;

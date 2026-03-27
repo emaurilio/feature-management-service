@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Job } from 'bullmq';
-import { DeadletterLogsProcessor } from 'src/FeatureFlagModule/processors/deadletter-logs.processor';
-import { DeadLetterLogPayload } from 'src/FeatureFlagModule/processors/types/deadletter-logs.types';
-import { AuditLogPayload } from 'src/FeatureFlagModule/processors/types/audit-logs.types';
+import { DeadletterLogsProcessor } from 'src/feature-flag/processors/deadletter-logs.processor';
+import { DeadLetterLogPayload } from 'src/feature-flag/processors/types/deadletter-logs.types';
+import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.types';
 
 const createOriginalPayload = (
   overrides?: Partial<AuditLogPayload>,

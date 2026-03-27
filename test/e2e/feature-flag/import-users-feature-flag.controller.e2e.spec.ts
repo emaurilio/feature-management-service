@@ -3,14 +3,14 @@
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { FeatureFlagController } from '../../../src/FeatureFlagModule/feature-flag.controller';
-import { CreateFeatureFlagUseCase } from '../../../src/FeatureFlagModule/application/usecase/create-feature-flag.use-case';
+import { FeatureFlagController } from '../../../src/feature-flag/feature-flag.controller';
+import { CreateFeatureFlagUseCase } from '../../../src/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { SimpleTokenGuard } from '../../../src/common/guards/simple-token.guard';
-import { FeatureFlagRepository } from '../../../src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
-import { FeatureFlagExistsConstraint } from '../../../src/FeatureFlagModule/infraestructure/validators/feature-flag-exists.validator';
+import { FeatureFlagRepository } from '../../../src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { FeatureFlagExistsConstraint } from '../../../src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 import { useContainer } from 'class-validator';
-import { ImportUsersIdsUseCase } from '../../../src/FeatureFlagModule/application/usecase/import-users-ids.use-case';
-import { ImportCompaniesIdsUseCase } from '../../../src/FeatureFlagModule/application/usecase/import-companies-ids.use-case';
+import { ImportUsersIdsUseCase } from '../../../src/feature-flag/application/use-cases/import-users-ids.use-case';
+import { ImportCompaniesIdsUseCase } from '../../../src/feature-flag/application/use-cases/import-companies-ids.use-case';
 
 describe('FeatureFlagController Import Users (E2E)', () => {
   let app: INestApplication;

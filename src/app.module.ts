@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from '../data-source';
-import { FeatureFlagModule } from './FeatureFlagModule/feature-flag.module';
+import { FeatureFlagModule } from './feature-flag/feature-flag.module';
 import { MetricsModule } from './common/metrics/metrics.module';
 import { AuthModule } from './common/auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';

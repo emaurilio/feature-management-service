@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { FeatureFlag } from 'src/FeatureFlagModule/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
-import { FeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
-import { FeatureFlagEntity } from 'src/FeatureFlagModule/infraestructure/persistence/entities/FeatureFlag.entity';
+import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 
 describe('CreateFeatureFlagRepository', () => {
   let repository: FeatureFlagRepository;

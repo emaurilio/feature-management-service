@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/feature-flag.repository';
-import { UserFeatureFlagRepository } from 'src/FeatureFlagModule/infraestructure/persistence/repositories/user-feature-flag.repository';
-import { AuditService } from 'src/FeatureFlagModule/application/services/audit.service';
-import { FeatureFlag } from 'src/FeatureFlagModule/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
-import { ImportUsersIdsUseCase } from 'src/FeatureFlagModule/application/usecase/import-users-ids.use-case';
-import { ImportUsersIdsDto } from 'src/FeatureFlagModule/application/dto/import-users-ids.dto';
+import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
+import { AuditService } from 'src/feature-flag/application/services/audit.service';
+import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';
+import { ImportUsersIdsDto } from 'src/feature-flag/application/dto/import-users-ids.dto';
 
 describe('ImportUsersIdsUseCase', () => {
   let useCase: ImportUsersIdsUseCase;

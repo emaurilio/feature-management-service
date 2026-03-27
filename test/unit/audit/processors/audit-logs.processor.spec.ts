@@ -4,8 +4,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { AuditLogsProcessor } from 'src/FeatureFlagModule/processors/audit-logs.processor';
-import { AuditLogPayload } from 'src/FeatureFlagModule/processors/types/audit-logs.types';
+import { AuditLogsProcessor } from 'src/feature-flag/processors/audit-logs.processor';
+import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.types';
 import { PrometheusService } from 'src/common/metrics/prometheus.service';
 
 const createMockJob = (

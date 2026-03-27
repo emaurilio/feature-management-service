@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { FeatureFlagEntity } from 'src/FeatureFlagModule/infraestructure/persistence/entities/FeatureFlag.entity';
+import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 import { setSeederFactory } from 'typeorm-extension';
-import { FeatureFlagType } from 'src/FeatureFlagModule/domain/enums/feature-flag-type.enum';
+import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 
 export const FeatureFlagFactory = setSeederFactory(
   FeatureFlagEntity,
