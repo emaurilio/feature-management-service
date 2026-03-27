@@ -26,6 +26,7 @@ export class UserFeatureFlagRepository extends Repository<UserFeatureFlagEntity>
     const entities = userFeatureFlags.map((userFeatureFlag) =>
       UserFeatureFlagMapper.toPersistence(userFeatureFlag),
     );
+
     return this.save(entities);
   }
 

@@ -11,7 +11,14 @@ export class CompanyFeatureFlagRepository extends Repository<CompanyFeatureFlagE
   }
 
   async findByCompany(companyId: string) {
-    return this.find({ where: { companyId } });
+    const findCompany = await this.find({ where: { companyId } });
+    if (!findCompany) {
+      return null;
+    }
+
+    return findCompany.map((companyFeatureFlag) => {
+      return CompanyFeatureFlagMapper.toDomain(companyFeatureFlag);
+    });
   }
 
   async createCompanyFeatureFlag(companyFeatureFlag: CompanyFeatureFlagEntity) {
@@ -22,11 +29,19 @@ export class CompanyFeatureFlagRepository extends Repository<CompanyFeatureFlagE
     const entities = companyFeatureFlags.map((companyFeatureFlag) => {
       return CompanyFeatureFlagMapper.toPersistence(companyFeatureFlag);
     });
+
     return this.save(entities);
   }
 
   async findByCompanyIdAndFeatureFlagId(companyId: string, featureId: string) {
-    return this.findOne({ where: { companyId, featureId } });
+    const findOneCompanyFeatureFlag = await this.findOne({
+      where: { companyId, featureId },
+    });
+    if (!findOneCompanyFeatureFlag) {
+      return null;
+    }
+
+    return CompanyFeatureFlagMapper.toDomain(findOneCompanyFeatureFlag);
   }
 
   async deleteByFeatureFlagId(featureId: string) {

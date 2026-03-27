@@ -8,6 +8,8 @@ import { ImportUsersIdsDto } from './application/dto/import-users-ids.dto';
 import { ImportUsersIdsUseCase } from './application/usecase/import-users-ids.use-case';
 import { DeleteFeatureFlagDto } from './application/dto/delete-feature-flag.dto';
 import { DeleteFeatureFlagUseCase } from './application/usecase/delete-feature-flag.use-case';
+import { SearchFeatureFlagDto } from './application/dto/search-feature-flag.dto';
+import { SearchFeatureFlagUseCase } from './application/usecase/search-feature-flag.use-case';
 
 @Controller('feature-flags')
 export class FeatureFlagController {
@@ -16,6 +18,7 @@ export class FeatureFlagController {
     private readonly importCompaniesIdsUseCase: ImportCompaniesIdsUseCase,
     private readonly importUsersIdsUseCase: ImportUsersIdsUseCase,
     private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
+    private readonly searchFeatureFlagByName: SearchFeatureFlagUseCase,
   ) {}
 
   @UseGuards(SimpleTokenGuard)
@@ -42,5 +45,11 @@ export class FeatureFlagController {
   @Post('delete')
   async delete(@Body() deleteFeatureFlagDto: DeleteFeatureFlagDto) {
     return await this.deleteFeatureFlagUseCase.execute(deleteFeatureFlagDto);
+  }
+
+  @UseGuards(SimpleTokenGuard)
+  @Post('search')
+  async searchForName(@Body() search: SearchFeatureFlagDto) {
+    return await this.searchFeatureFlagByName.execute(search);
   }
 }
