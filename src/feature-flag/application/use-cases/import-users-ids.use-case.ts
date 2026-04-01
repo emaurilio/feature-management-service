@@ -26,12 +26,12 @@ export class ImportUsersIdsUseCase {
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
           data: {
+            user: importUsersIdsDto.userData,
             featureFlagName: importUsersIdsDto.featureFlagName,
             error: 'FeatureFlag not found',
-            user: importUsersIdsDto.userData,
           },
         });
-        return null;
+        throw new Error('Feature Flag not found');
       }
 
       const id = featureFlagExists.id;

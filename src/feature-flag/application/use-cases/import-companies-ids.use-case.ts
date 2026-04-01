@@ -28,10 +28,10 @@ export class ImportCompaniesIdsUseCase {
           data: {
             user: importCompanyIdsDto.userData,
             featureFlagName: importCompanyIdsDto.featureFlagName,
-            error: 'FeatureFlag not found',
+            error: 'Feature Flag not found',
           },
         });
-        return null;
+        throw new Error('Feature Flag not found');
       }
 
       const id = featureFlagExists.id;

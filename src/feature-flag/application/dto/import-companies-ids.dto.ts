@@ -7,7 +7,7 @@ export class ImportCompaniesIdsDto {
   @Expose({ name: 'feature_flag_name' })
   @IsNotEmpty({ message: 'Name is required' })
   @IsString({ message: 'Name must be a string' })
-  @IsFeatureFlagPresent()
+  @IsFeatureFlagPresent({ message: 'Feature Flag not found' })
   featureFlagName: string;
 
   @Expose({ name: 'companies_ids' })

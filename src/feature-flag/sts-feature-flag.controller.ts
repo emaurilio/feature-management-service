@@ -12,6 +12,9 @@ import { SearchFeatureFlagDto } from './application/dto/search-feature-flag.dto'
 import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature-flag.use-case';
 import { CheckFeatureFlagValidateDto } from './application/dto/check-feature-flag-validate.dto';
 import { CheckFeatureFlagUseCase } from './application/use-cases/check-feature-flag/check-feature-flag.use-case';
+import { DisableFeatureFlagDto } from './application/dto/desable-feature-flag.dto';
+import { DisableFeatureFlagUseCase } from './application/use-cases/disable-feature-flag.use-case';
+import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
 
 @Controller('sts/feature-flags')
 export class StsFeatureFlagController {
@@ -22,6 +25,8 @@ export class StsFeatureFlagController {
     private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
     private readonly searchFeatureFlagByName: SearchFeatureFlagUseCase,
     private readonly checkFeatureFlagUseCase: CheckFeatureFlagUseCase,
+    private readonly disableFeatureFlagUseCase: DisableFeatureFlagUseCase,
+    private readonly activeFeatureFlagUseCase: ActiveFeatureFlagUseCase,
   ) {}
 
   @Version('1')
@@ -66,5 +71,19 @@ export class StsFeatureFlagController {
   @Post('check-feature-flag')
   async checkValidate(@Body() checkValidate: CheckFeatureFlagValidateDto) {
     return await this.checkFeatureFlagUseCase.execute(checkValidate);
+  }
+
+  @Version('1')
+  @UseGuards(SimpleTokenGuard)
+  @Post('disable')
+  async disable(@Body() disableFeatureFlagDto: DisableFeatureFlagDto) {
+    return await this.disableFeatureFlagUseCase.execute(disableFeatureFlagDto);
+  }
+
+  @Version('1')
+  @UseGuards(SimpleTokenGuard)
+  @Post('active')
+  async active(@Body() activeFeatureFlagDto: DisableFeatureFlagDto) {
+    return await this.activeFeatureFlagUseCase.execute(activeFeatureFlagDto);
   }
 }
