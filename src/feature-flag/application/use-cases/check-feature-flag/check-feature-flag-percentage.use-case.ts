@@ -1,7 +1,8 @@
+import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 
-export class CheckFeatureFlagPercentageUseCase {
+export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterface {
   constructor(private readonly hashFeatureFlag: HashFeatureFlagService) {}
 
   execute(checkFeatureFlagDto: CheckFeatureFlagDto): boolean {
@@ -16,6 +17,6 @@ export class CheckFeatureFlagPercentageUseCase {
       checkFeatureFlagDto.version;
     const hashFeatureFlag = this.hashFeatureFlag.calculateHash(hashName);
 
-    return hashFeatureFlag >= checkFeatureFlagDto.percentage;
+    return hashFeatureFlag < checkFeatureFlagDto.percentage;
   }
 }

@@ -1,11 +1,21 @@
-import { FeatureFlag } from '../entities/FeatureFlag';
+import { CompanyFeatureFlag } from '../entities/CompanyFeatureFlag';
 
 export interface CompanyFeatureFlagRepositoryInterface {
-  createFeatureFlag(featureFlag: FeatureFlag): Promise<FeatureFlag>;
-  findByName(name: string): Promise<FeatureFlag | null>;
-  searchForName(
-    name: string,
-    page: number,
-    limit: number,
-  ): Promise<{ data: FeatureFlag[]; total: number }>;
+  findByCompany(companyId: string): Promise<CompanyFeatureFlag[] | null>;
+
+  findByCompanyIdAndFeatureFlagId(
+    companyId: string,
+    featureId: string,
+  ): Promise<CompanyFeatureFlag | null>;
+
+  createCompanyFeatureFlag(
+    companyFeatureFlag: CompanyFeatureFlag,
+  ): Promise<CompanyFeatureFlag>;
+
+  findByCompanyIdAndFeatureFlagId(
+    companyId: string,
+    featureId: string,
+  ): Promise<CompanyFeatureFlag | null>;
+
+  deleteByFeatureFlagId(featureId: string): Promise<boolean>;
 }

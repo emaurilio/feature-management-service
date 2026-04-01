@@ -3,9 +3,13 @@ import { Repository, DataSource, Like } from 'typeorm';
 import { FeatureFlagEntity } from '../entities/FeatureFlag.entity';
 import { FeatureFlagMapper } from '../mappers/feature-flag.mapper';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()
-export class FeatureFlagRepository extends Repository<FeatureFlagEntity> {
+export class FeatureFlagRepository
+  extends Repository<FeatureFlagEntity>
+  implements FeatureFlagRepositoryInterface
+{
   constructor(private dataSource: DataSource) {
     super(FeatureFlagEntity, dataSource.createEntityManager());
   }

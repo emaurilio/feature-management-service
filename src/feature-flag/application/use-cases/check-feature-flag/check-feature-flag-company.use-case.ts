@@ -1,7 +1,8 @@
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
+import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 
-export class CheckFeatureFlagCompanyUseCase {
+export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
   ) {}

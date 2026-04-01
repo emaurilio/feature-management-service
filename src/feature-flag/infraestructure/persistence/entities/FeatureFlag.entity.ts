@@ -15,11 +15,14 @@ export class FeatureFlagEntity {
   id: string;
 
   @Column()
-  @Index()
   nameVersion: string;
 
   @Column()
+  @Index()
   name: string;
+
+  @Column({ default: true })
+  enable: boolean = true;
 
   @Column({ type: 'int', default: 0 })
   percentage: number;
@@ -28,6 +31,7 @@ export class FeatureFlagEntity {
   version: number;
 
   @Column({ default: true })
+  @Index()
   isActive: boolean;
 
   @Column({ default: FeatureFlagType.PERCENTAGE })

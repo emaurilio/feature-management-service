@@ -1,6 +1,6 @@
 import { FeatureFlag } from '../entities/FeatureFlag';
 
-export interface UserFeatureFlagRepositoryInterface {
+export interface FeatureFlagRepositoryInterface {
   createFeatureFlag(featureFlag: FeatureFlag): Promise<FeatureFlag>;
   findByName(name: string): Promise<FeatureFlag | null>;
   searchForName(

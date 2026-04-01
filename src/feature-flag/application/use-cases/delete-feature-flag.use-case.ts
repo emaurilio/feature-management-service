@@ -5,17 +5,13 @@ import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DeleteFeatureFlagDto } from '../dto/delete-feature-flag.dto';
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import {
+  isCompanyType,
+  isUserType,
+} from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 
 @Injectable()
 export class DeleteFeatureFlagUseCase {
-  private companyTypes = [
-    FeatureFlagType.COMPANY,
-    FeatureFlagType.COMPANY_PERCENTAGE,
-  ];
-
-  private userTypes = [FeatureFlagType.USER, FeatureFlagType.USER_PERCENTAGE];
-
   constructor(
     private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
@@ -48,13 +44,13 @@ export class DeleteFeatureFlagUseCase {
         featureFlagExists.id ?? '',
       );
 
-      if (this.companyTypes.includes(featureFlagExists.type)) {
+      if (isCompanyType(featureFlagExists.type)) {
         await this.companyFeatureFlagRepository.deleteByFeatureFlagId(
           featureFlagExists.id ?? '',
         );
       }
 
-      if (this.userTypes.includes(featureFlagExists.type)) {
+      if (isUserType(featureFlagExists.type)) {
         await this.userFeatureFlagRepository.deleteByFeatureFlagId(
           featureFlagExists.id ?? '',
         );

@@ -35,6 +35,10 @@ export class CheckFeatureFlagUseCase {
       );
     }
 
+    if (!getUseCase.isActive) {
+      return false;
+    }
+
     const useCaseClass = this.strategies[getUseCase.type];
 
     if (!useCaseClass) {

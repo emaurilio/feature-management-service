@@ -25,6 +25,8 @@ import { CheckFeatureFlagCompanyUseCase } from './application/use-cases/check-fe
 import { CheckFeatureFlagPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-percentage.use-case';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-company-percentage.use-case';
 import { CheckFeatureFlagUserPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
+import { redisStore } from 'cache-manager-redis-yet';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -34,6 +36,14 @@ import { CheckFeatureFlagUserPercentageUseCase } from './application/use-cases/c
     ),
     ElasticsearchModule.register({
       node: process.env.ELASTICSEARCH_NODE || 'http://localhost:9200',
+    }),
+    CacheModule.registerAsync({
+      useFactory: async () => ({
+        store: await redisStore({
+          url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+          ttl: 3600,
+        }),
+      }),
     }),
     MetricsModule,
     TypeOrmModule.forFeature([CompanyFeatureFlagRepository]),
