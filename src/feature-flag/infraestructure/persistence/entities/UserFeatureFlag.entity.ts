@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('users_feature_flags')
+@Entity('feature_flags_users')
 @Index(['featureId', 'userId'], { unique: true })
 export class UserFeatureFlagEntity {
   @PrimaryGeneratedColumn('uuid')
