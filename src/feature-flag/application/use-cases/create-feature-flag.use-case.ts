@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
-import { AuditService } from '../services/audit.service';
+import { AuditService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/audit.service';
+import { AuditService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { ActiveFeatureFlagDto } from '../dto/active-feature-flag.dto';
 

@@ -2,14 +2,41 @@ import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/p
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
+import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
+import { AuditService } from '../../services/log.service';
 
 export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly hashFeatureFlag: HashFeatureFlagService,
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
+    private readonly featureFlagCacheService: FeatureFlagCacheService,
+    private readonly auditService: AuditService,
   ) {}
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
+    const hashName = `${checkFeatureFlagDto.companyId}-
+      ${checkFeatureFlagDto.featureName}-
+      ${checkFeatureFlagDto.version}`;
+
+    const cacheResult = await this.featureFlagCacheService.get(hashName);
+
+    if (cacheResult !== null) {
+      void this.auditService.dispatchLog({
+        action: 'check_feature_flag_company_percentage',
+        entity: 'FeatureFlag',
+        timestamp: new Date().toISOString(),
+        data: {
+          featureName: checkFeatureFlagDto.featureName,
+          version: checkFeatureFlagDto.version,
+          company_id: checkFeatureFlagDto.companyId,
+          check_result: cacheResult,
+          check_method: 'cache',
+        },
+      });
+
+      return cacheResult;
+    }
+
     const companyFeatureFlag = await this.companyFeatureFlagRepository.findOne({
       where: {
         featureId: checkFeatureFlagDto.featureId,
@@ -18,15 +45,41 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     });
 
     if (companyFeatureFlag === null) {
+      void this.auditService.dispatchLog({
+        action: 'check_feature_flag_company_percentage',
+        entity: 'FeatureFlag',
+        timestamp: new Date().toISOString(),
+        data: {
+          featureName: checkFeatureFlagDto.featureName,
+          version: checkFeatureFlagDto.version,
+          company_id: checkFeatureFlagDto.companyId,
+          check_result: false,
+          check_method: 'database',
+        },
+      });
+
       return false;
     }
 
-    const hashName = `${checkFeatureFlagDto.companyId}-
-      ${checkFeatureFlagDto.featureName}-
-      ${checkFeatureFlagDto.version}`;
-
     const hashCompanyFeatureFlag = this.hashFeatureFlag.calculateHash(hashName);
 
-    return hashCompanyFeatureFlag < checkFeatureFlagDto.percentage;
+    const checkResult = hashCompanyFeatureFlag < checkFeatureFlagDto.percentage;
+
+    void this.auditService.dispatchLog({
+      action: 'check_feature_flag_company_percentage',
+      entity: 'FeatureFlag',
+      timestamp: new Date().toISOString(),
+      data: {
+        featureName: checkFeatureFlagDto.featureName,
+        version: checkFeatureFlagDto.version,
+        company_id: checkFeatureFlagDto.companyId,
+        check_result: checkResult,
+        check_method: 'database',
+      },
+    });
+
+    void this.featureFlagCacheService.set(hashName, checkResult);
+
+    return checkResult;
   }
 }

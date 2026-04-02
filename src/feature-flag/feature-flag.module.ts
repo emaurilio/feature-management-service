@@ -4,7 +4,7 @@ import { FeatureFlagService } from './feature-flag.service';
 import { AuditLogsProcessor } from './processors/audit-logs.processor';
 import { DeadletterLogsProcessor } from './processors/deadletter-logs.processor';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { AuditService } from './application/services/audit.service';
+import { AuditService } from './application/services/log.service';
 import { MetricsModule } from '../common/metrics/metrics.module';
 import { PrometheusInterceptor } from '../common/metrics/prometheus.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';

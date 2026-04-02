@@ -6,12 +6,15 @@ import {
   register,
   collectDefaultMetrics,
 } from 'prom-client';
+import { MetricsObserver } from './metrics.observer';
 
 @Injectable()
-export class PrometheusService {
+export class PrometheusService implements MetricsObserver {
   private elasticsearchFailures: Counter;
   private auditLogsFallback: Gauge;
   private auditLogProcessingTime: Histogram;
+  private featureFlagCacheFailures: Counter;
+  private featureFlagCacheInvalidationFailures: Counter;
 
   constructor() {
     collectDefaultMetrics({ prefix: 'nodejs_' });
@@ -35,10 +38,42 @@ export class PrometheusService {
       labelNames: ['flag_name', 'status'],
       registers: [register],
     });
+
+    this.featureFlagCacheFailures = new Counter({
+      name: 'feature_flag_cache_failures_total',
+      help: 'Total de falhas ao gravar cache de feature flag',
+      labelNames: ['operation', 'cache_key', 'error_type'],
+      registers: [register],
+    });
+
+    this.featureFlagCacheInvalidationFailures = new Counter({
+      name: 'feature_flag_cache_invalidation_failures_total',
+      help: 'Total de falhas ao invalidar cache de feature flag',
+      labelNames: ['feature_name', 'version', 'error_type'],
+      registers: [register],
+    });
   }
 
   recordElasticsearchFailure(flagName: string, errorType: string): void {
     this.elasticsearchFailures.labels(flagName, errorType).inc();
+  }
+
+  recordCacheFailure(
+    operation: string,
+    cacheKey: string,
+    errorType: string,
+  ): void {
+    this.featureFlagCacheFailures.labels(operation, cacheKey, errorType).inc();
+  }
+
+  recordCacheInvalidationFailure(
+    featureName: string,
+    version: string,
+    errorType: string,
+  ): void {
+    this.featureFlagCacheInvalidationFailures
+      .labels(featureName, version, errorType)
+      .inc();
   }
 
   setFallbackPendingCount(count: number): void {

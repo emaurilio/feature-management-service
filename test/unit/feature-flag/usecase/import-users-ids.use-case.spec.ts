@@ -4,7 +4,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
-import { AuditService } from 'src/feature-flag/application/services/audit.service';
+import { AuditService } from 'src/feature-flag/application/services/log.service';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';

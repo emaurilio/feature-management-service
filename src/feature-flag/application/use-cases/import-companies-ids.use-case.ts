@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/audit.service';
+import { AuditService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 import { ImportCompaniesIdsDto } from '../dto/import-companies-ids.dto';
 import { CompanyFeatureFlag } from 'src/feature-flag/domain/entities/CompanyFeatureFlag';
+import { FeatureFlagCacheService } from '../services/feature-flag-cache.service';
 
 @Injectable()
 export class ImportCompaniesIdsUseCase {
@@ -12,6 +13,7 @@ export class ImportCompaniesIdsUseCase {
     private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly companyRepository: CompanyFeatureFlagRepository,
     private readonly auditService: AuditService,
+    private readonly featureFlagCacheService: FeatureFlagCacheService,
   ) {}
 
   async execute(importCompanyIdsDto: ImportCompaniesIdsDto) {
@@ -63,6 +65,12 @@ export class ImportCompaniesIdsUseCase {
           user: importCompanyIdsDto.userData,
         },
       });
+
+      void this.featureFlagCacheService.invalidateCacheEntityFlags(
+        featureFlagExists.version.toString(),
+        importCompanyIdsDto.featureFlagName,
+        importCompanyIdsDto.companiesIds,
+      );
 
       return result;
     } catch (error) {

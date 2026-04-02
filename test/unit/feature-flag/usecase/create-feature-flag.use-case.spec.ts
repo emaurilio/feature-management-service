@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFeatureFlagDto } from 'src/feature-flag/application/dto/create-feature-flag.dto';
-import { AuditService } from 'src/feature-flag/application/services/audit.service';
+import { AuditService } from 'src/feature-flag/application/services/log.service';
 import { CreateFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';

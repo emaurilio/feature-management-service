@@ -1,26 +1,62 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { METRICS_OBSERVER } from 'src/common/metrics/metrics.observer';
+import type { MetricsObserver } from 'src/common/metrics/metrics.observer';
+import { getErrorMessage } from 'src/common/utils/error.utils';
 
 @Injectable()
 export class FeatureFlagCacheService {
+  private readonly logger = new Logger(FeatureFlagCacheService.name);
+
   constructor(
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: import('cache-manager').Cache,
+    @Inject(METRICS_OBSERVER)
+    private readonly metricsObserver: MetricsObserver,
   ) {}
 
-  async get<T>(key: string): Promise<T | null> {
-    return (await this.cacheManager.get<T>(key)) || null;
-  }
+  async get(key: string): Promise<boolean | null> {
+    const getCacheResult = await this.cacheManager.get<boolean>(key);
 
-  async set(key: string, value: any, ttl = 3600): Promise<void> {
-    await this.cacheManager.set(key, value, ttl);
-  }
-
-  async invalidateFlag(flagName: string, companyId?: string): Promise<void> {
-    const keys = [`feature-flag:name:${flagName}`];
-    if (companyId) {
-      keys.push(`feature-flag:check:company:${companyId}:flag:${flagName}`);
+    if (getCacheResult === undefined || getCacheResult === null) {
+      return null;
     }
-    await Promise.all(keys.map((key) => this.cacheManager.del(key)));
+
+    return getCacheResult;
+  }
+
+  async set(key: string, value: boolean, ttl: number = 3600): Promise<void> {
+    try {
+      await this.cacheManager.set(key, value, ttl);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      this.logger.error(`Failed to save cache for key ${key}`, errorMessage);
+      this.metricsObserver.recordCacheFailure('set', key, errorMessage);
+    }
+  }
+
+  async invalidateCacheEntityFlags(
+    version: string,
+    featureName: string,
+    entitiesId: string[],
+  ): Promise<void> {
+    try {
+      await Promise.all(
+        entitiesId.map((entityId) =>
+          this.cacheManager.del(`${entityId}-${featureName}-${version}`),
+        ),
+      );
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      this.logger.error(
+        `Failed to invalidate cache for key ${featureName} v${version}`,
+        errorMessage,
+      );
+      this.metricsObserver.recordCacheInvalidationFailure(
+        featureName,
+        version,
+        errorMessage,
+      );
+    }
   }
 }

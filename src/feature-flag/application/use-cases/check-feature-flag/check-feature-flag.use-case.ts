@@ -7,11 +7,13 @@ import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persiste
 import { CheckFeatureFlagValidateDto } from '../../dto/check-feature-flag-validate.dto';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
+import { AuditService } from '../../services/log.service';
 
 export class CheckFeatureFlagUseCase {
   constructor(
     private moduleRef: ModuleRef,
     private readonly featureFlagRepository: FeatureFlagRepository,
+    private readonly auditService: AuditService,
   ) {}
 
   private strategies = {
@@ -30,12 +32,36 @@ export class CheckFeatureFlagUseCase {
     );
 
     if (!getUseCase) {
+      void this.auditService.dispatchLog({
+        action: 'check_feature_flag',
+        entity: 'FeatureFlag',
+        timestamp: new Date().toISOString(),
+        data: {
+          featureName: checkFeatureFlagValidateDto.name,
+          user_id: checkFeatureFlagValidateDto.userId,
+          check_result: false,
+          check_method: 'database',
+        },
+      });
+
       throw new Error(
         `Feature Flag ${checkFeatureFlagValidateDto.name} not found`,
       );
     }
 
     if (!getUseCase.isActive) {
+      void this.auditService.dispatchLog({
+        action: 'check_feature_flag',
+        entity: 'FeatureFlag',
+        timestamp: new Date().toISOString(),
+        data: {
+          featureName: checkFeatureFlagValidateDto.name,
+          user_id: checkFeatureFlagValidateDto.userId,
+          check_result: false,
+          check_method: 'database',
+        },
+      });
+
       return false;
     }
 
@@ -54,6 +80,19 @@ export class CheckFeatureFlagUseCase {
     };
 
     const useCase = this.moduleRef.get(useCaseClass, { strict: false });
-    return useCase.execute(checkFeatureFlagDto);
+    const checkResult = await useCase.execute(checkFeatureFlagDto);
+
+    void this.auditService.dispatchLog({
+      action: 'check_feature_flag',
+      entity: 'FeatureFlag',
+      timestamp: new Date().toISOString(),
+      data: {
+        featureName: checkFeatureFlagValidateDto.name,
+        check_result: checkResult,
+        check_method: 'database',
+      },
+    });
+
+    return checkResult;
   }
 }

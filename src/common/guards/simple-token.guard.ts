@@ -4,7 +4,7 @@ import { Request } from 'express';
 
 @Injectable()
 export class SimpleTokenGuard implements CanActivate {
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 

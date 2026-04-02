@@ -14,6 +14,7 @@ async function bootstrap() {
   });
 
   app.useGlobalInterceptors(new TransformInterceptor());
+  // Request logging interceptor is now registered via APP_INTERCEPTOR in AppModule
   app.useGlobalFilters(new HttpErrorFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
