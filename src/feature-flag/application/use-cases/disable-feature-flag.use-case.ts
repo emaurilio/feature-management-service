@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/log.service';
+import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DisableFeatureFlagDto } from '../dto/desable-feature-flag.dto';
 
@@ -8,7 +8,7 @@ import { DisableFeatureFlagDto } from '../dto/desable-feature-flag.dto';
 export class DisableFeatureFlagUseCase {
   constructor(
     private readonly featureFlagRepository: FeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(disableFeatureFlagDto: DisableFeatureFlagDto) {
@@ -18,7 +18,7 @@ export class DisableFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        void this.auditService.dispatchLog({
+        void this.logService.dispatchLog({
           action: 'disable',
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
@@ -38,7 +38,7 @@ export class DisableFeatureFlagUseCase {
         },
       );
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'disable',
         entity: 'FeatureFlag',
         entityId: featureFlagExists.id ?? '',
@@ -51,7 +51,7 @@ export class DisableFeatureFlagUseCase {
 
       return result;
     } catch (error) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'disable',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

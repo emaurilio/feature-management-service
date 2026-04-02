@@ -2,13 +2,13 @@ import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/pers
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
-import { AuditService } from '../../services/log.service';
+import { LogService } from '../../services/log.service';
 
 export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly userFeatureFlagRepository: UserFeatureFlagRepository,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -19,7 +19,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     const cacheResult = await this.featureFlagCacheService.get(cacheKey);
 
     if (cacheResult !== null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_user',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -43,7 +43,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     });
 
     if (userFeatureFlag === null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_user',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -59,7 +59,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
       return false;
     }
 
-    void this.auditService.dispatchLog({
+    void this.logService.dispatchLog({
       action: 'check_feature_flag_user',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

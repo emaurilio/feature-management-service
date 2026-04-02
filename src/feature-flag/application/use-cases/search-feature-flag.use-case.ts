@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/log.service';
+import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { SearchFeatureFlagDto } from '../dto/search-feature-flag.dto';
 
@@ -8,7 +8,7 @@ import { SearchFeatureFlagDto } from '../dto/search-feature-flag.dto';
 export class SearchFeatureFlagUseCase {
   constructor(
     private readonly featureFlagRepository: FeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(searchFeatureFlagDto: SearchFeatureFlagDto) {
@@ -19,7 +19,7 @@ export class SearchFeatureFlagUseCase {
         15,
       );
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'search',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ export class SearchFeatureFlagUseCase {
         },
       };
     } catch (error) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'search',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

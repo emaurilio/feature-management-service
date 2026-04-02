@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
-import { AuditService } from '../services/log.service';
+import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';
@@ -10,7 +10,7 @@ import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';
 export class CreateFeatureFlagUseCase {
   constructor(
     private readonly featureFlagRepository: FeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
     private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
   ) {}
 
@@ -38,7 +38,7 @@ export class CreateFeatureFlagUseCase {
           });
 
         if (!deleteOldFeatureFlag) {
-          void this.auditService.dispatchLog({
+          void this.logService.dispatchLog({
             action: 'create',
             entity: 'FeatureFlag',
             timestamp: new Date().toISOString(),
@@ -53,7 +53,7 @@ export class CreateFeatureFlagUseCase {
         const result =
           await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
 
-        void this.auditService.dispatchLog({
+        void this.logService.dispatchLog({
           action: 'create',
           entity: 'FeatureFlag',
           entityId: result.id,
@@ -81,7 +81,7 @@ export class CreateFeatureFlagUseCase {
       const result =
         await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'create',
         entity: 'FeatureFlag',
         entityId: result.id,
@@ -98,7 +98,7 @@ export class CreateFeatureFlagUseCase {
 
       return result;
     } catch (error) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'create',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

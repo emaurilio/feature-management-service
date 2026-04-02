@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/log.service';
+import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { ActiveFeatureFlagDto } from '../dto/active-feature-flag.dto';
 
@@ -8,7 +8,7 @@ import { ActiveFeatureFlagDto } from '../dto/active-feature-flag.dto';
 export class ActiveFeatureFlagUseCase {
   constructor(
     private readonly featureFlagRepository: FeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(activeFeatureFlagDto: ActiveFeatureFlagDto) {
@@ -18,7 +18,7 @@ export class ActiveFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        void this.auditService.dispatchLog({
+        void this.logService.dispatchLog({
           action: 'activate',
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
@@ -38,7 +38,7 @@ export class ActiveFeatureFlagUseCase {
         },
       );
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'activate',
         entity: 'FeatureFlag',
         entityId: featureFlagExists.id ?? '',
@@ -51,7 +51,7 @@ export class ActiveFeatureFlagUseCase {
 
       return result;
     } catch (error) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'activate',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

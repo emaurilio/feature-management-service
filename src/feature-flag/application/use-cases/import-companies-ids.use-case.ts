@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/log.service';
+import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 import { ImportCompaniesIdsDto } from '../dto/import-companies-ids.dto';
@@ -12,7 +12,7 @@ export class ImportCompaniesIdsUseCase {
   constructor(
     private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly companyRepository: CompanyFeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
   ) {}
 
@@ -23,7 +23,7 @@ export class ImportCompaniesIdsUseCase {
       );
 
       if (!featureFlagExists) {
-        void this.auditService.dispatchLog({
+        void this.logService.dispatchLog({
           action: 'import',
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
@@ -55,7 +55,7 @@ export class ImportCompaniesIdsUseCase {
       const result =
         await this.companyRepository.createMany(companiesFeatureFlag);
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'import',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -74,7 +74,7 @@ export class ImportCompaniesIdsUseCase {
 
       return result;
     } catch (error) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'import',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

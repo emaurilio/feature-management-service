@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bullmq';
 import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.types';
-import { AuditService } from 'src/feature-flag/application/services/log.service';
+import { LogService } from 'src/feature-flag/application/services/log.service';
 
 const createPayload = (
   overrides?: Partial<AuditLogPayload>,
@@ -17,8 +17,8 @@ const createPayload = (
   ...overrides,
 });
 
-describe('AuditService', () => {
-  let service: AuditService;
+describe('LogService', () => {
+  let service: LogService;
   let auditQueue: { add: jest.Mock };
 
   beforeEach(async () => {
@@ -26,12 +26,12 @@ describe('AuditService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AuditService,
+        LogService,
         { provide: getQueueToken('audit-logs'), useValue: queueMock },
       ],
     }).compile();
 
-    service = module.get<AuditService>(AuditService);
+    service = module.get<LogService>(LogService);
     auditQueue = module.get(getQueueToken('audit-logs'));
   });
 

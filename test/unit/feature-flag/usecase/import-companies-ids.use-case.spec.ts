@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from 'src/feature-flag/application/services/log.service';
+import { LogService } from 'src/feature-flag/application/services/log.service';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
@@ -14,7 +14,7 @@ describe('ImportCompaniesIdsUseCase', () => {
   let useCase: ImportCompaniesIdsUseCase;
   let featureFlagRepository: jest.Mocked<FeatureFlagRepository>;
   let companyFeatureFlagRepository: jest.Mocked<CompanyFeatureFlagRepository>;
-  let auditService: jest.Mocked<AuditService>;
+  let logService: jest.Mocked<LogService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,7 +34,7 @@ describe('ImportCompaniesIdsUseCase', () => {
           },
         },
         {
-          provide: AuditService,
+          provide: LogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -45,7 +45,7 @@ describe('ImportCompaniesIdsUseCase', () => {
     useCase = module.get<ImportCompaniesIdsUseCase>(ImportCompaniesIdsUseCase);
     featureFlagRepository = module.get(FeatureFlagRepository);
     companyFeatureFlagRepository = module.get(CompanyFeatureFlagRepository);
-    auditService = module.get(AuditService);
+    logService = module.get(LogService);
   });
 
   it('should be defined', () => {
@@ -85,7 +85,7 @@ describe('ImportCompaniesIdsUseCase', () => {
       companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
     ).toHaveBeenCalledTimes(2);
     expect(companyFeatureFlagRepository.createMany).toHaveBeenCalled();
-    expect(auditService.dispatchLog).toHaveBeenCalledWith({
+    expect(logService.dispatchLog).toHaveBeenCalledWith({
       action: 'import',
       entity: 'FeatureFlag',
       timestamp: expect.any(String),
@@ -118,7 +118,7 @@ describe('ImportCompaniesIdsUseCase', () => {
     const result = await useCase.execute(dto);
 
     expect(result).toBeNull();
-    expect(auditService.dispatchLog).toHaveBeenCalledWith(
+    expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'import',
         data: expect.objectContaining({
@@ -179,7 +179,7 @@ describe('ImportCompaniesIdsUseCase', () => {
     );
 
     await expect(useCase.execute(dto)).rejects.toThrow('Unexpected error');
-    expect(auditService.dispatchLog).toHaveBeenCalledWith(
+    expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'import',
         entity: 'FeatureFlag',

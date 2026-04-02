@@ -1,13 +1,13 @@
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import { AuditService } from '../../services/log.service';
+import { LogService } from '../../services/log.service';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
 
 export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
   ) {}
 
@@ -19,7 +19,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     const cacheResult = await this.featureFlagCacheService.get(cacheKey);
 
     if (cacheResult !== null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -43,7 +43,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     });
 
     if (companyFeatureFlag === null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -56,7 +56,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
         },
       });
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -72,7 +72,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       return false;
     }
 
-    void this.auditService.dispatchLog({
+    void this.logService.dispatchLog({
       action: 'check_feature_flag_company',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

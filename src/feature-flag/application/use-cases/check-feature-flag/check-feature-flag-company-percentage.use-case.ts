@@ -3,14 +3,14 @@ import { HashFeatureFlagService } from '../../services/hash-feature-flag.service
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
-import { AuditService } from '../../services/log.service';
+import { LogService } from '../../services/log.service';
 
 export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly hashFeatureFlag: HashFeatureFlagService,
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -21,7 +21,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     const cacheResult = await this.featureFlagCacheService.get(hashName);
 
     if (cacheResult !== null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -45,7 +45,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     });
 
     if (companyFeatureFlag === null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -65,7 +65,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
 
     const checkResult = hashCompanyFeatureFlag < checkFeatureFlagDto.percentage;
 
-    void this.auditService.dispatchLog({
+    void this.logService.dispatchLog({
       action: 'check_feature_flag_company_percentage',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

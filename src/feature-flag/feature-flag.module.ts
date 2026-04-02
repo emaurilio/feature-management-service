@@ -1,12 +1,11 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
 import { FeatureFlagService } from './feature-flag.service';
 import { AuditLogsProcessor } from './processors/audit-logs.processor';
 import { DeadletterLogsProcessor } from './processors/deadletter-logs.processor';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { AuditService } from './application/services/log.service';
 import { MetricsModule } from '../common/metrics/metrics.module';
 import { PrometheusInterceptor } from '../common/metrics/prometheus.interceptor';
+import { QueuesModule } from '../common/queues/queues.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeatureFlagRepository } from './infraestructure/persistence/repositories/feature-flag.repository';
 import { CompanyFeatureFlagRepository } from './infraestructure/persistence/repositories/company-feature-flag.repository';
@@ -27,13 +26,11 @@ import { CheckFeatureFlagCompanyPercentageUseCase } from './application/use-case
 import { CheckFeatureFlagUserPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
 import { redisStore } from 'cache-manager-redis-yet';
 import { CacheModule } from '@nestjs/cache-manager';
+import { LogService } from './application/services/log.service';
 
 @Module({
   imports: [
-    BullModule.registerQueue(
-      { name: 'audit-logs' },
-      { name: 'deadletter-logs' },
-    ),
+    QueuesModule,
     ElasticsearchModule.register({
       node: process.env.ELASTICSEARCH_NODE || 'http://localhost:9200',
     }),
@@ -52,7 +49,7 @@ import { CacheModule } from '@nestjs/cache-manager';
   ],
   providers: [
     FeatureFlagService,
-    AuditService,
+    LogService,
     HashFeatureFlagService,
     AuditLogsProcessor,
     DeadletterLogsProcessor,

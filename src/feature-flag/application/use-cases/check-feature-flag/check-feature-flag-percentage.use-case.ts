@@ -2,13 +2,13 @@ import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/che
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
-import { AuditService } from '../../services/log.service';
+import { LogService } from '../../services/log.service';
 
 export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly hashFeatureFlag: HashFeatureFlagService,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -20,7 +20,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterf
     const cacheResult = await this.featureFlagCacheService.get(hashName);
 
     if (cacheResult !== null) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'check_feature_flag_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -40,7 +40,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterf
 
     const checkResult = hashFeatureFlag < checkFeatureFlagDto.percentage;
 
-    void this.auditService.dispatchLog({
+    void this.logService.dispatchLog({
       action: 'check_feature_flag_percentage',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

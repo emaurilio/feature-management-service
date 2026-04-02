@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFeatureFlagDto } from 'src/feature-flag/application/dto/create-feature-flag.dto';
-import { AuditService } from 'src/feature-flag/application/services/log.service';
+import { LogService } from 'src/feature-flag/application/services/log.service';
 import { CreateFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
@@ -10,7 +10,7 @@ import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persiste
 describe('CreateFeatureFlagUseCase', () => {
   let useCase: CreateFeatureFlagUseCase;
   let repository: jest.Mocked<FeatureFlagRepository>;
-  let auditService: jest.Mocked<AuditService>;
+  let logService: jest.Mocked<LogService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,7 +24,7 @@ describe('CreateFeatureFlagUseCase', () => {
           },
         },
         {
-          provide: AuditService,
+          provide: LogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -34,13 +34,13 @@ describe('CreateFeatureFlagUseCase', () => {
 
     useCase = module.get<CreateFeatureFlagUseCase>(CreateFeatureFlagUseCase);
     repository = module.get(FeatureFlagRepository);
-    auditService = module.get(AuditService);
+    logService = module.get(LogService);
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(repository).toBeDefined();
-    expect(auditService).toBeDefined();
+    expect(logService).toBeDefined();
   });
 
   it('should create a feature flag', async () => {
@@ -63,7 +63,7 @@ describe('CreateFeatureFlagUseCase', () => {
 
     expect(result).toEqual(mockResult);
     expect(repository.createFeatureFlag).toHaveBeenCalled();
-    expect(auditService.dispatchLog).toHaveBeenCalledWith(
+    expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'create',
         entity: 'FeatureFlag',

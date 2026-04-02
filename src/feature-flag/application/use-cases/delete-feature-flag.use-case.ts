@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditService } from '../services/log.service';
+import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DeleteFeatureFlagDto } from '../dto/delete-feature-flag.dto';
 import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
@@ -16,7 +16,7 @@ export class DeleteFeatureFlagUseCase {
     private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
     private readonly userFeatureFlagRepository: UserFeatureFlagRepository,
-    private readonly auditService: AuditService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(deleteFeatureFlagDto: DeleteFeatureFlagDto) {
@@ -26,7 +26,7 @@ export class DeleteFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        void this.auditService.dispatchLog({
+        void this.logService.dispatchLog({
           action: 'delete',
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
@@ -56,7 +56,7 @@ export class DeleteFeatureFlagUseCase {
         );
       }
 
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'delete',
         entity: 'FeatureFlag',
         entityId: featureFlagExists.id,
@@ -71,7 +71,7 @@ export class DeleteFeatureFlagUseCase {
 
       return result;
     } catch (error) {
-      void this.auditService.dispatchLog({
+      void this.logService.dispatchLog({
         action: 'delete',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
