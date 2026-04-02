@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Job } from 'bullmq';
@@ -8,11 +9,11 @@ import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.ty
 const createOriginalPayload = (
   overrides?: Partial<AuditLogPayload>,
 ): AuditLogPayload => ({
-  flagName: 'test-flag',
-  flagId: 'flag-123',
-  newValue: true,
-  updatedBy: 234,
+  action: 'test-flag',
+  entity: 'feature-flag',
+  entityId: 'flag-123',
   timestamp: new Date().toISOString(),
+  data: { flagName: 'test-flag', enabled: true },
   ...overrides,
 });
 
@@ -97,7 +98,7 @@ describe('DeadletterLogsProcessor', () => {
     });
 
     it('should index full payload including originalPayload and error', async () => {
-      const originalPayload = createOriginalPayload({ flagName: 'my-flag' });
+      const originalPayload = createOriginalPayload({ entity: 'my-flag' });
       const payload = createDeadLetterPayload({
         originalPayload,
         error: 'Connection refused',

@@ -50,9 +50,8 @@ describe('UserFeatureFlagRepository - deleteByFeatureFlagId', () => {
     const result = await repository.deleteByFeatureFlagId('feature-1');
 
     expect(result).toHaveLength(2);
-    expect(repository.delete)
-      .toHaveBeenCalledWith(expect.any(String))
-      .callCount(2);
+    expect(repository.delete).toHaveBeenCalledWith(expect.any(String));
+    expect(repository.delete).toHaveBeenCalledTimes(2);
   });
 
   it('should throw an error if delete fails', async () => {

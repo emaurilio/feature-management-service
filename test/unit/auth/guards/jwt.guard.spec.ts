@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common';
@@ -6,10 +8,10 @@ import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { JwtService } from 'src/common/auth/services/jwt.service';
 
 const createMockExecutionContext = (
-  request: Partial<Request> = {},
+  request: Partial<Request> | { headers?: Record<string, string> } = {},
 ): ExecutionContext => {
   const mockRequest = {
-    headers: {},
+    headers: {} as any,
     ...request,
   };
   return {
@@ -45,7 +47,7 @@ describe('JwtAuthGuard', () => {
 
   describe('canActivate', () => {
     it('should throw UnauthorizedException when Authorization header is missing', async () => {
-      const context = createMockExecutionContext({ headers: {} as any });
+      const context = createMockExecutionContext({ headers: {} });
 
       await expect(guard.canActivate(context)).rejects.toThrow(
         UnauthorizedException,
@@ -58,7 +60,7 @@ describe('JwtAuthGuard', () => {
 
     it('should throw UnauthorizedException when Authorization header is not Bearer', async () => {
       const context = createMockExecutionContext({
-        headers: { authorization: 'Basic some-token' } as any,
+        headers: { authorization: 'Basic some-token' },
       });
 
       await expect(guard.canActivate(context)).rejects.toThrow(
@@ -72,7 +74,7 @@ describe('JwtAuthGuard', () => {
 
     it('should throw UnauthorizedException when Authorization header is empty', async () => {
       const context = createMockExecutionContext({
-        headers: { authorization: '' } as any,
+        headers: { authorization: '' },
       });
 
       await expect(guard.canActivate(context)).rejects.toThrow(

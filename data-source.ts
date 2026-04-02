@@ -13,7 +13,7 @@ const options: DataSourceOptions = {
   synchronize: false,
   logging: true,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
+  migrations: [__dirname + '/src/database/migrations/*{.ts,.js}'],
 };
 
 export const AppDataSource = new DataSource(options);

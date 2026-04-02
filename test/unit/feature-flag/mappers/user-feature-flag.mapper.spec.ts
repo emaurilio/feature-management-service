@@ -17,9 +17,7 @@ describe('UserFeatureFlagMapper', () => {
       ...overrides,
     }) as UserFeatureFlagEntity;
 
-  const createDomain = (
-    overrides?: Partial<UserFeatureFlag>,
-  ): UserFeatureFlag =>
+  const createDomain = (): UserFeatureFlag =>
     new UserFeatureFlag(
       'flag-123',
       'user-789',
@@ -47,7 +45,6 @@ describe('UserFeatureFlagMapper', () => {
     it('should handle all fields correctly', () => {
       const entity = createEntity({
         featureId: 'other-flag',
-        companyId: 'other-company',
         userId: 'other-user',
       });
 

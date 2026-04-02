@@ -18,7 +18,7 @@ describe('JwtService', () => {
   let service: JwtService;
   const originalEnv = process.env;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     jest.clearAllMocks();
     verifyCallback = null;
     process.env = { ...originalEnv };

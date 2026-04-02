@@ -16,9 +16,7 @@ describe('CompanyFeatureFlagMapper', () => {
       ...overrides,
     }) as CompanyFeatureFlagEntity;
 
-  const createDomain = (
-    overrides?: Partial<CompanyFeatureFlag>,
-  ): CompanyFeatureFlag =>
+  const createDomain = (): CompanyFeatureFlag =>
     new CompanyFeatureFlag(
       'flag-123',
       'company-456',

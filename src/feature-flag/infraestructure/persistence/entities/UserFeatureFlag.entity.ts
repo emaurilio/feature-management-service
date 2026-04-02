@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity('users_feature_flags')
-@Index(['featureId', 'companyId'], { unique: true })
+@Index(['featureId', 'userId'], { unique: true })
 export class UserFeatureFlagEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common';
@@ -64,13 +65,13 @@ describe('SimpleTokenGuard', () => {
       );
     });
 
-    it('should return true when token is valid', async () => {
+    it('should return true when token is valid', () => {
       const request: Partial<Request> = {
         headers: { authorization: '1234567890' } as any,
       };
       const context = createMockExecutionContext(request);
 
-      const result = await guard.canActivate(context);
+      const result = guard.canActivate(context);
 
       expect(result).toBe(true);
     });

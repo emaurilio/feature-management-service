@@ -1,4 +1,4 @@
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagType } from '../../../domain/enums/feature-flag-type.enum';
 import {
   Entity,
   Column,
