@@ -6,7 +6,6 @@ export const UserFeatureFlagFactory = setSeederFactory<UserFeatureFlagEntity>(
   (faker) => {
     const entity = new UserFeatureFlagEntity();
     entity.featureId = faker.string.uuid();
-    entity.companyId = faker.string.uuid();
     entity.userId = faker.string.uuid();
     return entity;
   },

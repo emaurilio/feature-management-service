@@ -1,12 +1,11 @@
-import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { FeatureFlagService } from './feature-flag.service';
 import { AuditLogsProcessor } from './processors/audit-logs.processor';
 import { DeadletterLogsProcessor } from './processors/deadletter-logs.processor';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { MetricsModule } from '../common/metrics/metrics.module';
-import { PrometheusInterceptor } from '../common/metrics/prometheus.interceptor';
 import { QueuesModule } from '../common/queues/queues.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { FeatureFlagRepository } from './infraestructure/persistence/repositories/feature-flag.repository';
 import { CompanyFeatureFlagRepository } from './infraestructure/persistence/repositories/company-feature-flag.repository';
 import { CreateFeatureFlagUseCase } from './application/use-cases/create-feature-flag.use-case';
@@ -27,9 +26,17 @@ import { CheckFeatureFlagUserPercentageUseCase } from './application/use-cases/c
 import { redisStore } from 'cache-manager-redis-yet';
 import { CacheModule } from '@nestjs/cache-manager';
 import { LogService } from './application/services/log.service';
+import { LoggingModule } from 'src/common/logging/logging.module';
+import { FeatureFlagCacheService } from './application/services/feature-flag-cache.service';
+import { AuthModule } from 'src/common/auth/auth.module';
+import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
+import { DisableFeatureFlagUseCase } from './application/use-cases/disable-feature-flag.use-case';
+import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature-flag.use-case';
 
 @Module({
   imports: [
+    AuthModule,
+    LoggingModule,
     QueuesModule,
     ElasticsearchModule.register({
       node: process.env.ELASTICSEARCH_NODE || 'http://localhost:9200',
@@ -43,11 +50,33 @@ import { LogService } from './application/services/log.service';
       }),
     }),
     MetricsModule,
-    TypeOrmModule.forFeature([CompanyFeatureFlagRepository]),
-    TypeOrmModule.forFeature([FeatureFlagRepository]),
-    TypeOrmModule.forFeature([UserFeatureFlagRepository]),
   ],
   providers: [
+    {
+      provide: FeatureFlagRepository,
+      useFactory: (dataSource: DataSource) => {
+        return new FeatureFlagRepository(dataSource);
+      },
+      inject: [DataSource],
+    },
+    {
+      provide: CompanyFeatureFlagRepository,
+      useFactory: (dataSource: DataSource) => {
+        return new CompanyFeatureFlagRepository(dataSource);
+      },
+      inject: [DataSource],
+    },
+    {
+      provide: UserFeatureFlagRepository,
+      useFactory: (dataSource: DataSource) => {
+        return new UserFeatureFlagRepository(dataSource);
+      },
+      inject: [DataSource],
+    },
+    SearchFeatureFlagUseCase,
+    DisableFeatureFlagUseCase,
+    ActiveFeatureFlagUseCase,
+    FeatureFlagCacheService,
     FeatureFlagService,
     LogService,
     HashFeatureFlagService,
@@ -67,8 +96,4 @@ import { LogService } from './application/services/log.service';
   ],
   controllers: [FeatureFlagController, StsFeatureFlagController],
 })
-export class FeatureFlagModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PrometheusInterceptor).forRoutes('*');
-  }
-}
+export class FeatureFlagModule {}
