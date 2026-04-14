@@ -40,7 +40,7 @@ export class DeleteFeatureFlagUseCase {
         throw new Error('Feature flag not found');
       }
 
-      const result = await this.featureFlagRepository.delete(
+      const result = await this.featureFlagRepository.softDelete(
         featureFlagExists.id ?? '',
       );
 

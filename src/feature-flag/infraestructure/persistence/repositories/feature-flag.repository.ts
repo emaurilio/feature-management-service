@@ -21,8 +21,11 @@ export class FeatureFlagRepository
     return FeatureFlagMapper.toDomain(result);
   }
 
-  async findByName(name: string): Promise<FeatureFlag | null> {
-    const result = await this.findOne({ where: { name } });
+  async findByName(
+    name: string,
+    withDeleted = false,
+  ): Promise<FeatureFlag | null> {
+    const result = await this.findOne({ where: { name }, withDeleted });
 
     return result ? FeatureFlagMapper.toDomain(result) : null;
   }

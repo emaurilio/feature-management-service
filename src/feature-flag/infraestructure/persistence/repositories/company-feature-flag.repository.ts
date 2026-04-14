@@ -56,7 +56,7 @@ export class CompanyFeatureFlagRepository
   }
 
   async deleteByFeatureFlagId(featureId: string): Promise<boolean> {
-    const result = await this.delete({ featureId });
+    const result = await this.softDelete({ featureId });
     return result.affected !== 0;
   }
 }

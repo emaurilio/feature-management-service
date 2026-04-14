@@ -5,6 +5,7 @@ import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';
+import { isPercentageType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 
 @Injectable()
 export class CreateFeatureFlagUseCase {
@@ -16,8 +17,28 @@ export class CreateFeatureFlagUseCase {
 
   async execute(createFeatureFlagDto: CreateFeatureFlagDto) {
     try {
+      if (
+        isPercentageType(createFeatureFlagDto.type) &&
+        createFeatureFlagDto.percentage == null
+      ) {
+        void this.logService.dispatchLog({
+          action: 'activate',
+          entity: 'FeatureFlag',
+          timestamp: new Date().toISOString(),
+          data: {
+            user: createFeatureFlagDto.userData,
+            featureFlagType: createFeatureFlagDto.type,
+            error: 'Percentage value is not allowed for this feature flag type',
+          },
+        });
+
+        throw new Error(
+          'Percentage value is not allowed for this feature flag type',
+        );
+      }
       const featureFlagExists = await this.featureFlagRepository.findByName(
         createFeatureFlagDto.name,
+        true,
       );
 
       if (featureFlagExists) {
@@ -25,7 +46,7 @@ export class CreateFeatureFlagUseCase {
         const newFeatureFlag = new FeatureFlag(
           `${createFeatureFlagDto.name}-${newVersion}`,
           createFeatureFlagDto.name,
-          createFeatureFlagDto.percentage,
+          createFeatureFlagDto.percentage || 0,
           newVersion,
           true,
           createFeatureFlagDto.type,
@@ -73,7 +94,7 @@ export class CreateFeatureFlagUseCase {
       const newFeatureFlag = new FeatureFlag(
         `${createFeatureFlagDto.name}-1`,
         createFeatureFlagDto.name,
-        createFeatureFlagDto.percentage,
+        createFeatureFlagDto.percentage || 0,
         1,
         true,
         createFeatureFlagDto.type,

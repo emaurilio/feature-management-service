@@ -15,3 +15,11 @@ export function isCompanyType(type: FeatureFlagType): boolean {
 export function isUserType(type: FeatureFlagType): boolean {
   return [FeatureFlagType.USER, FeatureFlagType.USER_PERCENTAGE].includes(type);
 }
+
+export function isPercentageType(type: FeatureFlagType): boolean {
+  return [
+    FeatureFlagType.PERCENTAGE,
+    FeatureFlagType.USER_PERCENTAGE,
+    FeatureFlagType.COMPANY_PERCENTAGE,
+  ].includes(type);
+}

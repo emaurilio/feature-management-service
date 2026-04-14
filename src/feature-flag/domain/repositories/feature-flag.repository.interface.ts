@@ -2,7 +2,7 @@ import { FeatureFlag } from '../entities/FeatureFlag';
 
 export interface FeatureFlagRepositoryInterface {
   createFeatureFlag(featureFlag: FeatureFlag): Promise<FeatureFlag>;
-  findByName(name: string): Promise<FeatureFlag | null>;
+  findByName(name: string, withDeleted: boolean): Promise<FeatureFlag | null>;
   searchForName(
     name: string,
     page: number,
