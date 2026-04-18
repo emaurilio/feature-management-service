@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
+import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import { UserFeatureFlag } from 'src/feature-flag/domain/entities/UserFeatureFlag';
 import { ImportUsersIdsDto } from '../dto/import-users-ids.dto';
 import { FeatureFlagCacheService } from '../services/feature-flag-cache.service';
@@ -10,8 +10,10 @@ import { FeatureFlagCacheService } from '../services/feature-flag-cache.service'
 @Injectable()
 export class ImportUsersIdsUseCase {
   constructor(
-    private readonly featureFlagRepository: FeatureFlagRepository,
-    private readonly userRepository: UserFeatureFlagRepository,
+    @Inject('FeatureFlagRepositoryInterface')
+    private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
+    @Inject('UserFeatureFlagRepositoryInterface')
+    private readonly userRepository: UserFeatureFlagRepositoryInterface,
     private readonly logService: LogService,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
   ) {}

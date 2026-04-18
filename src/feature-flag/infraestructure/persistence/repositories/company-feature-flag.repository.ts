@@ -14,7 +14,9 @@ export class CompanyFeatureFlagRepository
     super(CompanyFeatureFlagEntity, dataSource.createEntityManager());
   }
 
-  async findByCompany(companyId: string): Promise<CompanyFeatureFlag[] | null> {
+  async findByCompanyId(
+    companyId: string,
+  ): Promise<CompanyFeatureFlag[] | null> {
     const findCompany = await this.find({ where: { companyId } });
     if (!findCompany) {
       return null;
@@ -56,7 +58,12 @@ export class CompanyFeatureFlagRepository
   }
 
   async deleteByFeatureFlagId(featureId: string): Promise<boolean> {
+    const expectedCount = await this.count({ where: { featureId } });
+    if (expectedCount === 0) {
+      return true;
+    }
+
     const result = await this.softDelete({ featureId });
-    return result.affected !== 0;
+    return (result.affected ?? 0) === expectedCount;
   }
 }

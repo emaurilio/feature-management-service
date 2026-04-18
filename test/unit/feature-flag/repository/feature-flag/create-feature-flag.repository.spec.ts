@@ -7,7 +7,7 @@ import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 
-describe('CreateFeatureFlagRepository', () => {
+describe('CreateFeatureFlagRepository - createFeatureFlag', () => {
   let repository: FeatureFlagRepository;
 
   beforeEach(async () => {
@@ -52,19 +52,19 @@ describe('CreateFeatureFlagRepository', () => {
     expect(repository.save).toHaveBeenCalled();
   });
 
-  it('should find by name', async () => {
-    const entity = new FeatureFlagEntity();
-    entity.name = 'test';
-    entity.nameVersion = 'test-1';
+  it('should throw an error if save fails', async () => {
+    const featureFlag = new FeatureFlag(
+      'test-1',
+      'test',
+      55,
+      1,
+      true,
+      FeatureFlagType.COMPANY,
+    );
+    jest.spyOn(repository, 'save').mockRejectedValue(new Error('Save Error'));
 
-    jest.spyOn(repository, 'findOne').mockResolvedValue(entity as any);
-
-    const result = await repository.findByName('test');
-
-    expect(result).toBeDefined();
-    expect(result?.name).toBe('test');
-    expect(repository.findOne).toHaveBeenCalledWith({
-      where: { name: 'test' },
-    });
+    await expect(repository.createFeatureFlag(featureFlag)).rejects.toThrow(
+      'Save Error',
+    );
   });
 });

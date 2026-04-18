@@ -60,11 +60,27 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
       inject: [DataSource],
     },
     {
+      provide: 'FeatureFlagRepositoryInterface',
+      useExisting: FeatureFlagRepository,
+    },
+    {
+      provide: 'CompanyFeatureFlagRepository',
+      useExisting: CompanyFeatureFlagRepository,
+    },
+    {
+      provide: 'UserFeatureFlagRepository',
+      useExisting: UserFeatureFlagRepository,
+    },
+    {
       provide: CompanyFeatureFlagRepository,
       useFactory: (dataSource: DataSource) => {
         return new CompanyFeatureFlagRepository(dataSource);
       },
       inject: [DataSource],
+    },
+    {
+      provide: 'CompanyFeatureFlagRepositoryInterface',
+      useExisting: CompanyFeatureFlagRepository,
     },
     {
       provide: UserFeatureFlagRepository,

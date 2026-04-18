@@ -1,16 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';
 import { isPercentageType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()
 export class CreateFeatureFlagUseCase {
   constructor(
-    private readonly featureFlagRepository: FeatureFlagRepository,
+    @Inject('FeatureFlagRepositoryInterface')
+    private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
     private readonly logService: LogService,
     private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
   ) {}
@@ -21,17 +22,6 @@ export class CreateFeatureFlagUseCase {
         isPercentageType(createFeatureFlagDto.type) &&
         createFeatureFlagDto.percentage == null
       ) {
-        void this.logService.dispatchLog({
-          action: 'activate',
-          entity: 'FeatureFlag',
-          timestamp: new Date().toISOString(),
-          data: {
-            user: createFeatureFlagDto.userData,
-            featureFlagType: createFeatureFlagDto.type,
-            error: 'Percentage value is not allowed for this feature flag type',
-          },
-        });
-
         throw new Error(
           'Percentage value is not allowed for this feature flag type',
         );
@@ -59,15 +49,6 @@ export class CreateFeatureFlagUseCase {
           });
 
         if (!deleteOldFeatureFlag) {
-          void this.logService.dispatchLog({
-            action: 'create',
-            entity: 'FeatureFlag',
-            timestamp: new Date().toISOString(),
-            data: {
-              user: createFeatureFlagDto.userData,
-              error: 'Failed to delete old feature flag',
-            },
-          });
           throw new Error('Failed to delete old feature flag');
         }
 

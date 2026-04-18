@@ -40,7 +40,12 @@ export class UserFeatureFlagRepository
   }
 
   async deleteByFeatureFlagId(featureId: string): Promise<boolean> {
+    const expectedCount = await this.count({ where: { featureId } });
+    if (expectedCount === 0) {
+      return true;
+    }
+
     const result = await this.softDelete({ featureId });
-    return result.affected !== 0;
+    return (result.affected ?? 0) === expectedCount;
   }
 }

@@ -2,32 +2,34 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
+import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import { LogService } from 'src/feature-flag/application/services/log.service';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';
 import { ImportUsersIdsDto } from 'src/feature-flag/application/dto/import-users-ids.dto';
+import { FeatureFlagCacheService } from 'src/feature-flag/application/services/feature-flag-cache.service';
 
 describe('ImportUsersIdsUseCase', () => {
   let useCase: ImportUsersIdsUseCase;
-  let featureFlagRepository: jest.Mocked<FeatureFlagRepository>;
-  let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepository>;
+  let featureFlagRepository: jest.Mocked<FeatureFlagRepositoryInterface>;
+  let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
   let logService: jest.Mocked<LogService>;
+  let featureFlagCacheService: jest.Mocked<FeatureFlagCacheService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ImportUsersIdsUseCase,
         {
-          provide: FeatureFlagRepository,
+          provide: 'FeatureFlagRepositoryInterface',
           useValue: {
             findByName: jest.fn(),
           },
         },
         {
-          provide: UserFeatureFlagRepository,
+          provide: 'UserFeatureFlagRepositoryInterface',
           useValue: {
             findByUserIdAndFeatureFlagId: jest.fn(),
             createMany: jest.fn(),
@@ -39,13 +41,26 @@ describe('ImportUsersIdsUseCase', () => {
             dispatchLog: jest.fn(),
           },
         },
+        {
+          provide: FeatureFlagCacheService,
+          useValue: {
+            invalidateCacheEntityFlags: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     useCase = module.get<ImportUsersIdsUseCase>(ImportUsersIdsUseCase);
-    featureFlagRepository = module.get(FeatureFlagRepository);
-    userFeatureFlagRepository = module.get(UserFeatureFlagRepository);
-    logService = module.get(LogService);
+    featureFlagCacheService = module.get<jest.Mocked<FeatureFlagCacheService>>(
+      FeatureFlagCacheService,
+    );
+    featureFlagRepository = module.get<
+      jest.Mocked<FeatureFlagRepositoryInterface>
+    >('FeatureFlagRepositoryInterface');
+    userFeatureFlagRepository = module.get<
+      jest.Mocked<UserFeatureFlagRepositoryInterface>
+    >('UserFeatureFlagRepositoryInterface');
+    logService = module.get<jest.Mocked<LogService>>(LogService);
   });
 
   it('should be defined', () => {
@@ -91,10 +106,13 @@ describe('ImportUsersIdsUseCase', () => {
         entity: 'FeatureFlag',
       }),
     );
+    expect(
+      featureFlagCacheService.invalidateCacheEntityFlags,
+    ).toHaveBeenCalled();
     expect(result).toBeDefined();
   });
 
-  it('should return null if feature flag is not found', async () => {
+  it('should throw when feature flag is not found', async () => {
     const dto: ImportUsersIdsDto = {
       featureFlagName: 'non-existent',
       usersIds: ['user-1'],
@@ -107,9 +125,9 @@ describe('ImportUsersIdsUseCase', () => {
 
     featureFlagRepository.findByName.mockResolvedValue(null);
 
-    const result = await useCase.execute(dto);
-
-    expect(result).toBeNull();
+    await expect(useCase.execute(dto)).rejects.toThrow(
+      'Feature Flag not found',
+    );
     expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'import',

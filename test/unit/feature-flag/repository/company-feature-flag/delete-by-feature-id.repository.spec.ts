@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
 import { DataSource } from 'typeorm';
+import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 
-describe('UserFeatureFlagRepository - deleteByFeatureFlagId', () => {
-  let repository: UserFeatureFlagRepository;
+describe('CompanyFeatureFlagRepository - deleteByFeatureFlagId', () => {
+  let repository: CompanyFeatureFlagRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserFeatureFlagRepository,
+        CompanyFeatureFlagRepository,
         {
           provide: DataSource,
           useValue: {
@@ -20,8 +20,8 @@ describe('UserFeatureFlagRepository - deleteByFeatureFlagId', () => {
       ],
     }).compile();
 
-    repository = module.get<UserFeatureFlagRepository>(
-      UserFeatureFlagRepository,
+    repository = module.get<CompanyFeatureFlagRepository>(
+      CompanyFeatureFlagRepository,
     );
   });
 
@@ -29,7 +29,7 @@ describe('UserFeatureFlagRepository - deleteByFeatureFlagId', () => {
     expect(repository).toBeDefined();
   });
 
-  it('should delete user feature flags by feature flag ID only when expected rows are deleted', async () => {
+  it('should delete company feature flags by feature flag ID only when expected rows are deleted', async () => {
     const featureId = 'feature-1';
 
     jest.spyOn(repository, 'count').mockResolvedValue(2 as any);

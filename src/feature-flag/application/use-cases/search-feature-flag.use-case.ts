@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { Inject, Injectable } from '@nestjs/common';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { SearchFeatureFlagDto } from '../dto/search-feature-flag.dto';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()
 export class SearchFeatureFlagUseCase {
   constructor(
-    private readonly featureFlagRepository: FeatureFlagRepository,
+    @Inject('FeatureFlagRepositoryInterface')
+    private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
     private readonly logService: LogService,
   ) {}
 

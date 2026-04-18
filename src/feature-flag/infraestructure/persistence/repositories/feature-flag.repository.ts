@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, DataSource, Like } from 'typeorm';
+import { Repository, DataSource, Like, UpdateResult } from 'typeorm';
 import { FeatureFlagEntity } from '../entities/FeatureFlag.entity';
 import { FeatureFlagMapper } from '../mappers/feature-flag.mapper';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
@@ -48,5 +48,21 @@ export class FeatureFlagRepository
       data: entities.map((entity) => FeatureFlagMapper.toDomain(entity)),
       total: total,
     };
+  }
+
+  async updateFeatureFlag(
+    id: string,
+    partialEntity: Partial<FeatureFlag>,
+  ): Promise<FeatureFlag> {
+    await super.update(id, partialEntity);
+    const updatedEntity = await this.findOne({ where: { id } });
+    if (!updatedEntity) {
+      throw new Error('Feature Flag not found after update');
+    }
+    return FeatureFlagMapper.toDomain(updatedEntity);
+  }
+
+  async softDelete(id: string): Promise<UpdateResult> {
+    return super.update(id, { deletedAt: new Date() });
   }
 }

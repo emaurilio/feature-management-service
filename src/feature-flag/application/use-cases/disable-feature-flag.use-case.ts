@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { Inject, Injectable } from '@nestjs/common';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DisableFeatureFlagDto } from '../dto/desable-feature-flag.dto';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()
 export class DisableFeatureFlagUseCase {
   constructor(
-    private readonly featureFlagRepository: FeatureFlagRepository,
+    @Inject('FeatureFlagRepositoryInterface')
+    private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
     private readonly logService: LogService,
   ) {}
 
@@ -18,20 +19,10 @@ export class DisableFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        void this.logService.dispatchLog({
-          action: 'disable',
-          entity: 'FeatureFlag',
-          timestamp: new Date().toISOString(),
-          data: {
-            user: disableFeatureFlagDto.userData,
-            error: 'Feature Flag not found',
-          },
-        });
-
         throw new Error('Feature Flag not found');
       }
 
-      const result = await this.featureFlagRepository.update(
+      const result = await this.featureFlagRepository.updateFeatureFlag(
         featureFlagExists.id ?? '',
         {
           isActive: false,

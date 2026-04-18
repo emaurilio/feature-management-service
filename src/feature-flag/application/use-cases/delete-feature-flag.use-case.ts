@@ -1,21 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { Inject, Injectable } from '@nestjs/common';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DeleteFeatureFlagDto } from '../dto/delete-feature-flag.dto';
-import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
 import {
   isCompanyType,
   isUserType,
 } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
+import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()
 export class DeleteFeatureFlagUseCase {
   constructor(
-    private readonly featureFlagRepository: FeatureFlagRepository,
-    private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
-    private readonly userFeatureFlagRepository: UserFeatureFlagRepository,
+    @Inject('FeatureFlagRepositoryInterface')
+    private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
+    @Inject('CompanyFeatureFlagRepositoryInterface')
+    private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
+    @Inject('UserFeatureFlagRepositoryInterface')
+    private readonly userFeatureFlagRepository: UserFeatureFlagRepositoryInterface,
     private readonly logService: LogService,
   ) {}
 
@@ -26,17 +29,6 @@ export class DeleteFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        void this.logService.dispatchLog({
-          action: 'delete',
-          entity: 'FeatureFlag',
-          timestamp: new Date().toISOString(),
-          data: {
-            user: deleteFeatureFlagDto.userData,
-            name: deleteFeatureFlagDto.name,
-            error: 'Feature flag not found',
-          },
-        });
-
         throw new Error('Feature flag not found');
       }
 

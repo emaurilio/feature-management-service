@@ -6,7 +6,7 @@ import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persiste
 import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 
-describe('GetFeatureFlagByNameRepository', () => {
+describe('GetFeatureFlagByNameRepository - findByName', () => {
   let repository: FeatureFlagRepository;
 
   beforeEach(async () => {
@@ -48,6 +48,7 @@ describe('GetFeatureFlagByNameRepository', () => {
     expect(result?.nameVersion).toBe('test-feature-1');
     expect(repository.findOne).toHaveBeenCalledWith({
       where: { name: 'test-feature' },
+      withDeleted: false,
     });
   });
 
@@ -59,6 +60,7 @@ describe('GetFeatureFlagByNameRepository', () => {
     expect(result).toBeNull();
     expect(repository.findOne).toHaveBeenCalledWith({
       where: { name: 'non-existent' },
+      withDeleted: false,
     });
   });
 
