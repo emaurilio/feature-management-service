@@ -3,12 +3,16 @@ import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { LogService } from '../../services/log.service';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
+import { Inject, Injectable } from '@nestjs/common';
+import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 
+@Injectable()
 export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface {
   constructor(
-    private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepository,
-    private readonly logService: LogService,
+    @Inject('CompanyFeatureFlagRepositoryInterface')
+    private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
+    private readonly logService: LogService,
   ) {}
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -35,12 +39,10 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       return cacheResult;
     }
 
-    const companyFeatureFlag = await this.companyFeatureFlagRepository.findOne({
-      where: {
-        featureId: checkFeatureFlagDto.featureId,
-        companyId: checkFeatureFlagDto.companyId,
-      },
-    });
+    const companyFeatureFlag = await this.companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId(
+      checkFeatureFlagDto.companyId ?? '',
+      checkFeatureFlagDto.featureId ?? ''
+    );
 
     if (companyFeatureFlag === null) {
       void this.logService.dispatchLog({

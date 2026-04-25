@@ -52,6 +52,7 @@ describe('CreateFeatureFlagUseCase', () => {
     expect(useCase).toBeDefined();
     expect(repository).toBeDefined();
     expect(logService).toBeDefined();
+    expect(deleteFeatureFlagUseCase).toBeDefined();
   });
 
   it('should create a feature flag', async () => {

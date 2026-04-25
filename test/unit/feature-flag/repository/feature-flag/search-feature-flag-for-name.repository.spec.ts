@@ -7,7 +7,7 @@ import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 
-describe('FeatureFlagRepository - searchForName', () => {
+describe('FeatureFlagRepository - searchByNamePaginated', () => {
   let repository: FeatureFlagRepository;
 
   beforeEach(async () => {
@@ -60,7 +60,7 @@ describe('FeatureFlagRepository - searchForName', () => {
       .spyOn(repository, 'findAndCount')
       .mockResolvedValue([entities, 2] as any);
 
-    const result = await repository.searchForName('test', 1, 2);
+    const result = await repository.searchByNamePaginated('test', 1, 2);
 
     expect(findAndCountSpy).toHaveBeenCalledTimes(1);
 
@@ -82,7 +82,7 @@ describe('FeatureFlagRepository - searchForName', () => {
       .spyOn(repository, 'findAndCount')
       .mockResolvedValue([[], 0] as any);
 
-    const result = await repository.searchForName('missing', 1, 5);
+    const result = await repository.searchByNamePaginated('missing', 1, 5);
 
     expect(findAndCountSpy).toHaveBeenCalledTimes(1);
 
@@ -115,7 +115,7 @@ describe('FeatureFlagRepository - searchForName', () => {
       .spyOn(repository, 'findAndCount')
       .mockResolvedValue([entity, 1] as any);
 
-    const result = await repository.searchForName('test', 2, 1);
+    const result = await repository.searchByNamePaginated('test', 2, 1);
 
     expect(findAndCountSpy).toHaveBeenCalledTimes(1);
 

@@ -6,7 +6,7 @@ export interface FeatureFlagRepositoryInterface {
 
   findByName(name: string, withDeleted?: boolean): Promise<FeatureFlag | null>;
 
-  searchForName(
+  searchByNamePaginated(
     name: string,
     page: number,
     limit: number,

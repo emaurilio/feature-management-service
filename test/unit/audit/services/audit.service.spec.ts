@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bullmq';
 import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.types';
 import { LogService } from 'src/feature-flag/application/services/log.service';
+import { LOGGING_SERVICE } from 'src/common/logging/logging-service.interface';
 
 const createPayload = (
   overrides?: Partial<AuditLogPayload>,
@@ -20,19 +21,23 @@ const createPayload = (
 describe('LogService', () => {
   let service: LogService;
   let auditQueue: { add: jest.Mock };
+  let loggingService: { logError: jest.Mock };
 
   beforeEach(async () => {
     const queueMock = { add: jest.fn().mockResolvedValue({ id: 'job-1' }) };
+    const loggingMock = { logError: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LogService,
         { provide: getQueueToken('audit-logs'), useValue: queueMock },
+        { provide: LOGGING_SERVICE, useValue: loggingMock },
       ],
     }).compile();
 
     service = module.get<LogService>(LogService);
     auditQueue = module.get(getQueueToken('audit-logs'));
+    loggingService = module.get(LOGGING_SERVICE);
   });
 
   it('should be defined', () => {
@@ -69,6 +74,10 @@ describe('LogService', () => {
       const result = await service.dispatchLog(payload);
 
       expect(result).toBe(false);
+      expect(loggingService.logError).toHaveBeenCalledWith(
+        new Error('Falha ao enfileirar log para entidade: FeatureFlag'),
+        'FeatureFlag',
+      );
     });
 
     it('should return false when queue.add rejects with non-Error value', async () => {
@@ -78,6 +87,10 @@ describe('LogService', () => {
       const result = await service.dispatchLog(payload);
 
       expect(result).toBe(false);
+      expect(loggingService.logError).toHaveBeenCalledWith(
+        new Error('Falha ao enfileirar log para entidade: FeatureFlag'),
+        'FeatureFlag',
+      );
     });
 
     it('should not throw when queue fails', async () => {
@@ -85,6 +98,10 @@ describe('LogService', () => {
       auditQueue.add.mockRejectedValue(new Error('boom'));
 
       await expect(service.dispatchLog(payload)).resolves.toBe(false);
+      expect(loggingService.logError).toHaveBeenCalledWith(
+        new Error('Falha ao enfileirar log para entidade: FeatureFlag'),
+        'FeatureFlag',
+      );
     });
 
     it('should handle different payload shapes', async () => {

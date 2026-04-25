@@ -17,6 +17,7 @@ import { DisableFeatureFlagUseCase } from './application/use-cases/disable-featu
 import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
 
 @Controller('sts/feature-flags')
+@UseGuards(SimpleTokenGuard)
 export class StsFeatureFlagController {
   constructor(
     private readonly createFeatureFlagUseCase: CreateFeatureFlagUseCase,
@@ -30,14 +31,12 @@ export class StsFeatureFlagController {
   ) {}
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('create')
   async create(@Body() createFeatureFlagDto: CreateFeatureFlagDto) {
     return this.createFeatureFlagUseCase.execute(createFeatureFlagDto);
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('import-companies-ids')
   async importCompaniesIds(
     @Body() importCompaniesIdsDto: ImportCompaniesIdsDto,
@@ -46,42 +45,36 @@ export class StsFeatureFlagController {
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('import-users-ids')
   async importUsersIds(@Body() importUsersIdsDto: ImportUsersIdsDto) {
     return this.importUsersIdsUseCase.execute(importUsersIdsDto);
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('delete')
   async delete(@Body() deleteFeatureFlagDto: DeleteFeatureFlagDto) {
     return await this.deleteFeatureFlagUseCase.execute(deleteFeatureFlagDto);
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('search')
   async searchForName(@Body() search: SearchFeatureFlagDto) {
     return await this.searchFeatureFlagByName.execute(search);
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('check-feature-flag')
   async checkValidate(@Body() checkValidate: CheckFeatureFlagValidateDto) {
     return await this.checkFeatureFlagUseCase.execute(checkValidate);
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('disable')
   async disable(@Body() disableFeatureFlagDto: DisableFeatureFlagDto) {
     return await this.disableFeatureFlagUseCase.execute(disableFeatureFlagDto);
   }
 
   @Version('1')
-  @UseGuards(SimpleTokenGuard)
   @Post('active')
   async active(@Body() activeFeatureFlagDto: DisableFeatureFlagDto) {
     return await this.activeFeatureFlagUseCase.execute(activeFeatureFlagDto);

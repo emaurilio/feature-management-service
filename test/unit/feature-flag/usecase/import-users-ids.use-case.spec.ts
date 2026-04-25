@@ -65,6 +65,10 @@ describe('ImportUsersIdsUseCase', () => {
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
+    expect(featureFlagRepository).toBeDefined();
+    expect(userFeatureFlagRepository).toBeDefined();
+    expect(logService).toBeDefined();
+    expect(featureFlagCacheService).toBeDefined();
   });
 
   it('should import multiple user ids successfully', async () => {

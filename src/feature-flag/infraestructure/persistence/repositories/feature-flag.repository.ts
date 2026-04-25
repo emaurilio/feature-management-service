@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, DataSource, Like, UpdateResult } from 'typeorm';
+import { Repository, DataSource, Like } from 'typeorm';
 import { FeatureFlagEntity } from '../entities/FeatureFlag.entity';
 import { FeatureFlagMapper } from '../mappers/feature-flag.mapper';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
@@ -30,7 +30,7 @@ export class FeatureFlagRepository
     return result ? FeatureFlagMapper.toDomain(result) : null;
   }
 
-  async searchForName(
+  async searchByNamePaginated(
     name: string,
     page: number,
     limit: number,
@@ -54,7 +54,7 @@ export class FeatureFlagRepository
     id: string,
     partialEntity: Partial<FeatureFlag>,
   ): Promise<FeatureFlag> {
-    await super.update(id, partialEntity);
+    await this.update(id, partialEntity);
     const updatedEntity = await this.findOne({ where: { id } });
     if (!updatedEntity) {
       throw new Error('Feature Flag not found after update');
@@ -62,7 +62,8 @@ export class FeatureFlagRepository
     return FeatureFlagMapper.toDomain(updatedEntity);
   }
 
-  async softDelete(id: string): Promise<UpdateResult> {
-    return super.update(id, { deletedAt: new Date() });
+  async deleteFeatureFlag(id: string): Promise<boolean> {
+    const result = (await this.softDelete(id)) ? true : false;
+    return result;
   }
 }

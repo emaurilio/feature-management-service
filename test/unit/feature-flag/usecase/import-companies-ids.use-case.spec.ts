@@ -65,6 +65,10 @@ describe('ImportCompaniesIdsUseCase', () => {
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
+    expect(featureFlagRepository).toBeDefined();
+    expect(companyFeatureFlagRepository).toBeDefined();
+    expect(logService).toBeDefined();
+    expect(featureFlagCacheService).toBeDefined();
   });
 
   it('should import multiple company ids successfully', async () => {

@@ -3,7 +3,9 @@ import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
 import { LogService } from '../../services/log.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterface {
   constructor(
     private readonly hashFeatureFlag: HashFeatureFlagService,
@@ -27,7 +29,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterf
         data: {
           featureName: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          company_id: entityId,
+          entityId: entityId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -47,7 +49,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterf
       data: {
         featureName: checkFeatureFlagDto.featureName,
         version: checkFeatureFlagDto.version,
-        company_id: entityId,
+        entityId: entityId,
         check_result: checkResult,
         check_method: 'database',
       },

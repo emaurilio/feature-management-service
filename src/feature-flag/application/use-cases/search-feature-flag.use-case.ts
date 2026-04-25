@@ -14,7 +14,7 @@ export class SearchFeatureFlagUseCase {
 
   async execute(searchFeatureFlagDto: SearchFeatureFlagDto) {
     try {
-      const { data, total } = await this.featureFlagRepository.searchForName(
+      const { data, total } = await this.featureFlagRepository.searchByNamePaginated(
         searchFeatureFlagDto.name,
         searchFeatureFlagDto.page || 1,
         15,

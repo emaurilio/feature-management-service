@@ -41,28 +41,20 @@ describe('SimpleTokenGuard', () => {
   });
 
   describe('canActivate', () => {
-    it('should throw UnauthorizedException when Authorization header is missing', async () => {
+    it('should throw UnauthorizedException when Authorization header is missing', () => {
       const context = createMockExecutionContext({ headers: {} as any });
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        'Token not found',
-      );
+      expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);
+      expect(() => guard.canActivate(context)).toThrow('Token not found');
     });
 
-    it('should throw UnauthorizedException when Authorization header is empty', async () => {
+    it('should throw UnauthorizedException when Authorization header is empty', () => {
       const context = createMockExecutionContext({
         headers: { authorization: '' } as any,
       });
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        'Token not found',
-      );
+      expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);
+      expect(() => guard.canActivate(context)).toThrow('Token not found');
     });
 
     it('should return true when token is valid', () => {
@@ -76,15 +68,13 @@ describe('SimpleTokenGuard', () => {
       expect(result).toBe(true);
     });
 
-    it('should throw UnauthorizedException when token is invalid', async () => {
+    it('should throw UnauthorizedException when token is invalid', () => {
       const context = createMockExecutionContext({
         headers: { authorization: 'invalid-token' } as any,
       });
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        UnauthorizedException,
-      );
-      await expect(guard.canActivate(context)).rejects.toThrow('Invalid token');
+      expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);
+      expect(() => guard.canActivate(context)).toThrow('Invalid token');
     });
   });
 });

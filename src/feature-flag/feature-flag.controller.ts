@@ -4,12 +4,12 @@ import { CheckFeatureFlagUseCase } from './application/use-cases/check-feature-f
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 
 @Controller('api/feature-flags')
+@UseGuards(JwtAuthGuard)
 export class FeatureFlagController {
   constructor(
     private readonly checkFeatureFlagUseCase: CheckFeatureFlagUseCase,
   ) {}
   @Version('1')
-  @UseGuards(JwtAuthGuard)
   @Post('check-feature-flag')
   async checkValidate(@Body() checkValidate: CheckFeatureFlagValidateDto) {
     return await this.checkFeatureFlagUseCase.execute(checkValidate);
