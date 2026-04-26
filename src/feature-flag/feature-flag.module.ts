@@ -64,11 +64,11 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
       useExisting: FeatureFlagRepository,
     },
     {
-      provide: 'CompanyFeatureFlagRepository',
+      provide: 'CompanyFeatureFlagRepositoryInterface',
       useExisting: CompanyFeatureFlagRepository,
     },
     {
-      provide: 'UserFeatureFlagRepository',
+      provide: 'UserFeatureFlagRepositoryInterface',
       useExisting: UserFeatureFlagRepository,
     },
     {
@@ -112,4 +112,4 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
   ],
   controllers: [FeatureFlagController, StsFeatureFlagController],
 })
-export class FeatureFlagModule {}
+export class FeatureFlagModule { }

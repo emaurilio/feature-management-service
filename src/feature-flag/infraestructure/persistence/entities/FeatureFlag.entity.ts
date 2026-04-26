@@ -34,7 +34,7 @@ export class FeatureFlagEntity {
   @Index()
   isActive: boolean;
 
-  @Column({ default: FeatureFlagType.PERCENTAGE })
+  @Column({ type: 'varchar', default: FeatureFlagType.PERCENTAGE })
   type: FeatureFlagType;
 
   @CreateDateColumn()

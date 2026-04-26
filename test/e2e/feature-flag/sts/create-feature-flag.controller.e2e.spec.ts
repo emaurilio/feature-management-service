@@ -5,15 +5,20 @@
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { CreateFeatureFlagDto } from '../../../src/feature-flag/application/dto/create-feature-flag.dto';
-import { FeatureFlagController } from '../../../src/feature-flag/feature-flag.controller';
-import { CreateFeatureFlagUseCase } from '../../../src/feature-flag/application/use-cases/create-feature-flag.use-case';
-import { ImportCompaniesIdsUseCase } from '../../../src/feature-flag/application/use-cases/import-companies-ids.use-case';
-import { ImportUsersIdsUseCase } from '../../../src/feature-flag/application/use-cases/import-users-ids.use-case';
-import { FeatureFlagType } from '../../../src/feature-flag/domain/enums/feature-flag-type.enum';
-import { SimpleTokenGuard } from '../../../src/common/guards/simple-token.guard';
-import { FeatureFlagRepository } from '../../../src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { FeatureFlagExistsConstraint } from '../../../src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
+import { CreateFeatureFlagDto } from '../../../../src/feature-flag/application/dto/create-feature-flag.dto';
+import { StsFeatureFlagController } from '../../../../src/feature-flag/sts-feature-flag.controller';
+import { CreateFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/create-feature-flag.use-case';
+import { ImportCompaniesIdsUseCase } from '../../../../src/feature-flag/application/use-cases/import-companies-ids.use-case';
+import { ImportUsersIdsUseCase } from '../../../../src/feature-flag/application/use-cases/import-users-ids.use-case';
+import { FeatureFlagType } from '../../../../src/feature-flag/domain/enums/feature-flag-type.enum';
+import { SimpleTokenGuard } from '../../../../src/common/guards/simple-token.guard';
+import { DeleteFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/delete-feature-flag.use-case';
+import { SearchFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/search-feature-flag.use-case';
+import { CheckFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
+import { DisableFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/disable-feature-flag.use-case';
+import { ActiveFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/active-feature-flag.use-case';
+import { FeatureFlagRepository } from '../../../../src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { FeatureFlagExistsConstraint } from '../../../../src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 
 describe('FeatureFlagController', () => {
   let app: INestApplication;
@@ -41,7 +46,7 @@ describe('FeatureFlagController', () => {
     process.env.API_KEY = API_KEY;
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      controllers: [FeatureFlagController],
+      controllers: [StsFeatureFlagController],
       providers: [
         {
           provide: CreateFeatureFlagUseCase,
@@ -59,6 +64,11 @@ describe('FeatureFlagController', () => {
           provide: FeatureFlagRepository,
           useValue: mockFeatureFlagRepository,
         },
+        { provide: DeleteFeatureFlagUseCase, useValue: {} },
+        { provide: SearchFeatureFlagUseCase, useValue: {} },
+        { provide: CheckFeatureFlagUseCase, useValue: {} },
+        { provide: DisableFeatureFlagUseCase, useValue: {} },
+        { provide: ActiveFeatureFlagUseCase, useValue: {} },
         FeatureFlagExistsConstraint,
         SimpleTokenGuard,
       ],
@@ -100,7 +110,7 @@ describe('FeatureFlagController', () => {
       mockCreateFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .set('Authorization', API_KEY)
         .send(createFeatureFlagDto);
 
@@ -118,7 +128,7 @@ describe('FeatureFlagController', () => {
 
     it('should return 401 Unauthorized if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .send(createFeatureFlagDto);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -127,7 +137,7 @@ describe('FeatureFlagController', () => {
 
     it('should return 401 Unauthorized if token is invalid', async () => {
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .set('Authorization', 'wrong-token')
         .send(createFeatureFlagDto);
 
@@ -140,18 +150,18 @@ describe('FeatureFlagController', () => {
     it('should return 400 Bad Request if name is missing', async () => {
       const { name, ...invalidDto } = createFeatureFlagDto;
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .set('Authorization', API_KEY)
         .send(invalidDto);
 
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toContain('Name is required');
+      expect(response.body.message).toContain('Feature Flag Name is required');
     });
 
     it('should return 400 Bad Request if type is missing', async () => {
       const { type, ...invalidDto } = createFeatureFlagDto;
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .set('Authorization', API_KEY)
         .send(invalidDto);
 
@@ -161,7 +171,7 @@ describe('FeatureFlagController', () => {
 
     it('should return 400 Bad Request if userData is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .set('Authorization', API_KEY)
         .send({
           name: 'test',
@@ -178,7 +188,7 @@ describe('FeatureFlagController', () => {
       );
 
       const response = await request(app.getHttpServer())
-        .post('/feature-flags/create')
+        .post('/sts/feature-flags/create')
         .set('Authorization', API_KEY)
         .send(createFeatureFlagDto);
 
