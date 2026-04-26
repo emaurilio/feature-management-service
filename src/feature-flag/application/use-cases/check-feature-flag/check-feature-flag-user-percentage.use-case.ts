@@ -1,7 +1,6 @@
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
 import { LogService } from '../../services/log.service';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
 import { Inject, Injectable } from '@nestjs/common';
@@ -15,7 +14,7 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
     private readonly hashFeatureFlag: HashFeatureFlagService,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
     private readonly logService: LogService,
-  ) {}
+  ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     const hashName = `${checkFeatureFlagDto.userId}-${checkFeatureFlagDto.featureName}-${checkFeatureFlagDto.version}`;

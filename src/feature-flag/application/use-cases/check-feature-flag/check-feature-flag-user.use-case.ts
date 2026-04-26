@@ -1,4 +1,3 @@
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
@@ -13,7 +12,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     private readonly userFeatureFlagRepository: UserFeatureFlagRepositoryInterface,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
     private readonly logService: LogService,
-  ) {}
+  ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     const cacheKey = `${checkFeatureFlagDto.userId}-

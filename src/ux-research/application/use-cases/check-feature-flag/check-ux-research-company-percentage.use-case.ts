@@ -1,28 +1,27 @@
-import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
-import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
-import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-ux-research.dto';
-import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
 import { LogService } from '../../services/log.service';
 import { Inject, Injectable } from '@nestjs/common';
-import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
+import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
+import { HashUXResearchService } from '../../services/hash-ux-research.service';
+import { UXResearchCacheService } from '../../services/ux-research-cache.service';
+import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import type { CompanyUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 
 @Injectable()
-export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFlagInterface {
+export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchInterface {
   constructor(
-    @Inject('CompanyFeatureFlagRepositoryInterface')
-    private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
-    private readonly hashFeatureFlag: HashFeatureFlagService,
-    private readonly featureFlagCacheService: FeatureFlagCacheService,
+    @Inject('CompanyUXResearchRepositoryInterface')
+    private readonly uxResearchRepository: CompanyUXResearchRepositoryInterface,
+    private readonly hashUXResearchService: HashUXResearchService,
+    private readonly uxResearchCacheService: UXResearchCacheService,
     private readonly logService: LogService,
   ) { }
 
-  async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
-    const hashName = `${checkFeatureFlagDto.companyId}-
-      ${checkFeatureFlagDto.featureName}-
-      ${checkFeatureFlagDto.version}`;
+  async execute(checkUXResearchCompanyPercentageDto: CheckUXResearchDto): Promise<boolean> {
+    const hashName = `${checkUXResearchCompanyPercentageDto.companyId}-
+      ${checkUXResearchCompanyPercentageDto.name}-
+      ${checkUXResearchCompanyPercentageDto.version}`;
 
-    const cacheResult = await this.featureFlagCacheService.get(hashName);
+    const cacheResult = await this.uxResearchCacheService.get(hashName);
 
     if (cacheResult !== null) {
       void this.logService.dispatchLog({
@@ -30,9 +29,9 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
-          version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
+          featureName: checkUXResearchCompanyPercentageDto.name,
+          version: checkUXResearchCompanyPercentageDto.version,
+          company_id: checkUXResearchCompanyPercentageDto.companyId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -41,20 +40,20 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
       return cacheResult;
     }
 
-    const companyFeatureFlag = await this.companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId(
-      checkFeatureFlagDto.companyId ?? '',
-      checkFeatureFlagDto.featureId ?? ''
+    const uxResearch = await this.uxResearchRepository.findByCompanyIdAndUXResearchId(
+      checkUXResearchCompanyPercentageDto.companyId ?? '',
+      checkUXResearchCompanyPercentageDto.featureId ?? '',
     );
 
-    if (companyFeatureFlag === null) {
+    if (uxResearch === null) {
       void this.logService.dispatchLog({
-        action: 'check_feature_flag_company_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_company_percentage',
+        entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
-          version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
+          uxResearchName: checkUXResearchCompanyPercentageDto.name,
+          version: checkUXResearchCompanyPercentageDto.version,
+          company_id: checkUXResearchCompanyPercentageDto.companyId,
           check_result: false,
           check_method: 'database',
         },
@@ -63,24 +62,24 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
       return false;
     }
 
-    const hashCompanyFeatureFlag = this.hashFeatureFlag.calculateHash(hashName);
+    const hashCompanyFeatureFlag = this.hashUXResearchService.calculateHash(hashName);
 
-    const checkResult = hashCompanyFeatureFlag < checkFeatureFlagDto.percentage;
+    const checkResult = hashCompanyFeatureFlag < checkUXResearchCompanyPercentageDto.percentage;
 
     void this.logService.dispatchLog({
-      action: 'check_feature_flag_company_percentage',
-      entity: 'FeatureFlag',
+      action: 'check_ux_research_company_percentage',
+      entity: 'UXResearch',
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
-        version: checkFeatureFlagDto.version,
-        company_id: checkFeatureFlagDto.companyId,
+        uxResearchName: checkUXResearchCompanyPercentageDto.name,
+        version: checkUXResearchCompanyPercentageDto.version,
+        company_id: checkUXResearchCompanyPercentageDto.companyId,
         check_result: checkResult,
         check_method: 'database',
       },
     });
 
-    void this.featureFlagCacheService.set(hashName, checkResult);
+    void this.uxResearchCacheService.set(hashName, checkResult);
 
     return checkResult;
   }

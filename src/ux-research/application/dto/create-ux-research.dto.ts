@@ -10,7 +10,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import type { UserData } from './types/user-data.type';
+import type { UserData } from 'src/common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { UXResearchType } from 'src/ux-research/domain/enums/ux-research-type.enum';
 import { IsFeatureFlagPresent } from 'src/feature-flag/infraestructure/validators/feature-flag-exists.validator';

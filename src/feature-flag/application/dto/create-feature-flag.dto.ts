@@ -10,7 +10,7 @@ import {
   Min,
 } from 'class-validator';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import type { UserData } from './types/user-data.type';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateFeatureFlagDto {

@@ -5,7 +5,7 @@ import { ActiveUXResearchDto } from '../dto/active-ux-research.dto';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 @Injectable()
-export class ActiveFeatureFlagUseCase {
+export class ActiveUXResearchUseCase {
   constructor(
     @Inject('UXResearchRepositoryInterface')
     private readonly uxResearchRepository: UXResearchRepositoryInterface,

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsObject, IsString } from 'class-validator';
-import type { UserData } from './types/user-data.type';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 import { IsFeatureFlagPresent } from 'src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 import { ApiProperty } from '@nestjs/swagger';
 

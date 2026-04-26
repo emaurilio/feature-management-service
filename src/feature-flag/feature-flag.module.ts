@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FeatureFlagService } from './feature-flag.service';
 import { AuditLogsProcessor } from './processors/audit-logs.processor';
 import { DeadletterLogsProcessor } from './processors/deadletter-logs.processor';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { MetricsModule } from '../common/metrics/metrics.module';
 import { QueuesModule } from '../common/queues/queues.module';
 import { DataSource } from 'typeorm';
@@ -38,9 +36,6 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     AuthModule,
     LoggingModule,
     QueuesModule,
-    ElasticsearchModule.register({
-      node: process.env.ELASTICSEARCH_NODE || 'http://localhost:9200',
-    }),
     CacheModule.registerAsync({
       useFactory: async () => ({
         store: await redisStore({
@@ -52,13 +47,6 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     MetricsModule,
   ],
   providers: [
-    {
-      provide: FeatureFlagRepository,
-      useFactory: (dataSource: DataSource) => {
-        return new FeatureFlagRepository(dataSource);
-      },
-      inject: [DataSource],
-    },
     {
       provide: 'FeatureFlagRepositoryInterface',
       useExisting: FeatureFlagRepository,
@@ -72,15 +60,18 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
       useExisting: UserFeatureFlagRepository,
     },
     {
+      provide: FeatureFlagRepository,
+      useFactory: (dataSource: DataSource) => {
+        return new FeatureFlagRepository(dataSource);
+      },
+      inject: [DataSource],
+    },
+    {
       provide: CompanyFeatureFlagRepository,
       useFactory: (dataSource: DataSource) => {
         return new CompanyFeatureFlagRepository(dataSource);
       },
       inject: [DataSource],
-    },
-    {
-      provide: 'CompanyFeatureFlagRepositoryInterface',
-      useExisting: CompanyFeatureFlagRepository,
     },
     {
       provide: UserFeatureFlagRepository,
@@ -93,7 +84,6 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     DisableFeatureFlagUseCase,
     ActiveFeatureFlagUseCase,
     FeatureFlagCacheService,
-    FeatureFlagService,
     LogService,
     HashFeatureFlagService,
     AuditLogsProcessor,

@@ -1,4 +1,3 @@
-import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
@@ -15,7 +14,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     private readonly hashFeatureFlag: HashFeatureFlagService,
     private readonly featureFlagCacheService: FeatureFlagCacheService,
     private readonly logService: LogService,
-  ) {}
+  ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     const hashName = `${checkFeatureFlagDto.companyId}-

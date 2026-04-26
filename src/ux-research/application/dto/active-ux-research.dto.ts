@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsObject, IsString } from 'class-validator';
-import type { UserData } from './types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUXResearchPresent } from 'src/ux-research/infraestructure/validators/ux-research-exists.validator';
+import type { UserData } from 'src/common/utils/types/user-data.type';
 
 export class ActiveUXResearchDto {
   @Expose({ name: 'ux_research_name' })
