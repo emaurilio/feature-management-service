@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { SearchUXResearchDto } from '../dto/search-ux-research.dto';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
@@ -9,7 +9,7 @@ export class SearchUXResearchUseCase {
   constructor(
     @Inject('UXResearchRepositoryInterface')
     private readonly uxResearchRepository: UXResearchRepositoryInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(searchUXResearchDto: SearchUXResearchDto) {
@@ -20,9 +20,9 @@ export class SearchUXResearchUseCase {
         15,
       );
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'search',
-        entity: 'UX Research',
+        entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
           user: searchUXResearchDto.userData,
@@ -47,9 +47,9 @@ export class SearchUXResearchUseCase {
         },
       };
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'search',
-        entity: 'UX Research',
+        entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
           user: searchUXResearchDto.userData,

@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/audit-log.service';
 import { Injectable } from '@nestjs/common';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 
@@ -16,7 +16,7 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
     private readonly hashFeatureFlag: HashFeatureFlagService,
     @Inject(CACHE_SERVICE)
     private readonly featureFlagCacheService: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -25,7 +25,7 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
     const cacheResult = await this.featureFlagCacheService.get(hashName);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
     );
 
     if (userFeatureFlag === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -66,7 +66,7 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
 
     const checkResult = hashUserFeatureFlag < checkFeatureFlagDto.percentage;
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_user_percentage',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

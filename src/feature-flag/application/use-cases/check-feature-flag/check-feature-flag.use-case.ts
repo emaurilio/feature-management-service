@@ -6,7 +6,7 @@ import { ModuleRef } from '@nestjs/core';
 import { CheckFeatureFlagValidateDto } from '../../dto/check-feature-flag-validate.dto';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/audit-log.service';
 import { Inject } from '@nestjs/common';
 import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
@@ -15,7 +15,7 @@ export class CheckFeatureFlagUseCase {
     @Inject('FeatureFlagRepositoryInterface')
     private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
     private moduleRef: ModuleRef,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   private strategies = {
@@ -40,7 +40,7 @@ export class CheckFeatureFlagUseCase {
     );
 
     if (!getFeatureFlag) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -58,7 +58,7 @@ export class CheckFeatureFlagUseCase {
     }
 
     if (!getFeatureFlag.isActive) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -76,7 +76,7 @@ export class CheckFeatureFlagUseCase {
     const useCaseClass = this.strategies[getFeatureFlag.type];
 
     if (!useCaseClass) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -101,7 +101,7 @@ export class CheckFeatureFlagUseCase {
     const useCase = this.moduleRef.get(useCaseClass, { strict: false });
     const checkResult = await useCase.execute(checkFeatureFlagDto);
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

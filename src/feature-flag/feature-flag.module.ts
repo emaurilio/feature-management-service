@@ -21,21 +21,14 @@ import { CheckFeatureFlagCompanyUseCase } from './application/use-cases/check-fe
 import { CheckFeatureFlagPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-percentage.use-case';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-company-percentage.use-case';
 import { CheckFeatureFlagUserPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
-import { CacheRedisModule } from '../common/cache/cache.module';
-import { LogService } from './application/services/log.service';
-import { LoggingModule } from 'src/common/logging/logging.module';
-
-import { AuthModule } from 'src/common/auth/auth.module';
+import { AuditLogService } from './application/services/audit-log.service';
 import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
 import { DisableFeatureFlagUseCase } from './application/use-cases/disable-feature-flag.use-case';
 import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature-flag.use-case';
 
 @Module({
   imports: [
-    AuthModule,
-    LoggingModule,
     QueuesModule,
-    CacheRedisModule,
     MetricsModule,
   ],
   providers: [
@@ -75,7 +68,7 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     SearchFeatureFlagUseCase,
     DisableFeatureFlagUseCase,
     ActiveFeatureFlagUseCase,
-    LogService,
+    AuditLogService,
     HashFeatureFlagService,
     AuditLogsProcessor,
     DeadletterLogsProcessor,

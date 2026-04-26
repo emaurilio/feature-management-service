@@ -1,35 +1,33 @@
-import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
-import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import { LogService } from '../../services/log.service';
-import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
+import { AuditLogService } from '../../services/log.service';
 import { Inject, Injectable } from '@nestjs/common';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
+import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
+import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
 
 @Injectable()
-export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface {
+export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {
   constructor(
     @Inject('CompanyFeatureFlagRepositoryInterface')
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
-    private readonly featureFlagCacheService: FeatureFlagCacheService,
-    private readonly logService: LogService,
+    private readonly featureFlagCacheService: CacheServiceInterface,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
-    const cacheKey = `${checkFeatureFlagDto.companyId}-
-      ${checkFeatureFlagDto.featureName}-
-      ${checkFeatureFlagDto.version}`;
+  async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
+    const cacheKey = `${checkUXResearchDto.companyId}-${checkUXResearchDto.name}-${checkUXResearchDto.version}`;
 
     const cacheResult = await this.featureFlagCacheService.get(cacheKey);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
-          version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
+          featureName: checkUXResearchDto.name,
+          version: checkUXResearchDto.version,
+          company_id: checkUXResearchDto.companyId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -39,32 +37,32 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     }
 
     const companyFeatureFlag = await this.companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId(
-      checkFeatureFlagDto.companyId ?? '',
-      checkFeatureFlagDto.featureId ?? ''
+      checkUXResearchDto.companyId ?? '',
+      checkUXResearchDto.featureId ?? ''
     );
 
     if (companyFeatureFlag === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
-          version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
+          featureName: checkUXResearchDto.name,
+          version: checkUXResearchDto.version,
+          company_id: checkUXResearchDto.companyId,
           check_result: false,
           check_method: 'database',
         },
       });
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
-          version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
+          featureName: checkUXResearchDto.name,
+          version: checkUXResearchDto.version,
+          company_id: checkUXResearchDto.companyId,
           check_result: false,
           check_method: 'database',
         },
@@ -73,14 +71,14 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       return false;
     }
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_company',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
-        version: checkFeatureFlagDto.version,
-        company_id: checkFeatureFlagDto.companyId,
+        featureName: checkUXResearchDto.name,
+        version: checkUXResearchDto.version,
+        company_id: checkUXResearchDto.companyId,
         check_result: true,
         check_method: 'database',
       },

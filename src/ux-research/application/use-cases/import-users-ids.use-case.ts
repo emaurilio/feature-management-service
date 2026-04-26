@@ -1,7 +1,7 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { UserFeatureFlag } from 'src/feature-flag/domain/entities/UserFeatureFlag';
 import { ImportUXResearchUsersIdsDto } from '../dto/import-users-ids.dto';
@@ -16,7 +16,7 @@ export class ImportUsersIdsUseCase {
     private readonly uxResearchRepository: UXResearchRepositoryInterface,
     @Inject('UserUXResearchRepositoryInterface')
     private readonly userRepository: UserFeatureFlagRepositoryInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
     @Inject(CACHE_SERVICE)
     private readonly uxResearchCacheService: CacheServiceInterface,
   ) { }
@@ -28,9 +28,9 @@ export class ImportUsersIdsUseCase {
       );
 
       if (!uxResearchExists) {
-        void this.logService.dispatchLog({
+        void this.auditLogService.dispatchLog({
           action: 'import',
-          entity: 'UX Research',
+          entity: 'UX-Research',
           timestamp: new Date().toISOString(),
           data: {
             user: importUXResearchUsersIdsDto.userData,
@@ -59,9 +59,9 @@ export class ImportUsersIdsUseCase {
 
       const result = await this.userRepository.createMany(usersFeatureFlag);
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'import',
-        entity: 'UX Research',
+        entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
           uxResearchName: importUXResearchUsersIdsDto.uxResearchName,
@@ -78,9 +78,9 @@ export class ImportUsersIdsUseCase {
 
       return result;
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'import',
-        entity: 'UX Research',
+        entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
           uxResearchName: importUXResearchUsersIdsDto.uxResearchName,

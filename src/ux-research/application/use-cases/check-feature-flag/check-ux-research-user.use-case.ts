@@ -1,6 +1,6 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
@@ -14,7 +14,7 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
     private readonly userUXResearchRepository: UserUXResearchRepositoryInterface,
     @Inject(CACHE_SERVICE)
     private readonly CacheServiceInterface: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
@@ -25,7 +25,7 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
     const cacheResult = await this.CacheServiceInterface.get(cacheKey);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
@@ -47,12 +47,12 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
     );
 
     if (userUXResearch === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchDto.name,
+          feature_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
           user_id: checkUXResearchDto.userId,
           check_result: false,
@@ -63,7 +63,7 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
       return false;
     }
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_ux_research_user',
       entity: 'UXResearch',
       timestamp: new Date().toISOString(),

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFeatureFlagDto } from 'src/feature-flag/application/dto/create-feature-flag.dto';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { CreateFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { DeleteFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/delete-feature-flag.use-case';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
@@ -14,7 +14,7 @@ describe('CreateFeatureFlagUseCase', () => {
   let useCase: CreateFeatureFlagUseCase;
   let deleteFeatureFlagUseCase: jest.Mocked<DeleteFeatureFlagUseCase>;
   let repository: jest.Mocked<FeatureFlagRepository>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +28,7 @@ describe('CreateFeatureFlagUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -45,13 +45,13 @@ describe('CreateFeatureFlagUseCase', () => {
     useCase = module.get<CreateFeatureFlagUseCase>(CreateFeatureFlagUseCase);
     deleteFeatureFlagUseCase = module.get(DeleteFeatureFlagUseCase);
     repository = module.get('FeatureFlagRepositoryInterface');
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(repository).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
     expect(deleteFeatureFlagUseCase).toBeDefined();
   });
 
@@ -75,7 +75,7 @@ describe('CreateFeatureFlagUseCase', () => {
 
     expect(result).toEqual(mockResult);
     expect(repository.createFeatureFlag).toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'create',
         entity: 'FeatureFlag',
@@ -117,7 +117,7 @@ describe('CreateFeatureFlagUseCase', () => {
 
     expect(result).toEqual(mockResult);
     expect(repository.createFeatureFlag).toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'create',
         entity: 'FeatureFlag',
@@ -158,7 +158,7 @@ describe('CreateFeatureFlagUseCase', () => {
     await expect(useCase.execute(createFeatureFlagDto)).rejects.toThrow(
       'Failed to delete old feature flag',
     );
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'create',
         entity: 'FeatureFlag',
@@ -184,7 +184,7 @@ describe('CreateFeatureFlagUseCase', () => {
     await expect(useCase.execute(createFeatureFlagDto)).rejects.toThrow(
       'Percentage value is not allowed for this feature flag type',
     );
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'create',
         entity: 'FeatureFlag',

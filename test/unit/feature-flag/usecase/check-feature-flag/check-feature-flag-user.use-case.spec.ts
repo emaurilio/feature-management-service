@@ -4,14 +4,14 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { CheckFeatureFlagUserUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user.use-case';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 
 describe('CheckFeatureFlagUserUseCase', () => {
   let cacheService: jest.Mocked<CacheServiceInterface>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
   let useCase: CheckFeatureFlagUserUseCase;
   let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
 
@@ -35,7 +35,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -50,18 +50,18 @@ describe('CheckFeatureFlagUserUseCase', () => {
     }).compile();
 
     cacheService = module.get(CACHE_SERVICE);
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
     useCase = module.get(CheckFeatureFlagUserUseCase);
     userFeatureFlagRepository = module.get('UserFeatureFlagRepositoryInterface');
 
-    logService.dispatchLog.mockResolvedValue(true);
+    auditLogService.dispatchLog.mockResolvedValue(true);
     cacheService.set.mockResolvedValue();
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(cacheService).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
     expect(userFeatureFlagRepository).toBeDefined();
   });
 
@@ -79,7 +79,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
     ).not.toHaveBeenCalled();
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(true);
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user',
         data: expect.objectContaining({
@@ -100,7 +100,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
     ).not.toHaveBeenCalled();
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user',
         data: expect.objectContaining({
@@ -124,7 +124,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
     ).toHaveBeenCalledWith('user-1', 'feature-id');
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
-    expect(logService.dispatchLog).toHaveBeenCalledTimes(1);
+    expect(auditLogService.dispatchLog).toHaveBeenCalledTimes(1);
   });
 
   it('should return true and cache result when user feature flag is found', async () => {
@@ -143,7 +143,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
       true,
     );
     expect(result).toBe(true);
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user',
         data: expect.objectContaining({

@@ -5,7 +5,7 @@ import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from 'src/feature-flag/application/services/hash-feature-flag.service';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { CheckFeatureFlagUserPercentageUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
@@ -13,7 +13,7 @@ import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain
 describe('CheckFeatureFlagUserPercentageUseCase', () => {
   let hashFeatureFlagService: jest.Mocked<HashFeatureFlagService>;
   let cacheService: jest.Mocked<CacheServiceInterface>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
   let useCase: CheckFeatureFlagUserPercentageUseCase;
   let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
 
@@ -43,7 +43,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -59,11 +59,11 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
 
     hashFeatureFlagService = module.get(HashFeatureFlagService);
     cacheService = module.get(CACHE_SERVICE);
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
     useCase = module.get(CheckFeatureFlagUserPercentageUseCase);
     userFeatureFlagRepository = module.get('UserFeatureFlagRepositoryInterface');
 
-    logService.dispatchLog.mockResolvedValue(true);
+    auditLogService.dispatchLog.mockResolvedValue(true);
     cacheService.set.mockResolvedValue();
   });
 
@@ -71,7 +71,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
     expect(useCase).toBeDefined();
     expect(hashFeatureFlagService).toBeDefined();
     expect(cacheService).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
   });
 
   it('should return cached value and avoid hash calculation when cache hit', async () => {
@@ -88,7 +88,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(true);
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
@@ -112,7 +112,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
     expect(cacheService.set).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
         data: expect.objectContaining({
@@ -149,7 +149,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
     );
     expect(result).toBe(true);
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
@@ -192,7 +192,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
         data: expect.objectContaining({

@@ -6,7 +6,7 @@ import { LOGGING_SERVICE } from 'src/common/logging/logging-service.interface';
 import type { LoggingServiceInterface } from 'src/common/logging/logging-service.interface';
 
 @Injectable()
-export class LogService {
+export class AuditLogService {
   constructor(
     @InjectQueue('audit-ux-research') private readonly auditQueue: Queue,
     @Inject(LOGGING_SERVICE)
@@ -20,10 +20,11 @@ export class LogService {
         backoff: 5000,
       });
       return true;
-    } catch {
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
       this.loggingService.logError(
-        new Error(`Falha ao enfileirar log para entidade: ${payload.entity}`),
-        `${payload.entity}`,
+        err,
+        `AuditLogService - Falha ao enfileirar log para entidade: ${payload.entity}`,
       );
       return false;
     }

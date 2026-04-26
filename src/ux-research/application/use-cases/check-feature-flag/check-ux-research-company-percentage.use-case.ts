@@ -1,6 +1,6 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
 import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
@@ -16,7 +16,7 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
     private readonly hashUXResearchService: HashUXResearchService,
     @Inject(CACHE_SERVICE)
     private readonly uxResearchCacheService: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkUXResearchCompanyPercentageDto: CheckUXResearchDto): Promise<boolean> {
@@ -27,12 +27,12 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
     const cacheResult = await this.uxResearchCacheService.get(hashName);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
-        action: 'check_feature_flag_company_percentage',
-        entity: 'FeatureFlag',
+      void this.auditLogService.dispatchLog({
+        action: 'check_ux_research_company_percentage',
+        entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchCompanyPercentageDto.name,
+          ux_research_name: checkUXResearchCompanyPercentageDto.name,
           version: checkUXResearchCompanyPercentageDto.version,
           company_id: checkUXResearchCompanyPercentageDto.companyId,
           check_result: cacheResult,
@@ -49,12 +49,12 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
     );
 
     if (uxResearch === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_ux_research_company_percentage',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {
-          uxResearchName: checkUXResearchCompanyPercentageDto.name,
+          ux_research_name: checkUXResearchCompanyPercentageDto.name,
           version: checkUXResearchCompanyPercentageDto.version,
           company_id: checkUXResearchCompanyPercentageDto.companyId,
           check_result: false,
@@ -69,12 +69,12 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
 
     const checkResult = hashCompanyFeatureFlag < checkUXResearchCompanyPercentageDto.percentage;
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_ux_research_company_percentage',
       entity: 'UXResearch',
       timestamp: new Date().toISOString(),
       data: {
-        uxResearchName: checkUXResearchCompanyPercentageDto.name,
+        ux_research_name: checkUXResearchCompanyPercentageDto.name,
         version: checkUXResearchCompanyPercentageDto.version,
         company_id: checkUXResearchCompanyPercentageDto.companyId,
         check_result: checkResult,

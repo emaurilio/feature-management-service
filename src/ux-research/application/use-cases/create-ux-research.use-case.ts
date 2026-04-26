@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateUXResearchDto } from '../dto/create-ux-research.dto';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { isPercentageType } from 'src/ux-research/domain/enums/ux-research-type.enum';
@@ -12,7 +12,7 @@ export class CreateUXResearchUseCase {
   constructor(
     @Inject('UXResearchRepositoryInterface')
     private readonly uxResearchRepository: UXResearchRepositoryInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
     private readonly deleteUXResearchUseCase: DeleteUXResearchUseCase,
   ) { }
 
@@ -58,7 +58,7 @@ export class CreateUXResearchUseCase {
         const result =
           await this.uxResearchRepository.createUXResearch(newUXResearch);
 
-        void this.logService.dispatchLog({
+        void this.auditLogService.dispatchLog({
           action: 'create',
           entity: 'UXResearch',
           entityId: result.id,
@@ -89,7 +89,7 @@ export class CreateUXResearchUseCase {
       const result =
         await this.uxResearchRepository.createUXResearch(newUXResearch);
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'create',
         entity: 'UXResearch',
         entityId: result.id,
@@ -109,7 +109,7 @@ export class CreateUXResearchUseCase {
 
       return result;
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'create',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),

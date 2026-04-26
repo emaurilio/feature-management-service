@@ -1,6 +1,6 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
 import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
@@ -16,7 +16,7 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
     private readonly hashUXResearch: HashUXResearchService,
     @Inject(CACHE_SERVICE)
     private readonly CacheServiceInterface: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
@@ -25,7 +25,7 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
     const cacheResult = await this.CacheServiceInterface.get(hashName);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user_percentage',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
     );
 
     if (userUXResearch === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_ux_research_user_percentage',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
@@ -66,7 +66,7 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
 
     const checkResult = hashUserFeatureFlag < checkUXResearchDto.percentage;
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_ux_research_user_percentage',
       entity: 'UXResearch',
       timestamp: new Date().toISOString(),

@@ -1,7 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
 import { CheckFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { CheckFeatureFlagUserUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user.use-case';
 
@@ -9,7 +9,7 @@ describe('CheckFeatureFlagUseCase', () => {
   let useCase: CheckFeatureFlagUseCase;
   let moduleRef: { get: jest.Mock };
   let featureFlagRepository: { findByName: jest.Mock };
-  let logService: { dispatchLog: jest.Mock };
+  let auditLogService: { dispatchLog: jest.Mock };
 
   beforeEach(() => {
     moduleRef = {
@@ -18,14 +18,14 @@ describe('CheckFeatureFlagUseCase', () => {
     featureFlagRepository = {
       findByName: jest.fn(),
     };
-    logService = {
+    auditLogService = {
       dispatchLog: jest.fn().mockResolvedValue(true),
     };
 
     useCase = new CheckFeatureFlagUseCase(
       featureFlagRepository as unknown as FeatureFlagRepository,
       moduleRef as unknown as ModuleRef,
-      logService as unknown as LogService,
+      auditLogService as unknown as AuditLogService,
     );
   });
 
@@ -44,7 +44,7 @@ describe('CheckFeatureFlagUseCase', () => {
       }),
     ).rejects.toThrow('Feature Flag missing-flag not found');
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
@@ -76,7 +76,7 @@ describe('CheckFeatureFlagUseCase', () => {
 
     expect(result).toBe(false);
     expect(moduleRef.get).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag',
         data: expect.objectContaining({
@@ -143,7 +143,7 @@ describe('CheckFeatureFlagUseCase', () => {
       }),
     );
     expect(result).toBe(true);
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag',
         data: expect.objectContaining({

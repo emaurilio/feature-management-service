@@ -5,13 +5,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { SearchFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/search-feature-flag.use-case';
 import { SearchFeatureFlagDto } from 'src/feature-flag/application/dto/search-feature-flag.dto';
 
 describe('FeatureFlagRepository - searchByNamePaginated', () => {
   let repository: jest.Mocked<FeatureFlagRepository>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
   let useCase: SearchFeatureFlagUseCase;
 
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('FeatureFlagRepository - searchByNamePaginated', () => {
       providers: [
         SearchFeatureFlagUseCase,
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -34,13 +34,13 @@ describe('FeatureFlagRepository - searchByNamePaginated', () => {
     }).compile();
 
     repository = module.get('FeatureFlagRepositoryInterface');
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
     useCase = module.get(SearchFeatureFlagUseCase);
   });
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
     expect(useCase).toBeDefined();
   });
 

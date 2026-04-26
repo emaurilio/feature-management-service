@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bullmq';
 import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.types';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { LOGGING_SERVICE } from 'src/common/logging/logging-service.interface';
 
 const createPayload = (
@@ -19,7 +19,7 @@ const createPayload = (
 });
 
 describe('LogService', () => {
-  let service: LogService;
+  let service: AuditLogService;
   let auditQueue: { add: jest.Mock };
   let loggingService: { logError: jest.Mock };
 
@@ -29,13 +29,13 @@ describe('LogService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LogService,
+        AuditLogService,
         { provide: getQueueToken('audit-logs'), useValue: queueMock },
         { provide: LOGGING_SERVICE, useValue: loggingMock },
       ],
     }).compile();
 
-    service = module.get<LogService>(LogService);
+    service = module.get<AuditLogService>(AuditLogService);
     auditQueue = module.get(getQueueToken('audit-logs'));
     loggingService = module.get(LOGGING_SERVICE);
   });
@@ -67,16 +67,15 @@ describe('LogService', () => {
 
     it('should return false when queue.add throws', async () => {
       const payload = createPayload();
-      auditQueue.add.mockRejectedValueOnce(
-        new Error('Redis connection failed'),
-      );
+      const mockError = new Error('Redis connection failed');
+      auditQueue.add.mockRejectedValueOnce(mockError);
 
       const result = await service.dispatchLog(payload);
 
       expect(result).toBe(false);
       expect(loggingService.logError).toHaveBeenCalledWith(
-        new Error('Falha ao enfileirar log para entidade: FeatureFlag'),
-        'FeatureFlag',
+        mockError,
+        'AuditLogService - Falha ao enfileirar log para entidade: FeatureFlag',
       );
     });
 
@@ -88,19 +87,20 @@ describe('LogService', () => {
 
       expect(result).toBe(false);
       expect(loggingService.logError).toHaveBeenCalledWith(
-        new Error('Falha ao enfileirar log para entidade: FeatureFlag'),
-        'FeatureFlag',
+        new Error('string error'),
+        'AuditLogService - Falha ao enfileirar log para entidade: FeatureFlag',
       );
     });
 
     it('should not throw when queue fails', async () => {
       const payload = createPayload();
-      auditQueue.add.mockRejectedValue(new Error('boom'));
+      const mockError = new Error('boom');
+      auditQueue.add.mockRejectedValue(mockError);
 
       await expect(service.dispatchLog(payload)).resolves.toBe(false);
       expect(loggingService.logError).toHaveBeenCalledWith(
-        new Error('Falha ao enfileirar log para entidade: FeatureFlag'),
-        'FeatureFlag',
+        mockError,
+        'AuditLogService - Falha ao enfileirar log para entidade: FeatureFlag',
       );
     });
 

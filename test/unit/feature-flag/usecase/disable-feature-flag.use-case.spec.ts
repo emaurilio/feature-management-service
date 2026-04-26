@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DisableFeatureFlagDto } from 'src/feature-flag/application/dto/desable-feature-flag.dto';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { DisableFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/disable-feature-flag.use-case';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
@@ -11,7 +11,7 @@ import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persiste
 describe('DisableFeatureFlagUseCase', () => {
   let useCase: DisableFeatureFlagUseCase;
   let repository: jest.Mocked<FeatureFlagRepository>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,7 +25,7 @@ describe('DisableFeatureFlagUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -35,13 +35,13 @@ describe('DisableFeatureFlagUseCase', () => {
 
     useCase = module.get<DisableFeatureFlagUseCase>(DisableFeatureFlagUseCase);
     repository = module.get('FeatureFlagRepositoryInterface');
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(repository).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
   });
 
   it('should disable a feature flag', async () => {
@@ -88,7 +88,7 @@ describe('DisableFeatureFlagUseCase', () => {
     expect(repository.updateFeatureFlag).toHaveBeenCalledWith('flag-123', {
       isActive: false,
     });
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'disable',
         entity: 'FeatureFlag',
@@ -114,7 +114,7 @@ describe('DisableFeatureFlagUseCase', () => {
     );
     expect(repository.findByName).toHaveBeenCalledWith('non-existent-flag');
     expect(repository.updateFeatureFlag).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'disable',
         entity: 'FeatureFlag',
@@ -157,7 +157,7 @@ describe('DisableFeatureFlagUseCase', () => {
     expect(repository.updateFeatureFlag).toHaveBeenCalledWith('flag-123', {
       isActive: false,
     });
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'disable',
         entity: 'FeatureFlag',

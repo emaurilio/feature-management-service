@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DeleteUXResearchDto } from '../dto/delete-ux-research.dto';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
@@ -16,7 +16,7 @@ export class DeleteUXResearchUseCase {
     private readonly companyUXResearchRepository: CompanyUXResearchRepositoryInterface,
     @Inject('UserUXResearchRepositoryInterface')
     private readonly userUXResearchRepository: UserUXResearchRepositoryInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(deleteUXResearchDto: DeleteUXResearchDto) {
@@ -45,7 +45,7 @@ export class DeleteUXResearchUseCase {
         );
       }
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'delete',
         entity: 'UXResearch',
         entityId: uxResearchExists.id,
@@ -60,7 +60,7 @@ export class DeleteUXResearchUseCase {
 
       return result;
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'delete',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),

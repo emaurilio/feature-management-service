@@ -1,11 +1,11 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
-import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import { LogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
+import { AuditLogService } from '../../services/audit-log.service';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 
 @Injectable()
 export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface {
@@ -14,7 +14,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
     @Inject(CACHE_SERVICE)
     private readonly featureFlagCacheService: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -25,7 +25,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     const cacheResult = await this.featureFlagCacheService.get(cacheKey);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -47,7 +47,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     );
 
     if (companyFeatureFlag === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -60,7 +60,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
         },
       });
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -76,7 +76,7 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       return false;
     }
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_company',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

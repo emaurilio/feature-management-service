@@ -6,7 +6,7 @@ import type { CacheServiceInterface } from 'src/common/cache/cache-service.inter
 import { Test, TestingModule } from '@nestjs/testing';
 import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';
@@ -16,7 +16,7 @@ describe('ImportUsersIdsUseCase', () => {
   let useCase: ImportUsersIdsUseCase;
   let featureFlagRepository: jest.Mocked<FeatureFlagRepositoryInterface>;
   let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
   let cacheService: jest.Mocked<CacheServiceInterface>;
 
   beforeEach(async () => {
@@ -37,7 +37,7 @@ describe('ImportUsersIdsUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -61,14 +61,14 @@ describe('ImportUsersIdsUseCase', () => {
     userFeatureFlagRepository = module.get<
       jest.Mocked<UserFeatureFlagRepositoryInterface>
     >('UserFeatureFlagRepositoryInterface');
-    logService = module.get<jest.Mocked<LogService>>(LogService);
+    auditLogService = module.get<jest.Mocked<AuditLogService>>(AuditLogService);
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(featureFlagRepository).toBeDefined();
     expect(userFeatureFlagRepository).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
     expect(cacheService).toBeDefined();
   });
 
@@ -105,7 +105,7 @@ describe('ImportUsersIdsUseCase', () => {
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).toHaveBeenCalledTimes(2);
     expect(userFeatureFlagRepository.createMany).toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'import',
         entity: 'FeatureFlag',
@@ -133,7 +133,7 @@ describe('ImportUsersIdsUseCase', () => {
     await expect(useCase.execute(dto)).rejects.toThrow(
       'Feature Flag not found',
     );
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'import',
         data: expect.objectContaining({
@@ -192,7 +192,7 @@ describe('ImportUsersIdsUseCase', () => {
     );
 
     await expect(useCase.execute(dto)).rejects.toThrow('Unexpected error');
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'import',
         entity: 'FeatureFlag',

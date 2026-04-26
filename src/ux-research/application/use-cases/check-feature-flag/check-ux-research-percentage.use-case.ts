@@ -1,6 +1,6 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
@@ -8,12 +8,12 @@ import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-resear
 import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
 
 @Injectable()
-export class CheckFeatureFlagPercentageUseCase implements CheckUXResearchInterface {
+export class CheckUXResearchPercentageUseCase implements CheckUXResearchInterface {
   constructor(
     private readonly hashUXResearch: HashUXResearchService,
     @Inject(CACHE_SERVICE)
     private readonly uxResearchCacheService: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
@@ -25,7 +25,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckUXResearchInterfa
     const cacheResult = await this.uxResearchCacheService.get(hashName);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -45,7 +45,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckUXResearchInterfa
 
     const checkResult = hashFeatureFlag < checkUXResearchDto.percentage;
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_percentage',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

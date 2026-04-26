@@ -1,16 +1,16 @@
-import { CheckFeatureFlagCompanyUseCase } from './check-feature-flag-company.use-case';
-import { CheckFeatureFlagUserUseCase } from './check-feature-flag-user.use-case';
-import { CheckFeatureFlagPercentageUseCase } from './check-feature-flag-percentage.use-case';
-import { CheckFeatureFlagUserPercentageUseCase } from './check-feature-flag-user-percentage.use-case';
 import { ModuleRef } from '@nestjs/core';
 import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
-import { CheckFeatureFlagCompanyPercentageUseCase } from './check-ux-research-company-percentage.use-case';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/log.service';
 import { Inject } from '@nestjs/common';
-import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { CheckFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { CheckUXResearchValidateDto } from '../../dto/check-ux-research-validate.dto';
+import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
+import { CheckUXResearchCompanyUseCase } from './check-ux-research-company.use-case';
+import { CheckUXResearchUserUseCase } from './check-ux-research-user.use-case';
+import { CheckUXResearchUserPercentageUseCase } from './check-ux-research-user-percentage.use-case';
+import { CheckUXResearchCompanyPercentageUseCase } from './check-ux-research-company-percentage.use-case';
+import { CheckUXResearchPercentageUseCase } from './check-ux-research-percentage.use-case';
 
 export class CheckUXResearchUseCase {
   constructor(
@@ -19,16 +19,16 @@ export class CheckUXResearchUseCase {
     @Inject('FeatureFlagRepositoryInterface')
     private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
     private moduleRef: ModuleRef,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
     private readonly checkFeatureFlagByFlagNameUseCase: CheckFeatureFlagUseCase,
   ) { }
 
   private strategies = {
-    company: CheckFeatureFlagCompanyUseCase,
-    user: CheckFeatureFlagUserUseCase,
-    percentage: CheckFeatureFlagPercentageUseCase,
-    user_percentage: CheckFeatureFlagUserPercentageUseCase,
-    company_percentage: CheckFeatureFlagCompanyPercentageUseCase,
+    company: CheckUXResearchCompanyUseCase,
+    user: CheckUXResearchUserUseCase,
+    percentage: CheckUXResearchPercentageUseCase,
+    user_percentage: CheckUXResearchUserPercentageUseCase,
+    company_percentage: CheckUXResearchCompanyPercentageUseCase,
   };
 
   async execute(
@@ -45,12 +45,12 @@ export class CheckUXResearchUseCase {
     );
 
     if (!getUXResearch) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_ux_research',
-        entity: 'UX Research',
+        entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchValidateDto.name,
+          ux_research_name: checkUXResearchValidateDto.name,
           user_id: checkUXResearchValidateDto.userId,
           error: 'UX Research not found',
           check_method: 'database',
@@ -63,12 +63,12 @@ export class CheckUXResearchUseCase {
     }
 
     if (!getUXResearch.isActive) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_ux_research',
-        entity: 'UX Research',
+        entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchValidateDto.name,
+          ux_research_name: checkUXResearchValidateDto.name,
           user_id: checkUXResearchValidateDto.userId,
           check_result: false,
           check_method: 'database',
@@ -84,12 +84,12 @@ export class CheckUXResearchUseCase {
       );
 
       if (!getCurrentFeatureFlag) {
-        void this.logService.dispatchLog({
-          action: 'check_feature_flag',
-          entity: 'FeatureFlag',
+        void this.auditLogService.dispatchLog({
+          action: 'check_ux_research',
+          entity: 'UXResearch',
           timestamp: new Date().toISOString(),
           data: {
-            featureName: checkUXResearchValidateDto.name,
+            ux_research_name: checkUXResearchValidateDto.name,
             user_id: checkUXResearchValidateDto.userId,
             error: 'Feature Flag not found',
             check_method: 'database',
@@ -127,12 +127,12 @@ export class CheckUXResearchUseCase {
     const useCase = this.moduleRef.get(useCaseClass, { strict: false });
     const checkResult = await useCase.execute(checkUXResearchDto);
 
-    void this.logService.dispatchLog({
-      action: 'check_feature_flag',
+    void this.auditLogService.dispatchLog({
+      action: 'check_ux_research',
       entity: 'UX Research',
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkUXResearchValidateDto.name,
+        ux_research_name: checkUXResearchValidateDto.name,
         check_result: checkResult,
         check_method: 'database',
       },

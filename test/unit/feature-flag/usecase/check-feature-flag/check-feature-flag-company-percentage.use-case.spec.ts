@@ -6,14 +6,14 @@ import type { CacheServiceInterface } from 'src/common/cache/cache-service.inter
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from 'src/feature-flag/application/services/hash-feature-flag.service';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { CheckFeatureFlagCompanyPercentageUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-company-percentage.use-case';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 
 describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   let hashFeatureFlagService: jest.Mocked<HashFeatureFlagService>;
   let cacheService: jest.Mocked<CacheServiceInterface>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
   let useCase: CheckFeatureFlagCompanyPercentageUseCase;
   let companyFeatureFlagRepository: jest.Mocked<CompanyFeatureFlagRepositoryInterface>;
 
@@ -43,7 +43,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -59,11 +59,11 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
 
     hashFeatureFlagService = module.get(HashFeatureFlagService);
     cacheService = module.get(CACHE_SERVICE);
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
     useCase = module.get(CheckFeatureFlagCompanyPercentageUseCase);
     companyFeatureFlagRepository = module.get('CompanyFeatureFlagRepositoryInterface');
 
-    logService.dispatchLog.mockResolvedValue(true);
+    auditLogService.dispatchLog.mockResolvedValue(true);
     cacheService.set.mockResolvedValue();
   });
 
@@ -71,7 +71,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     expect(useCase).toBeDefined();
     expect(hashFeatureFlagService).toBeDefined();
     expect(cacheService).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
   });
 
   it('should return cached value and avoid hash calculation when cache hit', async () => {
@@ -90,7 +90,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(true);
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
@@ -116,7 +116,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
       companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
     expect(cacheService.set).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_company_percentage',
         data: expect.objectContaining({
@@ -153,7 +153,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     );
     expect(result).toBe(true);
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
@@ -196,7 +196,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
 
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_company_percentage',
         data: expect.objectContaining({

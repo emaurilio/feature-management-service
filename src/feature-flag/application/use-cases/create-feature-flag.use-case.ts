@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';
@@ -12,9 +12,9 @@ export class CreateFeatureFlagUseCase {
   constructor(
     @Inject('FeatureFlagRepositoryInterface')
     private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
     private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
-  ) {}
+  ) { }
 
   async execute(createFeatureFlagDto: CreateFeatureFlagDto) {
     try {
@@ -55,7 +55,7 @@ export class CreateFeatureFlagUseCase {
         const result =
           await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
 
-        void this.logService.dispatchLog({
+        void this.auditLogService.dispatchLog({
           action: 'create',
           entity: 'FeatureFlag',
           entityId: result.id,
@@ -83,7 +83,7 @@ export class CreateFeatureFlagUseCase {
       const result =
         await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'create',
         entity: 'FeatureFlag',
         entityId: result.id,
@@ -100,7 +100,7 @@ export class CreateFeatureFlagUseCase {
 
       return result;
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'create',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

@@ -2,7 +2,7 @@ import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/audit-log.service';
 import { Injectable } from '@nestjs/common';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import { Inject } from '@nestjs/common';
@@ -14,7 +14,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     private readonly userFeatureFlagRepository: UserFeatureFlagRepositoryInterface,
     @Inject(CACHE_SERVICE)
     private readonly featureFlagCacheService: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -25,7 +25,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     const cacheResult = await this.featureFlagCacheService.get(cacheKey);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -47,7 +47,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     );
 
     if (userFeatureFlag === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -63,7 +63,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
       return false;
     }
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_user',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

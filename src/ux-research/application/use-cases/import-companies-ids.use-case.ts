@@ -1,7 +1,7 @@
 import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { ImportUXResearchCompaniesIdsDto } from '../dto/import-companies-ids.dto';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
@@ -16,7 +16,7 @@ export class ImportCompaniesIdsUseCase {
     private readonly uXResearchRepository: UXResearchRepositoryInterface,
     @Inject('CompanyUXResearchRepositoryInterface')
     private readonly companyRepository: CompanyUXResearchRepositoryInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
     @Inject(CACHE_SERVICE)
     private readonly uxResearchCacheService: CacheServiceInterface,
   ) { }
@@ -28,7 +28,7 @@ export class ImportCompaniesIdsUseCase {
       );
 
       if (!uxResearchExists) {
-        void this.logService.dispatchLog({
+        void this.auditLogService.dispatchLog({
           action: 'import',
           entity: 'UX Research',
           timestamp: new Date().toISOString(),
@@ -60,7 +60,7 @@ export class ImportCompaniesIdsUseCase {
       const result =
         await this.companyRepository.createMany(companiesUXResearch);
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'import',
         entity: 'UX Research',
         timestamp: new Date().toISOString(),
@@ -79,7 +79,7 @@ export class ImportCompaniesIdsUseCase {
 
       return result;
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'import',
         entity: 'UX Research',
         timestamp: new Date().toISOString(),

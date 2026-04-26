@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LogService } from '../services/log.service';
+import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DeleteFeatureFlagDto } from '../dto/delete-feature-flag.dto';
 import {
@@ -19,8 +19,8 @@ export class DeleteFeatureFlagUseCase {
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
     @Inject('UserFeatureFlagRepositoryInterface')
     private readonly userFeatureFlagRepository: UserFeatureFlagRepositoryInterface,
-    private readonly logService: LogService,
-  ) {}
+    private readonly auditLogService: AuditLogService,
+  ) { }
 
   async execute(deleteFeatureFlagDto: DeleteFeatureFlagDto) {
     try {
@@ -48,7 +48,7 @@ export class DeleteFeatureFlagUseCase {
         );
       }
 
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'delete',
         entity: 'FeatureFlag',
         entityId: featureFlagExists.id,
@@ -63,7 +63,7 @@ export class DeleteFeatureFlagUseCase {
 
       return result;
     } catch (error) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'delete',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),

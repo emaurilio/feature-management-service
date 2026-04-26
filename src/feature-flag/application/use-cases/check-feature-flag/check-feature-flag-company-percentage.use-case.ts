@@ -2,7 +2,7 @@ import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import { LogService } from '../../services/log.service';
+import { AuditLogService } from '../../services/audit-log.service';
 import { Inject, Injectable } from '@nestjs/common';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
@@ -15,7 +15,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     private readonly hashFeatureFlag: HashFeatureFlagService,
     @Inject(CACHE_SERVICE)
     private readonly featureFlagCacheService: CacheServiceInterface,
-    private readonly logService: LogService,
+    private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
@@ -26,7 +26,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     const cacheResult = await this.featureFlagCacheService.get(hashName);
 
     if (cacheResult !== null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -48,7 +48,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     );
 
     if (companyFeatureFlag === null) {
-      void this.logService.dispatchLog({
+      void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
@@ -68,7 +68,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
 
     const checkResult = hashCompanyFeatureFlag < checkFeatureFlagDto.percentage;
 
-    void this.logService.dispatchLog({
+    void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_company_percentage',
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),

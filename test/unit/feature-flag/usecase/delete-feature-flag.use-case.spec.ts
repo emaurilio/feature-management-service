@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeleteFeatureFlagDto } from 'src/feature-flag/application/dto/delete-feature-flag.dto';
-import { LogService } from 'src/feature-flag/application/services/log.service';
+import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
 import { DeleteFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/delete-feature-flag.use-case';
 import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
@@ -16,7 +16,7 @@ describe('DeleteFeatureFlagUseCase', () => {
   let repository: jest.Mocked<FeatureFlagRepository>;
   let companyRepository: jest.Mocked<CompanyFeatureFlagRepositoryInterface>;
   let userRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
-  let logService: jest.Mocked<LogService>;
+  let auditLogService: jest.Mocked<AuditLogService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +30,7 @@ describe('DeleteFeatureFlagUseCase', () => {
           },
         },
         {
-          provide: LogService,
+          provide: AuditLogService,
           useValue: {
             dispatchLog: jest.fn(),
           },
@@ -54,13 +54,13 @@ describe('DeleteFeatureFlagUseCase', () => {
     repository = module.get('FeatureFlagRepositoryInterface');
     companyRepository = module.get('CompanyFeatureFlagRepositoryInterface');
     userRepository = module.get('UserFeatureFlagRepositoryInterface');
-    logService = module.get(LogService);
+    auditLogService = module.get(AuditLogService);
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(repository).toBeDefined();
-    expect(logService).toBeDefined();
+    expect(auditLogService).toBeDefined();
   });
 
   it('should delete a feature flag with percentage type', async () => {
@@ -96,7 +96,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     expect(repository.softDelete).toHaveBeenCalledWith('flag-123');
     expect(companyRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
     expect(userRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'delete',
         entity: 'FeatureFlag',
@@ -141,7 +141,7 @@ describe('DeleteFeatureFlagUseCase', () => {
       'flag-456',
     );
     expect(userRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'delete',
         entity: 'FeatureFlag',
@@ -167,7 +167,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     );
     expect(repository.findByName).toHaveBeenCalledWith('non-existent-flag');
     expect(repository.softDelete).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'delete',
         entity: 'FeatureFlag',
@@ -208,7 +208,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     );
     expect(repository.findByName).toHaveBeenCalledWith('test-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-123');
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'delete',
         entity: 'FeatureFlag',
@@ -255,7 +255,7 @@ describe('DeleteFeatureFlagUseCase', () => {
       'flag-789',
     );
     expect(companyRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
-    expect(logService.dispatchLog).toHaveBeenCalledWith(
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'delete',
         entity: 'FeatureFlag',
