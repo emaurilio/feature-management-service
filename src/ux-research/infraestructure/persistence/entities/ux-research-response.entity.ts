@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('ux_research_responses')
+@Entity('ux_researches_responses')
 export class UXResearchResponseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;

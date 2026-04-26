@@ -1,9 +1,9 @@
-export class CheckFeatureFlagDto {
+export class CheckUXResearchDto {
   userId?: string;
 
   companyId?: string;
 
-  featureName: string;
+  name: string;
 
   version: number;
 

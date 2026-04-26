@@ -9,6 +9,8 @@ export class UXResearch {
     public readonly isActive: boolean,
     public readonly type: UXResearchType,
     public readonly featureFlagName?: string,
+    public readonly startDate?: Date,
+    public readonly endDate?: Date,
     public readonly id?: string,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
@@ -21,6 +23,8 @@ export class UXResearch {
     this.version = version;
     this.isActive = isActive;
     this.type = type;
+    this.startDate = startDate;
+    this.endDate = endDate;
     this.id = id;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

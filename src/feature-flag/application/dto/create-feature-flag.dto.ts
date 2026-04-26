@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -18,6 +19,7 @@ export class CreateFeatureFlagDto {
   name: string;
 
   @IsNotEmpty({ message: 'Type is required' })
+  @IsEnum(FeatureFlagType, { message: 'Type must be a valid FeatureFlagType' })
   type: FeatureFlagType;
 
   @IsOptional()

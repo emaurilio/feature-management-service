@@ -1,0 +1,63 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { LogService } from '../services/log.service';
+import { getErrorMessage } from 'src/common/utils/error.utils';
+import { SearchUXResearchDto } from '../dto/search-ux-research.dto';
+import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+
+@Injectable()
+export class SearchUXResearchUseCase {
+  constructor(
+    @Inject('UXResearchRepositoryInterface')
+    private readonly uxResearchRepository: UXResearchRepositoryInterface,
+    private readonly logService: LogService,
+  ) { }
+
+  async execute(searchUXResearchDto: SearchUXResearchDto) {
+    try {
+      const { data, total } = await this.uxResearchRepository.searchByNamePaginated(
+        searchUXResearchDto.name,
+        searchUXResearchDto.page || 1,
+        15,
+      );
+
+      void this.logService.dispatchLog({
+        action: 'search',
+        entity: 'UX Research',
+        timestamp: new Date().toISOString(),
+        data: {
+          user: searchUXResearchDto.userData,
+          name: searchUXResearchDto.name,
+          result: {
+            items: data,
+            meta: {
+              totalItems: total,
+            },
+          },
+        },
+      });
+
+      return {
+        items: data,
+        meta: {
+          totalItems: total,
+          itemCount: data.length,
+          itemsPerPage: 15,
+          totalPages: Math.ceil(total / 15),
+          currentPage: searchUXResearchDto.page || 1,
+        },
+      };
+    } catch (error) {
+      void this.logService.dispatchLog({
+        action: 'search',
+        entity: 'UX Research',
+        timestamp: new Date().toISOString(),
+        data: {
+          user: searchUXResearchDto.userData,
+          error: getErrorMessage(error),
+        },
+      });
+
+      throw new Error(getErrorMessage(error));
+    }
+  }
+}

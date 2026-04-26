@@ -3,18 +3,20 @@ import { CheckFeatureFlagUserUseCase } from './check-feature-flag-user.use-case'
 import { CheckFeatureFlagPercentageUseCase } from './check-feature-flag-percentage.use-case';
 import { CheckFeatureFlagUserPercentageUseCase } from './check-feature-flag-user-percentage.use-case';
 import { ModuleRef } from '@nestjs/core';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 import { CheckFeatureFlagValidateDto } from '../../dto/check-feature-flag-validate.dto';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
 import { LogService } from '../../services/log.service';
+import { Inject } from '@nestjs/common';
+import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 export class CheckFeatureFlagUseCase {
   constructor(
+    @Inject('FeatureFlagRepositoryInterface')
+    private readonly featureFlagRepository: FeatureFlagRepositoryInterface,
     private moduleRef: ModuleRef,
-    private readonly featureFlagRepository: FeatureFlagRepository,
     private readonly logService: LogService,
-  ) {}
+  ) { }
 
   private strategies = {
     company: CheckFeatureFlagCompanyUseCase,
@@ -27,11 +29,17 @@ export class CheckFeatureFlagUseCase {
   async execute(
     checkFeatureFlagValidateDto: CheckFeatureFlagValidateDto,
   ): Promise<boolean> {
-    const getUseCase = await this.featureFlagRepository.findByName(
+    if (!checkFeatureFlagValidateDto.userId && !checkFeatureFlagValidateDto.companyId) {
+      throw new Error(
+        `User ID or Company ID is required`,
+      );
+    }
+
+    const getFeatureFlag = await this.featureFlagRepository.findByName(
       checkFeatureFlagValidateDto.name,
     );
 
-    if (!getUseCase) {
+    if (!getFeatureFlag) {
       void this.logService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
@@ -39,7 +47,7 @@ export class CheckFeatureFlagUseCase {
         data: {
           featureName: checkFeatureFlagValidateDto.name,
           user_id: checkFeatureFlagValidateDto.userId,
-          check_result: false,
+          error: 'Feature Flag not found',
           check_method: 'database',
         },
       });
@@ -49,7 +57,7 @@ export class CheckFeatureFlagUseCase {
       );
     }
 
-    if (!getUseCase.isActive) {
+    if (!getFeatureFlag.isActive) {
       void this.logService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
@@ -65,18 +73,29 @@ export class CheckFeatureFlagUseCase {
       return false;
     }
 
-    const useCaseClass = this.strategies[getUseCase.type];
+    const useCaseClass = this.strategies[getFeatureFlag.type];
 
     if (!useCaseClass) {
-      throw new Error(`Strategy for ${getUseCase.type} not found`);
+      void this.logService.dispatchLog({
+        action: 'check_feature_flag',
+        entity: 'FeatureFlag',
+        timestamp: new Date().toISOString(),
+        data: {
+          featureName: checkFeatureFlagValidateDto.name,
+          user_id: checkFeatureFlagValidateDto.userId,
+          error: 'Strategy not found',
+          check_method: 'database',
+        },
+      });
+      throw new Error(`Strategy for ${getFeatureFlag.type} not found`);
     }
 
     const checkFeatureFlagDto: CheckFeatureFlagDto = {
       ...checkFeatureFlagValidateDto,
-      featureName: getUseCase.name,
-      version: getUseCase.version,
-      featureId: getUseCase.id || '',
-      percentage: getUseCase.percentage,
+      featureName: getFeatureFlag.name,
+      version: getFeatureFlag.version,
+      featureId: getFeatureFlag.id || '',
+      percentage: getFeatureFlag.percentage,
     };
 
     const useCase = this.moduleRef.get(useCaseClass, { strict: false });
