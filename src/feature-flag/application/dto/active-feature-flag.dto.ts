@@ -2,6 +2,7 @@ import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsObject, IsString } from 'class-validator';
 import type { UserData } from './types/user-data.type';
 import { IsFeatureFlagPresent } from 'src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ActiveFeatureFlagDto {
   @Expose({ name: 'feature_flag_name' })
@@ -12,6 +13,14 @@ export class ActiveFeatureFlagDto {
 
   //The field User Data must be a object with data by user that create this feature flag
   @Expose({ name: 'user_data' })
+  @ApiProperty({
+    example: {
+      userId: 'string',
+      email: 'string',
+      name: 'string',
+    },
+    required: true,
+  })
   @IsNotEmpty({ message: 'User data is required' })
   @IsObject({ message: 'User data must be an object' })
   userData: UserData;

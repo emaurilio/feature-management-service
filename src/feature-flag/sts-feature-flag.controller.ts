@@ -15,7 +15,10 @@ import { CheckFeatureFlagUseCase } from './application/use-cases/check-feature-f
 import { DisableFeatureFlagDto } from './application/dto/desable-feature-flag.dto';
 import { DisableFeatureFlagUseCase } from './application/use-cases/disable-feature-flag.use-case';
 import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Internal')
+@ApiSecurity('STS-Token')
 @Controller('sts/feature-flags')
 @UseGuards(SimpleTokenGuard)
 export class StsFeatureFlagController {
@@ -28,8 +31,7 @@ export class StsFeatureFlagController {
     private readonly checkFeatureFlagUseCase: CheckFeatureFlagUseCase,
     private readonly disableFeatureFlagUseCase: DisableFeatureFlagUseCase,
     private readonly activeFeatureFlagUseCase: ActiveFeatureFlagUseCase,
-  ) {}
-
+  ) { }
   @Version('1')
   @Post('create')
   async create(@Body() createFeatureFlagDto: CreateFeatureFlagDto) {

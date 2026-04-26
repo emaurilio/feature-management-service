@@ -4,6 +4,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { HttpErrorFilter } from './common/filter/http-error.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { useContainer } from 'class-validator';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,9 +15,26 @@ async function bootstrap() {
   });
 
   app.useGlobalInterceptors(new TransformInterceptor());
-  // Request logging interceptor is now registered via APP_INTERCEPTOR in AppModule
   app.useGlobalFilters(new HttpErrorFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+  const config = new DocumentBuilder()
+    .setTitle('Feature Flag API')
+    .setDescription('Sistema de controle de funcionalidades para o Back-Office')
+    .setVersion('1.0')
+    .addTag('Public')
+    .addTag('Internal')
+    .addBearerAuth()
+    .addApiKey({
+      type: 'apiKey',
+      name: 'authorization',
+      in: 'header',
+      description: 'Put your token here'
+    }, 'STS-Token')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
