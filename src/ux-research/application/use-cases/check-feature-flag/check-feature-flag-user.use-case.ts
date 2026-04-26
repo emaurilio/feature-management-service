@@ -1,17 +1,19 @@
-import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
 import { LogService } from '../../services/log.service';
-import { Inject, Injectable } from '@nestjs/common';
-import { UXResearchCacheService } from '../../services/ux-research-cache.service';
+import { Injectable } from '@nestjs/common';
+import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
-import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
 
 @Injectable()
 export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
   constructor(
     @Inject('UserUXResearchRepositoryInterface')
     private readonly userUXResearchRepository: UserUXResearchRepositoryInterface,
-    private readonly UXResearchCacheService: UXResearchCacheService,
+    @Inject(CACHE_SERVICE)
+    private readonly CacheServiceInterface: CacheServiceInterface,
     private readonly logService: LogService,
   ) { }
 
@@ -20,7 +22,7 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
       ${checkUXResearchDto.name}-
       ${checkUXResearchDto.version}`;
 
-    const cacheResult = await this.UXResearchCacheService.get(cacheKey);
+    const cacheResult = await this.CacheServiceInterface.get(cacheKey);
 
     if (cacheResult !== null) {
       void this.logService.dispatchLog({
@@ -74,7 +76,7 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
       },
     });
 
-    void this.UXResearchCacheService.set(cacheKey, true);
+    void this.CacheServiceInterface.set(cacheKey, true);
 
     return true;
   }

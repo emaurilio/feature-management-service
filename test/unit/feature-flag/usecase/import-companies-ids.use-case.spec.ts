@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { LogService } from 'src/feature-flag/application/services/log.service';
@@ -9,14 +11,13 @@ import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type
 import { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import { ImportCompaniesIdsUseCase } from 'src/feature-flag/application/use-cases/import-companies-ids.use-case';
 import { ImportCompaniesIdsDto } from 'src/feature-flag/application/dto/import-companies-ids.dto';
-import { FeatureFlagCacheService } from 'src/feature-flag/application/services/feature-flag-cache.service';
 
 describe('ImportCompaniesIdsUseCase', () => {
   let useCase: ImportCompaniesIdsUseCase;
   let featureFlagRepository: jest.Mocked<FeatureFlagRepositoryInterface>;
   let companyFeatureFlagRepository: jest.Mocked<CompanyFeatureFlagRepositoryInterface>;
   let logService: jest.Mocked<LogService>;
-  let featureFlagCacheService: jest.Mocked<FeatureFlagCacheService>;
+  let cacheService: jest.Mocked<CacheServiceInterface>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +43,7 @@ describe('ImportCompaniesIdsUseCase', () => {
           },
         },
         {
-          provide: FeatureFlagCacheService,
+          provide: CACHE_SERVICE,
           useValue: {
             invalidateCacheEntityFlags: jest.fn(),
           },
@@ -51,8 +52,8 @@ describe('ImportCompaniesIdsUseCase', () => {
     }).compile();
 
     useCase = module.get<ImportCompaniesIdsUseCase>(ImportCompaniesIdsUseCase);
-    featureFlagCacheService = module.get<jest.Mocked<FeatureFlagCacheService>>(
-      FeatureFlagCacheService,
+    cacheService = module.get<jest.Mocked<CacheServiceInterface>>(
+      CACHE_SERVICE,
     );
     featureFlagRepository = module.get<
       jest.Mocked<FeatureFlagRepositoryInterface>
@@ -68,7 +69,7 @@ describe('ImportCompaniesIdsUseCase', () => {
     expect(featureFlagRepository).toBeDefined();
     expect(companyFeatureFlagRepository).toBeDefined();
     expect(logService).toBeDefined();
-    expect(featureFlagCacheService).toBeDefined();
+    expect(cacheService).toBeDefined();
   });
 
   it('should import multiple company ids successfully', async () => {
@@ -119,7 +120,7 @@ describe('ImportCompaniesIdsUseCase', () => {
       },
     });
     expect(
-      featureFlagCacheService.invalidateCacheEntityFlags,
+      cacheService.invalidateCacheEntityFlags,
     ).toHaveBeenCalled();
     expect(result).toBeDefined();
   });

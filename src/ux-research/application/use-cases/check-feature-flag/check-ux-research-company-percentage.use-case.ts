@@ -1,9 +1,11 @@
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
 import { LogService } from '../../services/log.service';
-import { Inject, Injectable } from '@nestjs/common';
-import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
+import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
-import { UXResearchCacheService } from '../../services/ux-research-cache.service';
 import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
+import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 
 @Injectable()
@@ -12,7 +14,8 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
     @Inject('CompanyUXResearchRepositoryInterface')
     private readonly uxResearchRepository: CompanyUXResearchRepositoryInterface,
     private readonly hashUXResearchService: HashUXResearchService,
-    private readonly uxResearchCacheService: UXResearchCacheService,
+    @Inject(CACHE_SERVICE)
+    private readonly uxResearchCacheService: CacheServiceInterface,
     private readonly logService: LogService,
   ) { }
 

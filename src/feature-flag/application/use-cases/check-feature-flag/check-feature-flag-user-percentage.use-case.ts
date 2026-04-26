@@ -1,9 +1,11 @@
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagInterface } from 'src/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { LogService } from '../../services/log.service';
-import { FeatureFlagCacheService } from '../../services/feature-flag-cache.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 
 @Injectable()
@@ -12,7 +14,8 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
     @Inject('UserFeatureFlagRepositoryInterface')
     private readonly userFeatureFlagRepository: UserFeatureFlagRepositoryInterface,
     private readonly hashFeatureFlag: HashFeatureFlagService,
-    private readonly featureFlagCacheService: FeatureFlagCacheService,
+    @Inject(CACHE_SERVICE)
+    private readonly featureFlagCacheService: CacheServiceInterface,
     private readonly logService: LogService,
   ) { }
 

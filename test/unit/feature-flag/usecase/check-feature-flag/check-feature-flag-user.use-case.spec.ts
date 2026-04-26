@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
-import { FeatureFlagCacheService } from 'src/feature-flag/application/services/feature-flag-cache.service';
 import { LogService } from 'src/feature-flag/application/services/log.service';
 import { CheckFeatureFlagUserUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user.use-case';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 
 describe('CheckFeatureFlagUserUseCase', () => {
-  let featureFlagCacheService: jest.Mocked<FeatureFlagCacheService>;
+  let cacheService: jest.Mocked<CacheServiceInterface>;
   let logService: jest.Mocked<LogService>;
   let useCase: CheckFeatureFlagUserUseCase;
   let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
@@ -27,7 +28,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
       providers: [
         CheckFeatureFlagUserUseCase,
         {
-          provide: FeatureFlagCacheService,
+          provide: CACHE_SERVICE,
           useValue: {
             get: jest.fn(),
             set: jest.fn(),
@@ -48,35 +49,35 @@ describe('CheckFeatureFlagUserUseCase', () => {
       ],
     }).compile();
 
-    featureFlagCacheService = module.get(FeatureFlagCacheService);
+    cacheService = module.get(CACHE_SERVICE);
     logService = module.get(LogService);
     useCase = module.get(CheckFeatureFlagUserUseCase);
     userFeatureFlagRepository = module.get('UserFeatureFlagRepositoryInterface');
 
     logService.dispatchLog.mockResolvedValue(true);
-    featureFlagCacheService.set.mockResolvedValue();
+    cacheService.set.mockResolvedValue();
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
-    expect(featureFlagCacheService).toBeDefined();
+    expect(cacheService).toBeDefined();
     expect(logService).toBeDefined();
     expect(userFeatureFlagRepository).toBeDefined();
   });
 
   it('should return cached true and avoid repository when cache hit', async () => {
-    featureFlagCacheService.get.mockResolvedValue(true);
+    cacheService.get.mockResolvedValue(true);
 
     const result = await useCase.execute(dtoBase);
 
-    const [cacheKey] = featureFlagCacheService.get.mock.calls[0] as [string];
+    const [cacheKey] = cacheService.get.mock.calls[0] as [string];
     expect(cacheKey).toContain('user-1');
     expect(cacheKey).toContain('my-feature');
     expect(cacheKey).toContain('2');
     expect(
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(true);
     expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -90,28 +91,28 @@ describe('CheckFeatureFlagUserUseCase', () => {
   });
 
   it('should return cached false and avoid repository when cache hit', async () => {
-    featureFlagCacheService.get.mockResolvedValue(false);
+    cacheService.get.mockResolvedValue(false);
 
     const result = await useCase.execute(dtoBase);
 
     expect(
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
     expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user',
         data: expect.objectContaining({
           check_result: false,
-            check_method: 'cache',
-          }),
+          check_method: 'cache',
+        }),
       }),
     );
   });
 
   it('should return false when user feature flag is not found', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     userFeatureFlagRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(
       null,
     );
@@ -121,13 +122,13 @@ describe('CheckFeatureFlagUserUseCase', () => {
     expect(
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).toHaveBeenCalledWith('user-1', 'feature-id');
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
     expect(logService.dispatchLog).toHaveBeenCalledTimes(1);
   });
 
   it('should return true and cache result when user feature flag is found', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     userFeatureFlagRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(
       {} as any,
     );
@@ -137,7 +138,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
     expect(
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).toHaveBeenCalledWith('user-1', 'feature-id');
-    expect(featureFlagCacheService.set).toHaveBeenCalledWith(
+    expect(cacheService.set).toHaveBeenCalledWith(
       expect.stringContaining('user-1'),
       true,
     );
@@ -154,7 +155,7 @@ describe('CheckFeatureFlagUserUseCase', () => {
   });
 
   it('should query repository with empty user and feature ids when they are missing', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     userFeatureFlagRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(
       null,
     );

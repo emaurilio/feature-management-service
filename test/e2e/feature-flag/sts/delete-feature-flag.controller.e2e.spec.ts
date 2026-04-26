@@ -41,6 +41,14 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
                 { provide: CheckFeatureFlagUseCase, useValue: {} },
                 { provide: DisableFeatureFlagUseCase, useValue: {} },
                 { provide: ActiveFeatureFlagUseCase, useValue: {} },
+                {
+                    provide: 'FeatureFlagExistsConstraint',
+                    useValue: { validate: jest.fn().mockResolvedValue(true) },
+                },
+                {
+                    provide: require('../../../../src/feature-flag/infraestructure/validators/feature-flag-exists.validator').FeatureFlagExistsConstraint,
+                    useValue: { validate: jest.fn().mockResolvedValue(true), defaultMessage: jest.fn() },
+                },
                 SimpleTokenGuard,
             ],
         }).compile();

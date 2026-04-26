@@ -3,8 +3,7 @@ import { DeadletterLogsProcessor } from './processors/deadletter-logs.processor'
 import { MetricsModule } from '../common/metrics/metrics.module';
 import { QueuesModule } from '../common/queues/queues.module';
 import { DataSource } from 'typeorm';
-import { redisStore } from 'cache-manager-redis-yet';
-import { CacheModule } from '@nestjs/cache-manager';
+import { CacheRedisModule } from '../common/cache/cache.module';
 import { LogService } from './application/services/log.service';
 import { LoggingModule } from 'src/common/logging/logging.module';
 import { AuthModule } from 'src/common/auth/auth.module';
@@ -17,7 +16,7 @@ import { AuditLogsProcessor } from 'src/feature-flag/processors/audit-logs.proce
 import { SearchUXResearchUseCase } from './application/use-cases/search-feature-flag.use-case';
 import { DisableUXResearchUseCase } from './application/use-cases/disable-ux-research.use-case';
 import { ActiveUXResearchUseCase } from './application/use-cases/active-ux-research.use-case';
-import { UXResearchCacheService } from './application/services/ux-research-cache.service';
+
 import { HashUXResearchService } from './application/services/hash-ux-research.service';
 import { ImportCompaniesIdsUseCase } from './application/use-cases/import-companies-ids.use-case';
 import { CreateUXResearchUseCase } from './application/use-cases/create-ux-research.use-case';
@@ -35,14 +34,7 @@ import { UXResearchResponseRepository } from './infraestructure/persistence/repo
     AuthModule,
     LoggingModule,
     QueuesModule,
-    CacheModule.registerAsync({
-      useFactory: async () => ({
-        store: await redisStore({
-          url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-          ttl: 3600,
-        }),
-      }),
-    }),
+    CacheRedisModule,
     MetricsModule,
     FeatureFlagModule
   ],
@@ -94,7 +86,6 @@ import { UXResearchResponseRepository } from './infraestructure/persistence/repo
     SearchUXResearchUseCase,
     DisableUXResearchUseCase,
     ActiveUXResearchUseCase,
-    UXResearchCacheService,
     LogService,
     HashUXResearchService,
     AuditLogsProcessor,

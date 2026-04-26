@@ -1,11 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
-import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import { UserFeatureFlag } from 'src/feature-flag/domain/entities/UserFeatureFlag';
 import { ImportUXResearchUsersIdsDto } from '../dto/import-users-ids.dto';
+import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import { UXResearchCacheService } from '../services/ux-research-cache.service';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 
 @Injectable()
 export class ImportUsersIdsUseCase {
@@ -15,7 +17,8 @@ export class ImportUsersIdsUseCase {
     @Inject('UserUXResearchRepositoryInterface')
     private readonly userRepository: UserFeatureFlagRepositoryInterface,
     private readonly logService: LogService,
-    private readonly uxResearchCacheService: UXResearchCacheService,
+    @Inject(CACHE_SERVICE)
+    private readonly uxResearchCacheService: CacheServiceInterface,
   ) { }
 
   async execute(importUXResearchUsersIdsDto: ImportUXResearchUsersIdsDto) {

@@ -23,8 +23,8 @@ describe('CheckFeatureFlagUseCase', () => {
     };
 
     useCase = new CheckFeatureFlagUseCase(
-      moduleRef as unknown as ModuleRef,
       featureFlagRepository as unknown as FeatureFlagRepository,
+      moduleRef as unknown as ModuleRef,
       logService as unknown as LogService,
     );
   });
@@ -51,7 +51,7 @@ describe('CheckFeatureFlagUseCase', () => {
         data: expect.objectContaining({
           featureName: 'missing-flag',
           user_id: 'user-1',
-          check_result: false,
+          error: 'Feature Flag not found',
           check_method: 'database',
         }),
       }),

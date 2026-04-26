@@ -1,10 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { ImportUXResearchCompaniesIdsDto } from '../dto/import-companies-ids.dto';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
-import { UXResearchCacheService } from '../services/ux-research-cache.service';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { CompanyUXResearch } from 'src/ux-research/domain/entites/CompanyUXResearch';
 
 @Injectable()
@@ -15,7 +17,8 @@ export class ImportCompaniesIdsUseCase {
     @Inject('CompanyUXResearchRepositoryInterface')
     private readonly companyRepository: CompanyUXResearchRepositoryInterface,
     private readonly logService: LogService,
-    private readonly uxResearchCacheService: UXResearchCacheService,
+    @Inject(CACHE_SERVICE)
+    private readonly uxResearchCacheService: CacheServiceInterface,
   ) { }
 
   async execute(importUXResearchCompaniesIdsDto: ImportUXResearchCompaniesIdsDto) {

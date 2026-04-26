@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
-import { FeatureFlagCacheService } from 'src/feature-flag/application/services/feature-flag-cache.service';
 import { HashFeatureFlagService } from 'src/feature-flag/application/services/hash-feature-flag.service';
 import { LogService } from 'src/feature-flag/application/services/log.service';
 import { CheckFeatureFlagPercentageUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-percentage.use-case';
 
 describe('CheckFeatureFlagPercentageUseCase', () => {
   let hashFeatureFlagService: jest.Mocked<HashFeatureFlagService>;
-  let featureFlagCacheService: jest.Mocked<FeatureFlagCacheService>;
+  let cacheService: jest.Mocked<CacheServiceInterface>;
   let logService: jest.Mocked<LogService>;
   let useCase: CheckFeatureFlagPercentageUseCase;
 
@@ -33,7 +34,7 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
           },
         },
         {
-          provide: FeatureFlagCacheService,
+          provide: CACHE_SERVICE,
           useValue: {
             get: jest.fn(),
             set: jest.fn(),
@@ -49,29 +50,29 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
     }).compile();
 
     hashFeatureFlagService = module.get(HashFeatureFlagService);
-    featureFlagCacheService = module.get(FeatureFlagCacheService);
+    cacheService = module.get(CACHE_SERVICE);
     logService = module.get(LogService);
     useCase = module.get(CheckFeatureFlagPercentageUseCase);
 
     logService.dispatchLog.mockResolvedValue(true);
-    featureFlagCacheService.set.mockResolvedValue();
+    cacheService.set.mockResolvedValue();
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(hashFeatureFlagService).toBeDefined();
-    expect(featureFlagCacheService).toBeDefined();
+    expect(cacheService).toBeDefined();
     expect(logService).toBeDefined();
   });
 
   it('should return cached value and avoid hash calculation when cache hit', async () => {
-    featureFlagCacheService.get.mockResolvedValue(true);
+    cacheService.get.mockResolvedValue(true);
 
     const result = await useCase.execute(dtoBase);
 
-    expect(featureFlagCacheService.get).toHaveBeenCalledWith('user-1-my-feature-2');
+    expect(cacheService.get).toHaveBeenCalledWith('user-1-my-feature-2');
     expect(hashFeatureFlagService.calculateHash).not.toHaveBeenCalled();
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(true);
 
     expect(logService.dispatchLog).toHaveBeenCalledWith(
@@ -90,16 +91,16 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
   });
 
   it('should calculate hash, save cache and return true when hash is lower than percentage', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     hashFeatureFlagService.calculateHash.mockReturnValue(10);
 
     const result = await useCase.execute(dtoBase);
 
-    expect(featureFlagCacheService.get).toHaveBeenCalledWith('user-1-my-feature-2');
+    expect(cacheService.get).toHaveBeenCalledWith('user-1-my-feature-2');
     expect(hashFeatureFlagService.calculateHash).toHaveBeenCalledWith(
       'user-1-my-feature-2',
     );
-    expect(featureFlagCacheService.set).toHaveBeenCalledWith(
+    expect(cacheService.set).toHaveBeenCalledWith(
       'user-1-my-feature-2',
       true,
     );
@@ -119,12 +120,12 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
   });
 
   it('should calculate hash, save cache and return false when hash is greater than or equal to percentage', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     hashFeatureFlagService.calculateHash.mockReturnValue(70);
 
     const result = await useCase.execute(dtoBase);
 
-    expect(featureFlagCacheService.set).toHaveBeenCalledWith(
+    expect(cacheService.set).toHaveBeenCalledWith(
       'user-1-my-feature-2',
       false,
     );
@@ -132,7 +133,7 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
   });
 
   it('should prioritize companyId when building the key and payload', async () => {
-    featureFlagCacheService.get.mockResolvedValue(false);
+    cacheService.get.mockResolvedValue(false);
 
     const dtoWithCompany: CheckFeatureFlagDto = {
       ...dtoBase,
@@ -142,7 +143,7 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
 
     const result = await useCase.execute(dtoWithCompany);
 
-    expect(featureFlagCacheService.get).toHaveBeenCalledWith(
+    expect(cacheService.get).toHaveBeenCalledWith(
       'company-1-my-feature-2',
     );
     expect(result).toBe(false);

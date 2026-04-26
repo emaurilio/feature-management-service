@@ -1,10 +1,12 @@
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
 import { LogService } from '../../services/log.service';
-import { Inject, Injectable } from '@nestjs/common';
-import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
-import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
+import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
-import { UXResearchCacheService } from '../../services/ux-research-cache.service';
 import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
+import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 
 @Injectable()
 export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInterface {
@@ -12,14 +14,15 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
     @Inject('UserUXResearchRepositoryInterface')
     private readonly userUXResearchRepository: UserUXResearchRepositoryInterface,
     private readonly hashUXResearch: HashUXResearchService,
-    private readonly UXResearchCacheService: UXResearchCacheService,
+    @Inject(CACHE_SERVICE)
+    private readonly CacheServiceInterface: CacheServiceInterface,
     private readonly logService: LogService,
   ) { }
 
   async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
     const hashName = `${checkUXResearchDto.userId}-${checkUXResearchDto.name}-${checkUXResearchDto.version}`;
 
-    const cacheResult = await this.UXResearchCacheService.get(hashName);
+    const cacheResult = await this.CacheServiceInterface.get(hashName);
 
     if (cacheResult !== null) {
       void this.logService.dispatchLog({
@@ -76,7 +79,7 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
       },
     });
 
-    void this.UXResearchCacheService.set(hashName, checkResult);
+    void this.CacheServiceInterface.set(hashName, checkResult);
 
     return checkResult;
   }

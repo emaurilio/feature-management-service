@@ -21,11 +21,10 @@ import { CheckFeatureFlagCompanyUseCase } from './application/use-cases/check-fe
 import { CheckFeatureFlagPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-percentage.use-case';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-company-percentage.use-case';
 import { CheckFeatureFlagUserPercentageUseCase } from './application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
-import { redisStore } from 'cache-manager-redis-yet';
-import { CacheModule } from '@nestjs/cache-manager';
+import { CacheRedisModule } from '../common/cache/cache.module';
 import { LogService } from './application/services/log.service';
 import { LoggingModule } from 'src/common/logging/logging.module';
-import { FeatureFlagCacheService } from './application/services/feature-flag-cache.service';
+
 import { AuthModule } from 'src/common/auth/auth.module';
 import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
 import { DisableFeatureFlagUseCase } from './application/use-cases/disable-feature-flag.use-case';
@@ -36,14 +35,7 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     AuthModule,
     LoggingModule,
     QueuesModule,
-    CacheModule.registerAsync({
-      useFactory: async () => ({
-        store: await redisStore({
-          url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-          ttl: 3600,
-        }),
-      }),
-    }),
+    CacheRedisModule,
     MetricsModule,
   ],
   providers: [
@@ -83,7 +75,6 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     SearchFeatureFlagUseCase,
     DisableFeatureFlagUseCase,
     ActiveFeatureFlagUseCase,
-    FeatureFlagCacheService,
     LogService,
     HashFeatureFlagService,
     AuditLogsProcessor,

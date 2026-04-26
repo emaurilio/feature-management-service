@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
-import { FeatureFlagCacheService } from 'src/feature-flag/application/services/feature-flag-cache.service';
 import { HashFeatureFlagService } from 'src/feature-flag/application/services/hash-feature-flag.service';
 import { LogService } from 'src/feature-flag/application/services/log.service';
 import { CheckFeatureFlagCompanyPercentageUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-company-percentage.use-case';
@@ -11,7 +12,7 @@ import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/dom
 
 describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   let hashFeatureFlagService: jest.Mocked<HashFeatureFlagService>;
-  let featureFlagCacheService: jest.Mocked<FeatureFlagCacheService>;
+  let cacheService: jest.Mocked<CacheServiceInterface>;
   let logService: jest.Mocked<LogService>;
   let useCase: CheckFeatureFlagCompanyPercentageUseCase;
   let companyFeatureFlagRepository: jest.Mocked<CompanyFeatureFlagRepositoryInterface>;
@@ -35,7 +36,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
           },
         },
         {
-          provide: FeatureFlagCacheService,
+          provide: CACHE_SERVICE,
           useValue: {
             get: jest.fn(),
             set: jest.fn(),
@@ -57,28 +58,28 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     }).compile();
 
     hashFeatureFlagService = module.get(HashFeatureFlagService);
-    featureFlagCacheService = module.get(FeatureFlagCacheService);
+    cacheService = module.get(CACHE_SERVICE);
     logService = module.get(LogService);
     useCase = module.get(CheckFeatureFlagCompanyPercentageUseCase);
     companyFeatureFlagRepository = module.get('CompanyFeatureFlagRepositoryInterface');
 
     logService.dispatchLog.mockResolvedValue(true);
-    featureFlagCacheService.set.mockResolvedValue();
+    cacheService.set.mockResolvedValue();
   });
 
   it('should be defined', () => {
     expect(useCase).toBeDefined();
     expect(hashFeatureFlagService).toBeDefined();
-    expect(featureFlagCacheService).toBeDefined();
+    expect(cacheService).toBeDefined();
     expect(logService).toBeDefined();
   });
 
   it('should return cached value and avoid hash calculation when cache hit', async () => {
-    featureFlagCacheService.get.mockResolvedValue(true);
+    cacheService.get.mockResolvedValue(true);
 
     const result = await useCase.execute(dtoBase);
 
-    const [cacheKey] = featureFlagCacheService.get.mock.calls[0] as [string];
+    const [cacheKey] = cacheService.get.mock.calls[0] as [string];
     expect(cacheKey).toContain('company-1');
     expect(cacheKey).toContain('my-feature');
     expect(cacheKey).toContain('2');
@@ -86,7 +87,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     expect(
       companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(true);
 
     expect(logService.dispatchLog).toHaveBeenCalledWith(
@@ -105,7 +106,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   });
 
   it('should return false from cache and avoid repository/hash when cache hit is false', async () => {
-    featureFlagCacheService.get.mockResolvedValue(false);
+    cacheService.get.mockResolvedValue(false);
 
     const result = await useCase.execute(dtoBase);
 
@@ -114,7 +115,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     expect(
       companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(logService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_company_percentage',
@@ -127,7 +128,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   });
 
   it('should calculate hash, save cache and return true when hash is lower than percentage', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId.mockResolvedValue(
       {} as any,
     );
@@ -146,7 +147,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
     expect(hashInput).toContain('my-feature');
     expect(hashInput).toContain('2');
 
-    expect(featureFlagCacheService.set).toHaveBeenCalledWith(
+    expect(cacheService.set).toHaveBeenCalledWith(
       expect.stringContaining('company-1'),
       true,
     );
@@ -165,7 +166,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   });
 
   it('should calculate hash, save cache and return false when hash is greater than or equal to percentage', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId.mockResolvedValue(
       {} as any,
     );
@@ -173,7 +174,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
 
     const result = await useCase.execute(dtoBase);
 
-    expect(featureFlagCacheService.set).toHaveBeenCalledWith(
+    expect(cacheService.set).toHaveBeenCalledWith(
       expect.stringContaining('company-1'),
       false,
     );
@@ -181,7 +182,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   });
 
   it('should return false when company feature flag is not found', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId.mockResolvedValue(
       null,
     );
@@ -192,7 +193,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
       companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
     ).toHaveBeenCalledWith('company-1', 'feature-id');
     expect(hashFeatureFlagService.calculateHash).not.toHaveBeenCalled();
-    expect(featureFlagCacheService.set).not.toHaveBeenCalled();
+    expect(cacheService.set).not.toHaveBeenCalled();
     expect(result).toBe(false);
 
     expect(logService.dispatchLog).toHaveBeenCalledWith(
@@ -208,7 +209,7 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
   });
 
   it('should query repository with empty company and feature ids when they are missing', async () => {
-    featureFlagCacheService.get.mockResolvedValue(null);
+    cacheService.get.mockResolvedValue(null);
     companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId.mockResolvedValue(
       null,
     );

@@ -3,17 +3,18 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { METRICS_OBSERVER } from 'src/common/metrics/metrics.observer';
 import type { MetricsObserver } from 'src/common/metrics/metrics.observer';
 import { getErrorMessage } from 'src/common/utils/error.utils';
+import { CacheServiceInterface } from './cache-service.interface';
 
 @Injectable()
-export class FeatureFlagCacheService {
-  private readonly logger = new Logger(FeatureFlagCacheService.name);
+export class AppCacheService implements CacheServiceInterface {
+  private readonly logger = new Logger(AppCacheService.name);
 
   constructor(
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: import('cache-manager').Cache,
     @Inject(METRICS_OBSERVER)
     private readonly metricsObserver: MetricsObserver,
-  ) {}
+  ) { }
 
   async get(key: string): Promise<boolean | null> {
     const getCacheResult = await this.cacheManager.get<boolean>(key);

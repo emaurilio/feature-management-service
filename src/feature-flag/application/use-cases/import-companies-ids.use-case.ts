@@ -1,11 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
+import { Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { LogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import { ImportCompaniesIdsDto } from '../dto/import-companies-ids.dto';
 import { CompanyFeatureFlag } from 'src/feature-flag/domain/entities/CompanyFeatureFlag';
-import { FeatureFlagCacheService } from '../services/feature-flag-cache.service';
 
 @Injectable()
 export class ImportCompaniesIdsUseCase {
@@ -15,8 +17,9 @@ export class ImportCompaniesIdsUseCase {
     @Inject('CompanyFeatureFlagRepositoryInterface')
     private readonly companyRepository: CompanyFeatureFlagRepositoryInterface,
     private readonly logService: LogService,
-    private readonly featureFlagCacheService: FeatureFlagCacheService,
-  ) {}
+    @Inject(CACHE_SERVICE)
+    private readonly featureFlagCacheService: CacheServiceInterface,
+  ) { }
 
   async execute(importCompanyIdsDto: ImportCompaniesIdsDto) {
     try {

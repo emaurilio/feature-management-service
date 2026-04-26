@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
+import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
 import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
@@ -9,14 +11,13 @@ import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';
 import { ImportUsersIdsDto } from 'src/feature-flag/application/dto/import-users-ids.dto';
-import { FeatureFlagCacheService } from 'src/feature-flag/application/services/feature-flag-cache.service';
 
 describe('ImportUsersIdsUseCase', () => {
   let useCase: ImportUsersIdsUseCase;
   let featureFlagRepository: jest.Mocked<FeatureFlagRepositoryInterface>;
   let userFeatureFlagRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
   let logService: jest.Mocked<LogService>;
-  let featureFlagCacheService: jest.Mocked<FeatureFlagCacheService>;
+  let cacheService: jest.Mocked<CacheServiceInterface>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +43,7 @@ describe('ImportUsersIdsUseCase', () => {
           },
         },
         {
-          provide: FeatureFlagCacheService,
+          provide: CACHE_SERVICE,
           useValue: {
             invalidateCacheEntityFlags: jest.fn(),
           },
@@ -51,8 +52,8 @@ describe('ImportUsersIdsUseCase', () => {
     }).compile();
 
     useCase = module.get<ImportUsersIdsUseCase>(ImportUsersIdsUseCase);
-    featureFlagCacheService = module.get<jest.Mocked<FeatureFlagCacheService>>(
-      FeatureFlagCacheService,
+    cacheService = module.get<jest.Mocked<CacheServiceInterface>>(
+      CACHE_SERVICE,
     );
     featureFlagRepository = module.get<
       jest.Mocked<FeatureFlagRepositoryInterface>
@@ -68,7 +69,7 @@ describe('ImportUsersIdsUseCase', () => {
     expect(featureFlagRepository).toBeDefined();
     expect(userFeatureFlagRepository).toBeDefined();
     expect(logService).toBeDefined();
-    expect(featureFlagCacheService).toBeDefined();
+    expect(cacheService).toBeDefined();
   });
 
   it('should import multiple user ids successfully', async () => {
@@ -111,7 +112,7 @@ describe('ImportUsersIdsUseCase', () => {
       }),
     );
     expect(
-      featureFlagCacheService.invalidateCacheEntityFlags,
+      cacheService.invalidateCacheEntityFlags,
     ).toHaveBeenCalled();
     expect(result).toBeDefined();
   });
