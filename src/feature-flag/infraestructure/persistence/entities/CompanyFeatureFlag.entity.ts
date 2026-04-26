@@ -4,9 +4,12 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { FeatureFlagEntity } from './FeatureFlag.entity';
 
 @Entity('feature_flags_companies')
 @Index(['featureId', 'companyId'], { unique: true })
@@ -16,6 +19,10 @@ export class CompanyFeatureFlagEntity {
 
   @Column()
   featureId: string;
+
+  @ManyToOne(() => FeatureFlagEntity)
+  @JoinColumn({ name: 'featureId', referencedColumnName: 'id' })
+  featureFlag: FeatureFlagEntity;
 
   @Column()
   companyId: string;

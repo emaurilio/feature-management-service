@@ -1,6 +1,6 @@
-export class CompanyFeatureFlag {
+export class CompanyUXResearch {
   constructor(
-    public readonly featureId: string,
+    public readonly uxResearchId: string,
     public readonly companyId: string,
     public readonly id?: string,
     public readonly createdAt?: Date,
