@@ -9,6 +9,7 @@ import { CompanyUXResearchMapper } from '../mappers/company-ux-research.mapper';
 export class CompanyUXResearchRepository
     extends Repository<CompanyUXResearchEntity>
     implements CompanyUXResearchRepositoryInterface {
+    
     constructor(private dataSource: DataSource) {
         super(CompanyUXResearchEntity, dataSource.createEntityManager());
     }

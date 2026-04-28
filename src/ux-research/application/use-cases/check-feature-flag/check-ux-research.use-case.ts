@@ -1,5 +1,5 @@
 import { ModuleRef } from '@nestjs/core';
-import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import { CheckUXResearchDto } from '../../dto/check-ux-research/check-ux-research.dto';
 import { AuditLogService } from '../../services/log.service';
 import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';

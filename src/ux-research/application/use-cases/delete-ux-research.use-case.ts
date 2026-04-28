@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
 import { DeleteUXResearchDto } from '../dto/delete-ux-research.dto';
+import { isCompanyType, isUserType } from 'src/ux-research/domain/enums/ux-research-type.enum';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
-import { isCompanyType, isUserType } from 'src/ux-research/domain/enums/ux-research-type.enum';
 
 @Injectable()
 export class DeleteUXResearchUseCase {

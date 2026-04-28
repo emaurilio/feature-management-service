@@ -1,21 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, DataSource, Like } from 'typeorm';
+import { Repository, DataSource, Like, UpdateResult } from 'typeorm';
 import { UXResearchEntity } from '../entities/ux-research.entity';
 import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
 import { UXResearchMapper } from '../mappers/ux-research.mapper';
-import { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 @Injectable()
 export class UXResearchRepository
     extends Repository<UXResearchEntity>
     implements UXResearchRepositoryInterface {
+    
     constructor(private dataSource: DataSource) {
         super(UXResearchEntity, dataSource.createEntityManager());
     }
 
     async createUXResearch(uxResearch: UXResearch): Promise<UXResearch> {
         const uxResearchEntity = UXResearchMapper.toPersistence(uxResearch);
-        const result = (await this.save(uxResearchEntity)) as UXResearchEntity;
+        const result = await this.save(uxResearchEntity);
 
         return UXResearchMapper.toDomain(result);
     }
@@ -49,20 +50,22 @@ export class UXResearchRepository
         };
     }
 
-    async updateUXResearch(
-        id: string,
-        partialEntity: Partial<UXResearch>,
-    ): Promise<UXResearch> {
+    async updateUXResearch(id: string, partialEntity: Partial<UXResearch>): Promise<UXResearch> {
         await this.update(id, partialEntity);
         const updatedEntity = await this.findOne({ where: { id } });
         if (!updatedEntity) {
-            throw new Error('UX Research not found after update');
+        throw new Error('UX Research not found after update');
         }
-        return UXResearchMapper.toDomain(updatedEntity);
-    }
+    return UXResearchMapper.toDomain(updatedEntity);
+    }1
 
     async deleteUXResearch(id: string): Promise<boolean> {
         const result = (await this.softDelete(id)) ? true : false;
         return result;
+    }
+
+    async getByFeatureFlagName(featureFlagName: string): Promise<UXResearch | null> {
+        const getUXResearch = await this.findOne({ where: { featureFlagName: featureFlagName } });
+        return getUXResearch ? UXResearchMapper.toDomain(getUXResearch) : null;
     }
 }

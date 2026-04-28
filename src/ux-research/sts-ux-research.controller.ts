@@ -14,7 +14,7 @@ import { ImportCompaniesIdsDto } from 'src/feature-flag/application/dto/import-c
 import { ImportUXResearchCompaniesIdsDto } from './application/dto/import-companies-ids.dto';
 import { ImportUXResearchUsersIdsDto } from './application/dto/import-users-ids.dto';
 import { DeleteUXResearchDto } from './application/dto/delete-ux-research.dto';
-import { CheckUXResearchDto } from './application/dto/check-feature-flag/check-ux-research.dto';
+import { CheckUXResearchDto } from './application/dto/check-ux-research/check-ux-research.dto';
 import { DisableUXResearchDto } from './application/dto/desable-ux-research.dto';
 import { ActiveUXResearchDto } from './application/dto/active-ux-research.dto';
 import { SearchUXResearchDto } from './application/dto/search-ux-research.dto';

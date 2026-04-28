@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
-import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import { CheckUXResearchDto } from '../../dto/check-ux-research/check-ux-research.dto';
 
 @Injectable()
 export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {

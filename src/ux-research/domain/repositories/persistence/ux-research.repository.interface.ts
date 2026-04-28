@@ -12,15 +12,7 @@ export interface UXResearchRepositoryInterface {
     limit: number,
   ): Promise<{ data: UXResearch[]; total: number }>;
 
-  update(
-    id: string,
-    partialEntity: Partial<UXResearch>,
-  ): Promise<UpdateResult>;
-
-  updateUXResearch(
-    id: string,
-    partialEntity: Partial<UXResearch>,
-  ): Promise<UXResearch>;
+  updateUXResearch(id: string, partialEntity: Partial<UXResearch>): Promise<UXResearch>;
 
   softDelete(id: string): Promise<UpdateResult>;
 }

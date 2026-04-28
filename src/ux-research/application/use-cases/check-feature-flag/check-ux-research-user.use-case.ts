@@ -2,7 +2,7 @@ import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
 import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
-import { CheckUXResearchDto } from '../../dto/check-feature-flag/check-ux-research.dto';
+import { CheckUXResearchDto } from '../../dto/check-ux-research/check-ux-research.dto';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import type { CheckUXResearchInterface } from 'src/ux-research/domain/use-cases/check-ux-research.use-case.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
