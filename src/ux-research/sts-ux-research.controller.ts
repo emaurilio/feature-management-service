@@ -18,6 +18,8 @@ import { CheckUXResearchDto } from './application/dto/check-ux-research/check-ux
 import { DisableUXResearchDto } from './application/dto/desable-ux-research.dto';
 import { ActiveUXResearchDto } from './application/dto/active-ux-research.dto';
 import { SearchUXResearchDto } from './application/dto/search-ux-research.dto';
+import { GetUXResearchResponseDto } from './application/dto/get-ux-research-response.dto';
+import { SearchUXResearchUseCase as GetUXResearchResponseUseCase } from './application/use-cases/get-ux-research-response.use-case';
 
 @ApiTags('Internal')
 @ApiSecurity('STS-Token')
@@ -33,6 +35,7 @@ export class StsUXResearchController {
         private readonly checkUXResearchUseCase: CheckUXResearchUseCase,
         private readonly disableUXResearchUseCase: DisableUXResearchUseCase,
         private readonly activeUXResearchUseCase: ActiveUXResearchUseCase,
+        private readonly getUXResearchResponseUseCase: GetUXResearchResponseUseCase,
     ) { }
     @Version('1')
     @Post('create')
@@ -82,5 +85,11 @@ export class StsUXResearchController {
     @Post('active')
     async active(@Body() activeUXResearchDto: ActiveUXResearchDto) {
         return await this.activeUXResearchUseCase.execute(activeUXResearchDto);
+    }
+
+    @Version('1')
+    @Post('get-responses')
+    async getUXResearchResponses(@Body() getUXResearchResponseDto: GetUXResearchResponseDto) {
+        return await this.getUXResearchResponseUseCase.execute(getUXResearchResponseDto);
     }
 }

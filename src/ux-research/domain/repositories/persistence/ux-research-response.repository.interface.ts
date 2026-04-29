@@ -7,4 +7,15 @@ export interface UXResearchResponseRepositoryInterface {
     searchByUXResearchIdPaginated(uxResearchId: string, page: number, limit: number): Promise<any>;
 
     deleteUXResearchResponse(id: string): Promise<boolean>;
+
+    getByUXResearchIdPaginated(uxResearchId: string, page?: number, limit?: number): Promise<{
+        items: UXResearchResponse[];
+        meta: {
+            totalItems: number;
+            itemCount: number;
+            itemsPerPage: number;
+            totalPages: number;
+            currentPage: number;
+        };
+    } | null>;
 }

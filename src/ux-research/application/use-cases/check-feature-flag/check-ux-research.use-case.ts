@@ -78,6 +78,24 @@ export class CheckUXResearchUseCase {
       return false;
     }
 
+    if (!this.isWithinResearchPeriod(getUXResearch)) {
+      void this.auditLogService.dispatchLog({
+        action: 'check_ux_research',
+        entity: 'UX-Research',
+        timestamp: new Date().toISOString(),
+        data: {
+          ux_research_name: checkUXResearchValidateDto.name,
+          user_id: checkUXResearchValidateDto.userId,
+          error: 'UX Research is not within the research period',
+          check_method: 'database',
+        },
+      });
+
+      throw new Error(
+        `UX Research ${checkUXResearchValidateDto.name} is not within the research period`,
+      );
+    }
+
     if (getUXResearch.featureFlagName) {
       const getCurrentFeatureFlag = await this.featureFlagRepository.findByName(
         getUXResearch.featureFlagName,
@@ -139,5 +157,19 @@ export class CheckUXResearchUseCase {
     });
 
     return checkResult;
+  }
+
+  private isWithinResearchPeriod (getUXResearch): boolean {
+    const now = new Date();
+
+    if (getUXResearch.startDate && now < getUXResearch.startDate) {
+      return false;
+    }
+
+    if (getUXResearch.endDate && now > getUXResearch.endDate) {
+      return false;
+    }
+
+    return true;
   }
 }

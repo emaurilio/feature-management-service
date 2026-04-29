@@ -53,15 +53,17 @@ export class UXResearchRepository
     async updateUXResearch(id: string, partialEntity: Partial<UXResearch>): Promise<UXResearch> {
         await this.update(id, partialEntity);
         const updatedEntity = await this.findOne({ where: { id } });
+
         if (!updatedEntity) {
-        throw new Error('UX Research not found after update');
+          throw new Error('UX Research not found after update');
         }
-    return UXResearchMapper.toDomain(updatedEntity);
-    }1
+
+        return UXResearchMapper.toDomain(updatedEntity);
+    }
 
     async deleteUXResearch(id: string): Promise<boolean> {
-        const result = (await this.softDelete(id)) ? true : false;
-        return result;
+        const result = await this.softDelete(id);
+        return (result.affected ?? 0) > 0;
     }
 
     async getByFeatureFlagName(featureFlagName: string): Promise<UXResearch | null> {

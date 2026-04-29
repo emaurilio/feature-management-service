@@ -3,10 +3,6 @@ import { CompanyUXResearch } from "../../entites/CompanyUXResearch";
 export interface CompanyUXResearchRepositoryInterface {
   findByCompanyId(companyId: string): Promise<CompanyUXResearch[] | null>;
 
-  createCompanyUXResearch(
-    companyUXResearch: CompanyUXResearch,
-  ): Promise<CompanyUXResearch>;
-
   findByCompanyIdAndUXResearchId(
     companyId: string,
     uxResearchId: string,

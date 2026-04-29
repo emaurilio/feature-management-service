@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { UXResearchResponseEntity } from "../entities/ux-research-response.entity";
 import { UXResearchResponseRepositoryInterface } from "src/ux-research/domain/repositories/persistence/ux-research-response.repository.interface";
-import { DataSource } from "typeorm/browser";
+import { DataSource } from "typeorm";
 import { UXResearchResponse } from "src/ux-research/domain/entites/UXResearchResponse";
+import { UXResearchResponseMapper } from "../mappers/ux-research-response.mapper";
 
 @Injectable()
 export class UXResearchResponseRepository
@@ -18,16 +19,76 @@ export class UXResearchResponseRepository
         return this.save(uxResearchResponse);
     }
     
-    async searchByUXResearchIdPaginated(uxResearchId: string, page: number, limit: number): Promise<any> {
-        return this.find({
+    async searchByUXResearchIdPaginated(uxResearchId: string, page: number, limit: number): Promise<{
+        items: UXResearchResponse[];
+        meta: {
+            totalItems: number;
+            itemCount: number;
+            itemsPerPage: number;
+            totalPages: number;
+            currentPage: number;
+        };
+    } | null> {
+        const skip = (page - 1) * limit;
+
+        const [result, total] = await this.findAndCount({
             where: { uxResearchId },
-            skip: (page - 1) * limit,
+            skip,
             take: limit,
         });
+    
+        const resultDomain = result.map(uxResearchResponse => UXResearchResponseMapper.toDomain(uxResearchResponse));
+
+        return {
+            items: resultDomain,
+            meta: {
+                totalItems: total,
+                itemCount: resultDomain.length,
+                itemsPerPage: limit,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page,
+            },
+        };
     }
 
     async deleteUXResearchResponse(id: string): Promise<boolean> {
-        const result = (await this.softDelete(id)) ? true : false;
-        return result;
+        const result = await this.softDelete(id);
+        return (result.affected ?? 0) > 0;
+    }
+
+    async getByUXResearchIdPaginated(uxResearchId: string, page: number = 1, limit: number = 15): Promise<{
+        items: UXResearchResponse[];
+        meta: {
+            totalItems: number;
+            itemCount: number;
+            itemsPerPage: number;
+            totalPages: number;
+            currentPage: number;
+        };
+    } | null> {
+        const skip = (page - 1) * limit;
+        
+        const [result, total] = await this.findAndCount({
+            where: { uxResearchId },
+            skip,
+            take: limit,
+        });
+
+        if (result.length === 0) {
+            return null;
+        }
+
+        const resultDomain = result.map(uxResearchResponse => UXResearchResponseMapper.toDomain(uxResearchResponse));
+        
+        return {
+            items: resultDomain,
+            meta: {
+                totalItems: total,
+                itemCount: resultDomain.length,
+                itemsPerPage: limit,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page,
+            },
+        };
     }
 }

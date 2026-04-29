@@ -17,7 +17,7 @@ export class SearchUXResearchUseCase {
       const { data, total } = await this.uxResearchRepository.searchByNamePaginated(
         searchUXResearchDto.name,
         searchUXResearchDto.page || 1,
-        15,
+        searchUXResearchDto.limit || 15,
       );
 
       void this.auditLogService.dispatchLog({
@@ -41,8 +41,8 @@ export class SearchUXResearchUseCase {
         meta: {
           totalItems: total,
           itemCount: data.length,
-          itemsPerPage: 15,
-          totalPages: Math.ceil(total / 15),
+          itemsPerPage: searchUXResearchDto.limit || 15,
+          totalPages: Math.ceil(total / (searchUXResearchDto.limit || 15)),
           currentPage: searchUXResearchDto.page || 1,
         },
       };

@@ -18,19 +18,13 @@ export class CompanyUXResearchRepository
         companyId: string,
     ): Promise<CompanyUXResearch[] | null> {
         const findCompany = await this.find({ where: { companyId } });
-        if (!findCompany) {
+        if (findCompany.length === 0) {
             return null;
         }
 
         return findCompany.map((companyUXResearch) => {
             return CompanyUXResearchMapper.toDomain(companyUXResearch);
         });
-    }
-
-    async createCompanyUXResearch(
-        companyUXResearch: CompanyUXResearch,
-    ): Promise<CompanyUXResearch> {
-        return this.save(companyUXResearch);
     }
 
     async createMany(

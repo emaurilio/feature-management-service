@@ -69,13 +69,13 @@ import { UXResearchResponseRepository } from './infraestructure/persistence/repo
       },
       inject: [DataSource],
     },
-    // {
-    //   provide: UXResearchResponseRepository,
-    //   useFactory: (dataSource: DataSource) => {
-    //     return new UXResearchResponseRepository(dataSource);
-    //   },
-    //   inject: [DataSource],
-    // },
+    {
+      provide: UXResearchResponseRepository,
+      useFactory: (dataSource: DataSource) => {
+        return new UXResearchResponseRepository(dataSource);
+      },
+      inject: [DataSource],
+    },
     SearchUXResearchUseCase,
     DisableUXResearchUseCase,
     ActiveUXResearchUseCase,

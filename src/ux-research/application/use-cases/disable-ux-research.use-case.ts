@@ -22,7 +22,7 @@ export class DisableUXResearchUseCase {
         throw new Error('UX Research not found');
       }
 
-      const result = await this.uxResearchRepository.update(
+      const result = await this.uxResearchRepository.updateUXResearch(
         uxResearchExists.id ?? '',
         {
           isActive: false,
