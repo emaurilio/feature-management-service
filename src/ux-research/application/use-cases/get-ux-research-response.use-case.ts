@@ -6,7 +6,7 @@ import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repos
 import type { UXResearchResponseRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 
 @Injectable()
-export class SearchUXResearchUseCase {
+export class GetUXResearchResponseUseCase {
   constructor(
     @Inject('UXResearchRepositoryInterface')
     private readonly uxResearchRepository: UXResearchRepositoryInterface,

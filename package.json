@@ -16,6 +16,7 @@
     "test": "jest --config ./test/jest-unit.json",
     "test:unit": "jest --config ./test/jest-unit.json",
     "test:file": "jest --config ./test/jest-unit.json --testPathPatterns",
+    "test:file:e2e": "jest --config ./test/jest-e2e.json --testPathPatterns",
     "test:watch": "jest --config ./test/jest-unit.json --watch",
     "test:cov": "jest --config ./test/jest-unit.json --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config ./test/jest-unit.json --runInBand",

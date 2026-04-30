@@ -1,9 +1,7 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   IsDate,
-  IsEnum,
   IsJSON,
-  isNotEmpty,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -14,7 +12,6 @@ import {
 } from 'class-validator';
 import type { UserData } from 'src/common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
-import { UXResearchType } from 'src/ux-research/domain/enums/ux-research-type.enum';
 import { IsFeatureFlagPresent } from 'src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 import { IsUXResearchPresent } from 'src/ux-research/infraestructure/validators/ux-research-exists.validator';
 
@@ -52,6 +49,7 @@ export class CreateUXResearchResponseDto {
 
   @Expose({ name: 'response_date' })
   @IsNotEmpty({ message: 'Response date is required' })
+  @Type(() => Date)
   @IsDate({ message: 'Response date must be a date' })
   responseDate: Date;
 

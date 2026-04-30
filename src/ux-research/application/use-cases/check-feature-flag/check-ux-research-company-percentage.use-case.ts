@@ -20,9 +20,7 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
   ) { }
 
   async execute(checkUXResearchCompanyPercentageDto: CheckUXResearchDto): Promise<boolean> {
-    const hashName = `${checkUXResearchCompanyPercentageDto.companyId}-
-      ${checkUXResearchCompanyPercentageDto.name}-
-      ${checkUXResearchCompanyPercentageDto.version}`;
+    const hashName = `${checkUXResearchCompanyPercentageDto.companyId}-${checkUXResearchCompanyPercentageDto.name}-${checkUXResearchCompanyPercentageDto.version}`;
 
     const cacheResult = await this.uxResearchCacheService.get(hashName);
 

@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
@@ -35,11 +35,13 @@ export class CreateUXResearchDto {
 
   @Expose({ name: 'start_date' })
   @IsOptional()
+  @Type(() => Date)
   @IsDate({ message: 'Start date must be a date' })
   startDate?: Date;
 
   @Expose({ name: 'end_date' })
   @IsOptional()
+  @Type(() => Date)
   @IsDate({ message: 'End date must be a date' })
   endDate?: Date;
 

@@ -14,12 +14,16 @@ import { ImportCompaniesIdsDto } from 'src/feature-flag/application/dto/import-c
 import { ImportUXResearchCompaniesIdsDto } from './application/dto/import-companies-ids.dto';
 import { ImportUXResearchUsersIdsDto } from './application/dto/import-users-ids.dto';
 import { DeleteUXResearchDto } from './application/dto/delete-ux-research.dto';
-import { CheckUXResearchDto } from './application/dto/check-ux-research/check-ux-research.dto';
+import { CheckUXResearchValidateDto } from './application/dto/check-ux-research-validate.dto';
 import { DisableUXResearchDto } from './application/dto/desable-ux-research.dto';
 import { ActiveUXResearchDto } from './application/dto/active-ux-research.dto';
 import { SearchUXResearchDto } from './application/dto/search-ux-research.dto';
 import { GetUXResearchResponseDto } from './application/dto/get-ux-research-response.dto';
-import { SearchUXResearchUseCase as GetUXResearchResponseUseCase } from './application/use-cases/get-ux-research-response.use-case';
+import { GetUXResearchResponseUseCase } from './application/use-cases/get-ux-research-response.use-case';
+import { CreateUXResearchResponseDto } from './application/dto/create-ux-research-response.dto';
+import { CreateUXResearchResponseUseCase } from './application/use-cases/create-ux-research-response.use-case';
+import { DeleteUXResearchResponseDto } from './application/dto/delete-ux-research-response.dto';
+import { DeleteUXResearchResponseUseCase } from './application/use-cases/delete-ux-research-response.use-case';
 
 @ApiTags('Internal')
 @ApiSecurity('STS-Token')
@@ -36,6 +40,8 @@ export class StsUXResearchController {
         private readonly disableUXResearchUseCase: DisableUXResearchUseCase,
         private readonly activeUXResearchUseCase: ActiveUXResearchUseCase,
         private readonly getUXResearchResponseUseCase: GetUXResearchResponseUseCase,
+        private readonly createUXResearchResponseUseCase: CreateUXResearchResponseUseCase,
+        private readonly deleteUXResearchResponseUseCase: DeleteUXResearchResponseUseCase,
     ) { }
     @Version('1')
     @Post('create')
@@ -70,8 +76,8 @@ export class StsUXResearchController {
     }
 
     @Version('1')
-    @Post('check-feature-flag')
-    async checkValidate(@Body() checkValidate: CheckUXResearchDto) {
+    @Post('check-ux-research')
+    async checkValidate(@Body() checkValidate: CheckUXResearchValidateDto) {
         return await this.checkUXResearchUseCase.execute(checkValidate);
     }
 
@@ -88,8 +94,21 @@ export class StsUXResearchController {
     }
 
     @Version('1')
+    @Post('create-ux-research-response')
+    async createUXResearchResponse(@Body() createUXResearchResponseDto: CreateUXResearchResponseDto) {
+        return await this.createUXResearchResponseUseCase.execute(createUXResearchResponseDto);
+    }
+
+    @Version('1')
+    @Post('delete-ux-research-response')
+    async deleteUXResearchResponse(@Body() deleteUXResearchResponseDto: DeleteUXResearchResponseDto) {
+        return await this.deleteUXResearchResponseUseCase.execute(deleteUXResearchResponseDto);
+    }
+
+    @Version('1')
     @Post('get-responses')
     async getUXResearchResponses(@Body() getUXResearchResponseDto: GetUXResearchResponseDto) {
         return await this.getUXResearchResponseUseCase.execute(getUXResearchResponseDto);
     }
+    
 }

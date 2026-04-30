@@ -285,20 +285,8 @@ describe('UXResearchMapper', () => {
     });
 
     it('should work with empty strings', () => {
-      const domain = new UXResearch(
-        '',
-        '',
-        0,
-        0,
-        false,
-        'percentage' as UXResearchType,
-        '',
-        new Date(),
-        new Date(),
-        '',
-        new Date(),
-        new Date(),
-      );
+      const fixedDate = new Date('2023-01-01T00:00:00Z');
+      const domain = new UXResearch('', '', 0, 0, false, 'percentage' as UXResearchType, '', fixedDate, fixedDate, '', fixedDate, fixedDate);
 
       const result = UXResearchMapper.toPersistence(domain);
 
@@ -311,10 +299,10 @@ describe('UXResearchMapper', () => {
         isActive: false,
         type: 'percentage',
         featureFlagName: '',
-        startDate: new Date(),
-        endDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        startDate: fixedDate,
+        endDate: fixedDate,
+        createdAt: fixedDate,
+        updatedAt: fixedDate,
         deletedAt: undefined,
       });
     });

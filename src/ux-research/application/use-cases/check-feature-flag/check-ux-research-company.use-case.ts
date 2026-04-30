@@ -10,6 +10,7 @@ export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {
   constructor(
     @Inject('CompanyFeatureFlagRepositoryInterface')
     private readonly companyFeatureFlagRepository: CompanyFeatureFlagRepositoryInterface,
+    @Inject('CacheServiceInterface')
     private readonly featureFlagCacheService: CacheServiceInterface,
     private readonly auditLogService: AuditLogService,
   ) { }

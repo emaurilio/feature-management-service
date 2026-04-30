@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { FeatureFlagRepository } from '../../src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { FeatureFlagEntity } from '../../src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
-import { FeatureFlag } from '../../src/feature-flag/domain/entities/FeatureFlag';
-import { FeatureFlagType } from '../../src/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagRepository } from '../../../src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { FeatureFlagEntity } from '../../../src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
+import { FeatureFlag } from '../../../src/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from '../../../src/feature-flag/domain/enums/feature-flag-type.enum';
 
 describe('FeatureFlagRepository (Integration)', () => {
   let repository: FeatureFlagRepository;
