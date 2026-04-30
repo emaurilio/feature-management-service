@@ -27,7 +27,10 @@ export class UXResearchEntity {
     @Column({ nullable: true })
     featureFlagName: string;
 
-    @ManyToOne(() => FeatureFlagEntity, { nullable: true })
+    @ManyToOne(() => FeatureFlagEntity, {
+        nullable: true,
+        createForeignKeyConstraints: false,
+    })
     @JoinColumn({ name: 'featureFlagName', referencedColumnName: 'name' })
     featureFlag: FeatureFlagEntity;
 
