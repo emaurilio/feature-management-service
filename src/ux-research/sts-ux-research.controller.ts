@@ -10,7 +10,6 @@ import { DisableUXResearchUseCase } from './application/use-cases/disable-ux-res
 import { ActiveUXResearchUseCase } from './application/use-cases/active-ux-research.use-case';
 import { CreateUXResearchDto } from './application/dto/create-ux-research.dto';
 import { CreateUXResearchUseCase } from './application/use-cases/create-ux-research.use-case';
-import { ImportCompaniesIdsDto } from 'src/feature-flag/application/dto/import-companies-ids.dto';
 import { ImportUXResearchCompaniesIdsDto } from './application/dto/import-companies-ids.dto';
 import { ImportUXResearchUsersIdsDto } from './application/dto/import-users-ids.dto';
 import { DeleteUXResearchDto } from './application/dto/delete-ux-research.dto';

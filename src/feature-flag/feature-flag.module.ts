@@ -85,5 +85,9 @@ import { SearchFeatureFlagUseCase } from './application/use-cases/search-feature
     CheckFeatureFlagUserPercentageUseCase,
   ],
   controllers: [FeatureFlagController, StsFeatureFlagController],
+  exports: [
+    'FeatureFlagRepositoryInterface',
+    CheckFeatureFlagUseCase,
+  ],
 })
 export class FeatureFlagModule { }

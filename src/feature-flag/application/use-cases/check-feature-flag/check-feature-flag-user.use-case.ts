@@ -18,6 +18,10 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
+    if (!checkFeatureFlagDto.userId) {
+      throw new Error('User ID is required');
+    }
+
     const cacheKey = `${checkFeatureFlagDto.userId}-
       ${checkFeatureFlagDto.featureName}-
       ${checkFeatureFlagDto.version}`;
@@ -28,11 +32,11 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          user_id: checkFeatureFlagDto.userId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -50,11 +54,11 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          user_id: checkFeatureFlagDto.userId,
           check_result: false,
           check_method: 'database',
         },
@@ -66,11 +70,11 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
     void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_user',
       entity: 'FeatureFlag',
+      entityId: checkFeatureFlagDto.userId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
+        feature_name: checkFeatureFlagDto.featureName,
         version: checkFeatureFlagDto.version,
-        user_id: checkFeatureFlagDto.userId,
         check_result: true,
         check_method: 'database',
       },

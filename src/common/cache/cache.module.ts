@@ -3,10 +3,12 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { AppCacheService } from './cache.service';
 import { CACHE_SERVICE } from './cache-service.interface';
+import { MetricsModule } from '../metrics/metrics.module';
 
 @Global()
 @Module({
   imports: [
+    MetricsModule,
     CacheModule.registerAsync({
       useFactory: async () => ({
         store: await redisStore({

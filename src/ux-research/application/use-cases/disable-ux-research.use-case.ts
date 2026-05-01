@@ -30,7 +30,7 @@ export class DisableUXResearchUseCase {
       );
 
       void this.auditLogService.dispatchLog({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         entityId: uxResearchExists.id ?? '',
         timestamp: new Date().toISOString(),
@@ -43,7 +43,7 @@ export class DisableUXResearchUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {

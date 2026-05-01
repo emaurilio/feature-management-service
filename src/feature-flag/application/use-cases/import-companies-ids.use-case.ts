@@ -29,7 +29,7 @@ export class ImportCompaniesIdsUseCase {
 
       if (!featureFlagExists) {
         void this.auditLogService.dispatchLog({
-          action: 'import',
+          action: 'import_companies_ids',
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
           data: {
@@ -61,8 +61,9 @@ export class ImportCompaniesIdsUseCase {
         await this.companyRepository.createMany(companiesFeatureFlag);
 
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'FeatureFlag',
+        entityId: id,
         timestamp: new Date().toISOString(),
         data: {
           featureFlagName: importCompanyIdsDto.featureFlagName,
@@ -80,7 +81,7 @@ export class ImportCompaniesIdsUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {

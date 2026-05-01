@@ -20,19 +20,34 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
   ) { }
 
   async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
+    if (!checkUXResearchDto.userId) {
+      void this.auditLogService.dispatchLog({
+        action: 'check_ux_research_user_percentage',
+        entity: 'UXResearch',
+        timestamp: new Date().toISOString(),
+        data: {
+          ux_research_name: checkUXResearchDto.name,
+          version: checkUXResearchDto.version,
+          error: 'User ID is required',
+        },
+      });
+
+      throw new Error('User ID is required');
+    }
+
     const hashName = `${checkUXResearchDto.userId}-${checkUXResearchDto.name}-${checkUXResearchDto.version}`;
 
     const cacheResult = await this.CacheServiceInterface.get(hashName);
 
     if (cacheResult !== null) {
       void this.auditLogService.dispatchLog({
-        action: 'check_feature_flag_user_percentage',
+        action: 'check_ux_research_user_percentage',
         entity: 'UXResearch',
+        entityId: checkUXResearchDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchDto.name,
+          ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          entityId: checkUXResearchDto.userId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -42,18 +57,18 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
     }
     const userUXResearch = await this.userUXResearchRepository.findByUserIdAndUXResearchId(
       checkUXResearchDto.userId ?? '',
-      checkUXResearchDto.featureId ?? ''
+      checkUXResearchDto.uxResearchId ?? ''
     );
 
     if (userUXResearch === null) {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research_user_percentage',
         entity: 'UXResearch',
+        entityId: checkUXResearchDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchDto.name,
+          ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          entityId: checkUXResearchDto.userId,
           check_result: false,
           check_method: 'database',
         },
@@ -62,18 +77,18 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
       return false;
     }
 
-    const hashUserFeatureFlag = this.hashUXResearch.calculateHash(hashName);
+    const hashUXResearch = this.hashUXResearch.calculateHash(hashName);
 
-    const checkResult = hashUserFeatureFlag < checkUXResearchDto.percentage;
+    const checkResult = hashUXResearch < checkUXResearchDto.percentage;
 
     void this.auditLogService.dispatchLog({
       action: 'check_ux_research_user_percentage',
       entity: 'UXResearch',
+      entityId: checkUXResearchDto.userId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkUXResearchDto.name,
+        ux_research_name: checkUXResearchDto.name,
         version: checkUXResearchDto.version,
-        entityId: checkUXResearchDto.userId,
         check_result: checkResult,
         check_method: 'database',
       },

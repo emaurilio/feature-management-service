@@ -7,7 +7,7 @@ export class CheckUXResearchDto {
 
   version: number;
 
-  featureId: string;
+  uxResearchId: string;
 
   percentage: number;
 }

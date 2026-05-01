@@ -56,7 +56,7 @@ export class CreateFeatureFlagUseCase {
           await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
 
         void this.auditLogService.dispatchLog({
-          action: 'create',
+          action: 'create_feature_flag',
           entity: 'FeatureFlag',
           entityId: result.id,
           timestamp: new Date().toISOString(),
@@ -84,7 +84,7 @@ export class CreateFeatureFlagUseCase {
         await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
 
       void this.auditLogService.dispatchLog({
-        action: 'create',
+        action: 'create_feature_flag',
         entity: 'FeatureFlag',
         entityId: result.id,
         timestamp: new Date().toISOString(),
@@ -101,7 +101,7 @@ export class CreateFeatureFlagUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'create',
+        action: 'create_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {

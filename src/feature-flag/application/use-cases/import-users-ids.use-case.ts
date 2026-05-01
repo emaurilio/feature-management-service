@@ -29,7 +29,7 @@ export class ImportUsersIdsUseCase {
 
       if (!featureFlagExists) {
         void this.auditLogService.dispatchLog({
-          action: 'import',
+          action: 'import_users_ids',
           entity: 'FeatureFlag',
           timestamp: new Date().toISOString(),
           data: {
@@ -60,8 +60,9 @@ export class ImportUsersIdsUseCase {
       const result = await this.userRepository.createMany(usersFeatureFlag);
 
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'FeatureFlag',
+        entityId: id,
         timestamp: new Date().toISOString(),
         data: {
           featureFlagName: importUsersIdsDto.featureFlagName,
@@ -79,7 +80,7 @@ export class ImportUsersIdsUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {

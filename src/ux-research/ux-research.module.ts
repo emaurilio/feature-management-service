@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { DeadletterLogsProcessor } from './processors/deadletter-logs.processor';
+import { DataSource } from 'typeorm';
+import { FeatureFlagModule } from '../feature-flag/feature-flag.module';
 import { MetricsModule } from '../common/metrics/metrics.module';
 import { QueuesModule } from '../common/queues/queues.module';
-import { DataSource } from 'typeorm';
 import { AuditLogService } from './application/services/log.service';
 import { UXResearchRepository } from './infraestructure/persistence/repositories/ux-research.repository';
 import { CompanyUXResearchRepository } from './infraestructure/persistence/repositories/company-ux-research.repository';
 import { UserUXResearchRepository } from './infraestructure/persistence/repositories/user-ux-research.repository';
+import { UXResearchResponseRepository } from './infraestructure/persistence/repositories/ux-research-response.repository';
 import { StsUXResearchController } from './sts-ux-research.controller';
 import { UXResearchController } from './ux-research.controller';
-import { AuditLogsProcessor } from 'src/feature-flag/processors/audit-logs.processor';
+import { AuditUXResearchProcessor } from './processors/audit-logs.processor';
+import { DeadletterUXResearchProcessor } from './processors/deadletter-logs.processor';
 import { SearchUXResearchUseCase } from './application/use-cases/search-feature-flag.use-case';
 import { DisableUXResearchUseCase } from './application/use-cases/disable-ux-research.use-case';
 import { ActiveUXResearchUseCase } from './application/use-cases/active-ux-research.use-case';
@@ -21,16 +23,16 @@ import { DeleteUXResearchUseCase } from './application/use-cases/delete-ux-resea
 import { UXResearchExistsConstraint } from './infraestructure/validators/ux-research-exists.validator';
 import { CheckUXResearchUseCase } from './application/use-cases/check-feature-flag/check-ux-research.use-case';
 import { CheckUXResearchUserUseCase } from './application/use-cases/check-feature-flag/check-ux-research-user.use-case';
+import { CheckUXResearchCompanyUseCase } from './application/use-cases/check-feature-flag/check-ux-research-company.use-case';
+import { CheckUXResearchPercentageUseCase } from './application/use-cases/check-feature-flag/check-ux-research-percentage.use-case';
 import { CheckUXResearchCompanyPercentageUseCase } from './application/use-cases/check-feature-flag/check-ux-research-company-percentage.use-case';
 import { CheckUXResearchUserPercentageUseCase } from './application/use-cases/check-feature-flag/check-ux-research-user-percentage.use-case';
-import { UXResearchResponseRepository } from './infraestructure/persistence/repositories/ux-research-response.repository';
+import { GetUXResearchResponseUseCase } from './application/use-cases/get-ux-research-response.use-case';
+import { CreateUXResearchResponseUseCase } from './application/use-cases/create-ux-research-response.use-case';
+import { DeleteUXResearchResponseUseCase } from './application/use-cases/delete-ux-research-response.use-case';
 
 @Module({
-  imports: [
-    QueuesModule,
-    MetricsModule,
-    FeatureFlagModule
-  ],
+  imports: [QueuesModule, MetricsModule, FeatureFlagModule],
   providers: [
     {
       provide: 'UXResearchRepositoryInterface',
@@ -81,8 +83,8 @@ import { UXResearchResponseRepository } from './infraestructure/persistence/repo
     ActiveUXResearchUseCase,
     AuditLogService,
     HashUXResearchService,
-    AuditLogsProcessor,
-    DeadletterLogsProcessor,
+    AuditUXResearchProcessor,
+    DeadletterUXResearchProcessor,
     CreateUXResearchUseCase,
     ImportCompaniesIdsUseCase,
     ImportUsersIdsUseCase,
@@ -90,9 +92,14 @@ import { UXResearchResponseRepository } from './infraestructure/persistence/repo
     UXResearchExistsConstraint,
     CheckUXResearchUseCase,
     CheckUXResearchUserUseCase,
+    CheckUXResearchCompanyUseCase,
+    CheckUXResearchPercentageUseCase,
     CheckUXResearchCompanyPercentageUseCase,
     CheckUXResearchUserPercentageUseCase,
+    GetUXResearchResponseUseCase,
+    CreateUXResearchResponseUseCase,
+    DeleteUXResearchResponseUseCase,
   ],
   controllers: [UXResearchController, StsUXResearchController],
 })
-export class FeatureFlagModule { }
+export class UXResearchModule {}

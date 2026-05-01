@@ -29,7 +29,7 @@ export class ImportCompaniesIdsUseCase {
 
       if (!uxResearchExists) {
         void this.auditLogService.dispatchLog({
-          action: 'import',
+          action: 'import_companies_ids',
           entity: 'UX Research',
           timestamp: new Date().toISOString(),
           data: {
@@ -61,7 +61,7 @@ export class ImportCompaniesIdsUseCase {
         await this.companyRepository.createMany(companiesUXResearch);
 
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'UX Research',
         timestamp: new Date().toISOString(),
         data: {
@@ -80,7 +80,7 @@ export class ImportCompaniesIdsUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'UX Research',
         timestamp: new Date().toISOString(),
         data: {

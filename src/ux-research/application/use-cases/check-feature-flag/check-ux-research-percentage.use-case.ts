@@ -26,13 +26,13 @@ export class CheckUXResearchPercentageUseCase implements CheckUXResearchInterfac
 
     if (cacheResult !== null) {
       void this.auditLogService.dispatchLog({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: entityId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchDto.name,
+          ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          entityId: entityId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -41,20 +41,20 @@ export class CheckUXResearchPercentageUseCase implements CheckUXResearchInterfac
       return cacheResult;
     }
 
-    const hashFeatureFlag = this.hashUXResearch.calculateHash(hashName);
+    const hashUXResearch = this.hashUXResearch.calculateHash(hashName);
 
-    const checkResult = hashFeatureFlag < checkUXResearchDto.percentage;
+    const checkResult = hashUXResearch < checkUXResearchDto.percentage;
 
     void this.auditLogService.dispatchLog({
-      action: 'check_feature_flag_percentage',
-      entity: 'FeatureFlag',
+      action: 'check_ux_research_percentage',
+      entity: 'UXResearch',
+      entityId: entityId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkUXResearchDto.name,
+        ux_research_name: checkUXResearchDto.name,
         version: checkUXResearchDto.version,
-        entityId: entityId,
         check_result: checkResult,
-        check_method: 'database',
+        check_method: 'cache',
       },
     });
 

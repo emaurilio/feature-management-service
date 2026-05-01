@@ -23,7 +23,7 @@ export class CreateUXResearchResponseUseCase {
         !createUXResearchResponseDto.userId
       ) {
         void this.auditLogService.dispatchLog({
-          action: 'create',
+          action: 'create_ux_research_response',
           entity: 'UXResearchResponse',
           timestamp: new Date().toISOString(),
           data: {
@@ -49,7 +49,7 @@ export class CreateUXResearchResponseUseCase {
         !createUXResearchResponseDto.featureFlagName
       ) {
         void this.auditLogService.dispatchLog({
-          action: 'create',
+          action: 'create_ux_research_response',
           entity: 'UXResearchResponse',
           timestamp: new Date().toISOString(),
           data: {
@@ -57,11 +57,11 @@ export class CreateUXResearchResponseUseCase {
             responseDate: createUXResearchResponseDto.responseDate,
             userId: createUXResearchResponseDto.userId,
             companyId: createUXResearchResponseDto.companyId,
-            error: 'UX research must exists in database',
+            error: 'UX Research must exists in database',
           }
         });
         throw new Error(
-          'UX research name or feature flag name is required',
+          'UX Research name or feature flag name is required',
         );
       }
 
@@ -77,7 +77,7 @@ export class CreateUXResearchResponseUseCase {
 
       if (!uxResearchExists || !uxResearchExists.id) {
         void this.auditLogService.dispatchLog({
-          action: 'create',
+          action: 'create_ux_research_response',
           entity: 'UXResearchResponse',
           timestamp: new Date().toISOString(),
           data: {
@@ -85,11 +85,11 @@ export class CreateUXResearchResponseUseCase {
             responseDate: createUXResearchResponseDto.responseDate,
             userId: createUXResearchResponseDto.userId,
             companyId: createUXResearchResponseDto.companyId,
-            error: 'UX research must exists in database',
+            error: 'UX Research must exists in database',
         },
       });
         throw new Error(
-          'UX research must exists in database',
+          'UX Research must exists in database',
         );
       }
 
@@ -104,7 +104,7 @@ export class CreateUXResearchResponseUseCase {
       const result = await this.uxResearchResponseRepository.createUXResearchResponse(newUXResearchResponse);
 
         void this.auditLogService.dispatchLog({
-          action: 'create',
+          action: 'create_ux_research_response',
           entity: 'UXResearchResponse',
           entityId: result.id,
           timestamp: new Date().toISOString(),
@@ -120,7 +120,7 @@ export class CreateUXResearchResponseUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: new Date().toISOString(),
         data: {

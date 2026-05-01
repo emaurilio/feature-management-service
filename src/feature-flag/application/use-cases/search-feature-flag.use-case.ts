@@ -21,7 +21,7 @@ export class SearchFeatureFlagUseCase {
       );
 
       void this.auditLogService.dispatchLog({
-        action: 'search',
+        action: 'search_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
@@ -48,7 +48,7 @@ export class SearchFeatureFlagUseCase {
       };
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'search',
+        action: 'search_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {

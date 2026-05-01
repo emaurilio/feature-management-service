@@ -49,7 +49,7 @@ export class DeleteFeatureFlagUseCase {
       }
 
       void this.auditLogService.dispatchLog({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
         entityId: featureFlagExists.id,
         timestamp: new Date().toISOString(),
@@ -64,7 +64,7 @@ export class DeleteFeatureFlagUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {

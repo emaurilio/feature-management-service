@@ -30,7 +30,7 @@ export class DisableFeatureFlagUseCase {
       );
 
       void this.auditLogService.dispatchLog({
-        action: 'disable',
+        action: 'disable_feature_flag',
         entity: 'FeatureFlag',
         entityId: featureFlagExists.id ?? '',
         timestamp: new Date().toISOString(),
@@ -43,7 +43,7 @@ export class DisableFeatureFlagUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'disable',
+        action: 'disable_feature_flag',
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {

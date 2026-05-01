@@ -15,14 +15,30 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
     private readonly uxResearchRepository: CompanyUXResearchRepositoryInterface,
     private readonly hashUXResearchService: HashUXResearchService,
     @Inject(CACHE_SERVICE)
-    private readonly uxResearchCacheService: CacheServiceInterface,
+    private readonly cacheService: CacheServiceInterface,
     private readonly auditLogService: AuditLogService,
   ) { }
 
   async execute(checkUXResearchCompanyPercentageDto: CheckUXResearchDto): Promise<boolean> {
+    if (!checkUXResearchCompanyPercentageDto.companyId) {
+      void this.auditLogService.dispatchLog({
+        action: 'check_ux_research_company_percentage',
+        entity: 'UXResearch',
+        entityId: checkUXResearchCompanyPercentageDto.companyId,
+        timestamp: new Date().toISOString(),
+        data: {
+          ux_research_name: checkUXResearchCompanyPercentageDto.name,
+          version: checkUXResearchCompanyPercentageDto.version,
+          error: 'Company ID is required',
+        },
+      });
+
+      throw new Error('Company ID is required');
+    }
+
     const hashName = `${checkUXResearchCompanyPercentageDto.companyId}-${checkUXResearchCompanyPercentageDto.name}-${checkUXResearchCompanyPercentageDto.version}`;
 
-    const cacheResult = await this.uxResearchCacheService.get(hashName);
+    const cacheResult = await this.cacheService.get(hashName);
 
     if (cacheResult !== null) {
       void this.auditLogService.dispatchLog({
@@ -43,7 +59,7 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
 
     const uxResearch = await this.uxResearchRepository.findByCompanyIdAndUXResearchId(
       checkUXResearchCompanyPercentageDto.companyId ?? '',
-      checkUXResearchCompanyPercentageDto.featureId ?? '',
+      checkUXResearchCompanyPercentageDto.uxResearchId ?? '',
     );
 
     if (uxResearch === null) {
@@ -63,9 +79,9 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
       return false;
     }
 
-    const hashCompanyFeatureFlag = this.hashUXResearchService.calculateHash(hashName);
+    const hashUXResearch = this.hashUXResearchService.calculateHash(hashName);
 
-    const checkResult = hashCompanyFeatureFlag < checkUXResearchCompanyPercentageDto.percentage;
+    const checkResult = hashUXResearch < checkUXResearchCompanyPercentageDto.percentage;
 
     void this.auditLogService.dispatchLog({
       action: 'check_ux_research_company_percentage',
@@ -80,7 +96,7 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
       },
     });
 
-    void this.uxResearchCacheService.set(hashName, checkResult);
+    void this.cacheService.set(hashName, checkResult);
 
     return checkResult;
   }

@@ -19,7 +19,7 @@ export class DeleteUXResearchResponseUseCase {
       );
 
       void this.auditLogService.dispatchLog({
-        action: 'delete',
+        action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: deleteUXResearchResponseDto.uxResponseId,
         timestamp: new Date().toISOString(),
@@ -32,7 +32,7 @@ export class DeleteUXResearchResponseUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'delete',
+        action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: new Date().toISOString(),
         data: {

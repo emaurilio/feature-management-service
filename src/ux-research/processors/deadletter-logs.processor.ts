@@ -5,10 +5,10 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { getErrorMessage } from '../../common/utils/error.utils';
 import { DeadLetterLogPayload } from './types/deadletter-logs.types';
 
-@Processor('deadletter-logs')
+@Processor('deadletter-ux-research')
 @Injectable()
-export class DeadletterLogsProcessor extends WorkerHost {
-  private readonly logger = new Logger(DeadletterLogsProcessor.name);
+export class DeadletterUXResearchProcessor extends WorkerHost {
+  private readonly logger = new Logger(DeadletterUXResearchProcessor.name);
 
   constructor(private readonly elasticsearchService: ElasticsearchService) {
     super();

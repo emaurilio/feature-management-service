@@ -28,11 +28,11 @@ export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterf
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_percentage',
         entity: 'FeatureFlag',
+        entityId: entityId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          entityId: entityId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -50,7 +50,7 @@ export class CheckFeatureFlagPercentageUseCase implements CheckFeatureFlagInterf
       entity: 'FeatureFlag',
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
+        feature_name: checkFeatureFlagDto.featureName,
         version: checkFeatureFlagDto.version,
         entityId: entityId,
         check_result: checkResult,

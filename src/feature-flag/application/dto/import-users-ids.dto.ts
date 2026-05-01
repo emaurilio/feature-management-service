@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsObject, IsString, MinLength } from 'class-validator';
 import { IsFeatureFlagPresent } from 'src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 import type { UserData } from '../../../common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,7 +13,9 @@ export class ImportUsersIdsDto {
 
   @Expose({ name: 'users_ids' })
   @IsNotEmpty({ message: 'Users IDs is required' })
-  @IsArray({ message: 'Users IDs must be an array' })
+  @ArrayMinSize(1, { message: 'Users IDs is required' })
+  @IsString({ each: true, message: 'Users IDs must contain only strings' })
+  @MinLength(1, { each: true, message: 'Each user ID must be a non-empty string' })
   usersIds: string[];
 
   //The field User Data must be a object with data by user that import this feature flag

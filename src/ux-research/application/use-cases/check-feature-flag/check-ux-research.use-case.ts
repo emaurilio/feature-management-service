@@ -35,6 +35,17 @@ export class CheckUXResearchUseCase {
     checkUXResearchValidateDto: CheckUXResearchValidateDto,
   ): Promise<boolean> {
     if (!checkUXResearchValidateDto.userId && !checkUXResearchValidateDto.companyId) {
+      void this.auditLogService.dispatchLog({
+        action: 'check_ux_research',
+        entity: 'UXResearch',
+        entityId: checkUXResearchValidateDto.userId || checkUXResearchValidateDto.companyId,
+        timestamp: new Date().toISOString(),
+        data: {
+          ux_research_name: checkUXResearchValidateDto.name,
+          error: 'User ID or Company ID is required',
+        },
+      });
+
       throw new Error(
         `User ID or Company ID is required`,
       );
@@ -47,11 +58,11 @@ export class CheckUXResearchUseCase {
     if (!getUXResearch) {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research',
-        entity: 'UX-Research',
+        entity: 'UXResearch',
+        entityId: checkUXResearchValidateDto.userId || checkUXResearchValidateDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
           ux_research_name: checkUXResearchValidateDto.name,
-          user_id: checkUXResearchValidateDto.userId,
           error: 'UX Research not found',
           check_method: 'database',
         },
@@ -65,11 +76,11 @@ export class CheckUXResearchUseCase {
     if (!getUXResearch.isActive) {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research',
-        entity: 'UX-Research',
+        entity: 'UXResearch',
+        entityId: checkUXResearchValidateDto.userId || checkUXResearchValidateDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
           ux_research_name: checkUXResearchValidateDto.name,
-          user_id: checkUXResearchValidateDto.userId,
           check_result: false,
           check_method: 'database',
         },
@@ -81,11 +92,11 @@ export class CheckUXResearchUseCase {
     if (!this.isWithinResearchPeriod(getUXResearch)) {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research',
-        entity: 'UX-Research',
+        entity: 'UXResearch',
+        entityId: checkUXResearchValidateDto.userId || checkUXResearchValidateDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
           ux_research_name: checkUXResearchValidateDto.name,
-          user_id: checkUXResearchValidateDto.userId,
           error: 'UX Research is not within the research period',
           check_method: 'database',
         },
@@ -105,10 +116,10 @@ export class CheckUXResearchUseCase {
         void this.auditLogService.dispatchLog({
           action: 'check_ux_research',
           entity: 'UXResearch',
+          entityId: checkUXResearchValidateDto.userId || checkUXResearchValidateDto.companyId,
           timestamp: new Date().toISOString(),
           data: {
             ux_research_name: checkUXResearchValidateDto.name,
-            user_id: checkUXResearchValidateDto.userId,
             error: 'Feature Flag not found',
             check_method: 'database',
           },
@@ -138,7 +149,7 @@ export class CheckUXResearchUseCase {
       ...checkUXResearchValidateDto,
       name: getUXResearch.name,
       version: getUXResearch.version,
-      featureId: getUXResearch.id || '',
+      uxResearchId: getUXResearch.id || '',
       percentage: getUXResearch.percentage,
     };
 
@@ -147,7 +158,8 @@ export class CheckUXResearchUseCase {
 
     void this.auditLogService.dispatchLog({
       action: 'check_ux_research',
-      entity: 'UX Research',
+      entity: 'UXResearch',
+      entityId: checkUXResearchValidateDto.userId || checkUXResearchValidateDto.companyId,
       timestamp: new Date().toISOString(),
       data: {
         ux_research_name: checkUXResearchValidateDto.name,

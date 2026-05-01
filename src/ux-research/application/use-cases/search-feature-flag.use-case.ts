@@ -21,7 +21,7 @@ export class SearchUXResearchUseCase {
       );
 
       void this.auditLogService.dispatchLog({
-        action: 'search',
+        action: 'search_ux_research',
         entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
@@ -48,7 +48,7 @@ export class SearchUXResearchUseCase {
       };
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'search',
+        action: 'search_ux_research',
         entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {

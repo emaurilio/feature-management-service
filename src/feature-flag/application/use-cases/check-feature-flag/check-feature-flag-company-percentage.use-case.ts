@@ -19,6 +19,10 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
+    if (!checkFeatureFlagDto.companyId) {
+      throw new Error('Company ID is required');
+    }
+
     const hashName = `${checkFeatureFlagDto.companyId}-
       ${checkFeatureFlagDto.featureName}-
       ${checkFeatureFlagDto.version}`;
@@ -31,7 +35,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
           company_id: checkFeatureFlagDto.companyId,
           check_result: cacheResult,
@@ -53,7 +57,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
         entity: 'FeatureFlag',
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
           company_id: checkFeatureFlagDto.companyId,
           check_result: false,
@@ -71,11 +75,11 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
     void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_company_percentage',
       entity: 'FeatureFlag',
+      entityId: checkFeatureFlagDto.companyId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
+        feature_name: checkFeatureFlagDto.featureName,
         version: checkFeatureFlagDto.version,
-        company_id: checkFeatureFlagDto.companyId,
         check_result: checkResult,
         check_method: 'database',
       },

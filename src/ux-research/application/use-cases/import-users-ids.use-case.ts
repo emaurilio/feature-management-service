@@ -3,11 +3,11 @@ import { Inject } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/common/utils/error.utils';
-import { UserFeatureFlag } from 'src/feature-flag/domain/entities/UserFeatureFlag';
+import { UserUXResearch } from 'src/ux-research/domain/entites/UserUXResearch';
 import { ImportUXResearchUsersIdsDto } from '../dto/import-users-ids.dto';
-import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
+import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 
 @Injectable()
 export class ImportUsersIdsUseCase {
@@ -15,7 +15,7 @@ export class ImportUsersIdsUseCase {
     @Inject('UXResearchRepositoryInterface')
     private readonly uxResearchRepository: UXResearchRepositoryInterface,
     @Inject('UserUXResearchRepositoryInterface')
-    private readonly userRepository: UserFeatureFlagRepositoryInterface,
+    private readonly userUXResearchRepository: UserUXResearchRepositoryInterface,
     private readonly auditLogService: AuditLogService,
     @Inject(CACHE_SERVICE)
     private readonly uxResearchCacheService: CacheServiceInterface,
@@ -29,7 +29,7 @@ export class ImportUsersIdsUseCase {
 
       if (!uxResearchExists) {
         void this.auditLogService.dispatchLog({
-          action: 'import',
+          action: 'import_users_ids',
           entity: 'UX-Research',
           timestamp: new Date().toISOString(),
           data: {
@@ -43,24 +43,24 @@ export class ImportUsersIdsUseCase {
 
       const id = uxResearchExists.id;
 
-      const usersFeatureFlag = await Promise.all(
+      const usersUXResearch = await Promise.all(
         importUXResearchUsersIdsDto.usersIds.map(async (userId) => {
           const existing =
-            await this.userRepository.findByUserIdAndFeatureFlagId(
+            await this.userUXResearchRepository.findByUserIdAndUXResearchId(
               userId,
               id ?? '',
             );
 
           if (existing) return existing;
 
-          return new UserFeatureFlag(id ?? '', userId);
+          return new UserUXResearch(id ?? '', userId);
         }),
       );
 
-      const result = await this.userRepository.createMany(usersFeatureFlag);
+      const result = await this.userUXResearchRepository.createMany(usersUXResearch);
 
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
@@ -79,7 +79,7 @@ export class ImportUsersIdsUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {

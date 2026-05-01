@@ -43,10 +43,10 @@ export class CheckFeatureFlagUseCase {
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagValidateDto.userId || checkFeatureFlagValidateDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagValidateDto.name,
-          user_id: checkFeatureFlagValidateDto.userId,
+          feature_name: checkFeatureFlagValidateDto.name,
           error: 'Feature Flag not found',
           check_method: 'database',
         },
@@ -61,10 +61,10 @@ export class CheckFeatureFlagUseCase {
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagValidateDto.userId || checkFeatureFlagValidateDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagValidateDto.name,
-          user_id: checkFeatureFlagValidateDto.userId,
+          feature_name: checkFeatureFlagValidateDto.name,
           check_result: false,
           check_method: 'database',
         },
@@ -79,10 +79,10 @@ export class CheckFeatureFlagUseCase {
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagValidateDto.userId || checkFeatureFlagValidateDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagValidateDto.name,
-          user_id: checkFeatureFlagValidateDto.userId,
+          feature_name: checkFeatureFlagValidateDto.name,
           error: 'Strategy not found',
           check_method: 'database',
         },
@@ -104,9 +104,10 @@ export class CheckFeatureFlagUseCase {
     void this.auditLogService.dispatchLog({
       action: 'check_feature_flag',
       entity: 'FeatureFlag',
+      entityId: checkFeatureFlagValidateDto.userId || checkFeatureFlagValidateDto.companyId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagValidateDto.name,
+        feature_name: checkFeatureFlagValidateDto.name,
         check_result: checkResult,
         check_method: 'database',
       },

@@ -18,6 +18,10 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
+    if (!checkFeatureFlagDto.companyId) {
+      throw new Error('Company ID is required');
+    }
+
     const cacheKey = `${checkFeatureFlagDto.companyId}-
       ${checkFeatureFlagDto.featureName}-
       ${checkFeatureFlagDto.version}`;
@@ -28,11 +32,11 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -50,11 +54,11 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
           check_result: false,
           check_method: 'database',
         },
@@ -63,11 +67,11 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_company',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.companyId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          company_id: checkFeatureFlagDto.companyId,
           check_result: false,
           check_method: 'database',
         },
@@ -79,11 +83,11 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
     void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_company',
       entity: 'FeatureFlag',
+      entityId: checkFeatureFlagDto.companyId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
+        feature_name: checkFeatureFlagDto.featureName,
         version: checkFeatureFlagDto.version,
-        company_id: checkFeatureFlagDto.companyId,
         check_result: true,
         check_method: 'database',
       },

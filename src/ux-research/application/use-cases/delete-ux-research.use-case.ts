@@ -46,7 +46,7 @@ export class DeleteUXResearchUseCase {
       }
 
       void this.auditLogService.dispatchLog({
-        action: 'delete',
+        action: 'delete_ux_research',
         entity: 'UXResearch',
         entityId: uxResearchExists.id,
         timestamp: new Date().toISOString(),
@@ -61,7 +61,7 @@ export class DeleteUXResearchUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'delete',
+        action: 'delete_ux_research',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {

@@ -20,6 +20,10 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
   ) { }
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
+    if (!checkFeatureFlagDto.userId) {
+      throw new Error('User ID is required');
+    }
+
     const hashName = `${checkFeatureFlagDto.userId}-${checkFeatureFlagDto.featureName}-${checkFeatureFlagDto.version}`;
 
     const cacheResult = await this.featureFlagCacheService.get(hashName);
@@ -28,11 +32,11 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          entityId: checkFeatureFlagDto.userId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -49,11 +53,11 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
       void this.auditLogService.dispatchLog({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkFeatureFlagDto.featureName,
+          feature_name: checkFeatureFlagDto.featureName,
           version: checkFeatureFlagDto.version,
-          entityId: checkFeatureFlagDto.userId,
           check_result: false,
           check_method: 'database',
         },
@@ -69,11 +73,11 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
     void this.auditLogService.dispatchLog({
       action: 'check_feature_flag_user_percentage',
       entity: 'FeatureFlag',
+      entityId: checkFeatureFlagDto.userId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkFeatureFlagDto.featureName,
+        feature_name: checkFeatureFlagDto.featureName,
         version: checkFeatureFlagDto.version,
-        entityId: checkFeatureFlagDto.userId,
         check_result: checkResult,
         check_method: 'database',
       },

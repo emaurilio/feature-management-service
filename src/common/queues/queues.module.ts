@@ -6,6 +6,8 @@ import { BullModule } from '@nestjs/bullmq';
     BullModule.registerQueue(
       { name: 'audit-logs' },
       { name: 'deadletter-logs' },
+      { name: 'audit-ux-research' },
+      { name: 'deadletter-ux-research' },
     ),
   ],
   exports: [BullModule],

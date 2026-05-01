@@ -59,7 +59,7 @@ export class CreateUXResearchUseCase {
           await this.uxResearchRepository.createUXResearch(newUXResearch);
 
         void this.auditLogService.dispatchLog({
-          action: 'create',
+          action: 'create_ux_research',
           entity: 'UXResearch',
           entityId: result.id,
           timestamp: new Date().toISOString(),
@@ -90,7 +90,7 @@ export class CreateUXResearchUseCase {
         await this.uxResearchRepository.createUXResearch(newUXResearch);
 
       void this.auditLogService.dispatchLog({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         entityId: result.id,
         timestamp: new Date().toISOString(),
@@ -110,7 +110,7 @@ export class CreateUXResearchUseCase {
       return result;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         timestamp: new Date().toISOString(),
         data: {

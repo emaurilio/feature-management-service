@@ -18,6 +18,22 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
   ) { }
 
   async execute(checkUXResearchDto: CheckUXResearchDto): Promise<boolean> {
+    if (!checkUXResearchDto.userId) {
+      void this.auditLogService.dispatchLog({
+        action: 'check_ux_research_user',
+        entity: 'UXResearch',
+        entityId: checkUXResearchDto.userId,
+        timestamp: new Date().toISOString(),
+        data: {
+          ux_research_name: checkUXResearchDto.name,
+          version: checkUXResearchDto.version,
+          error: 'User ID is required',
+        },
+      });
+
+      throw new Error('User ID is required');
+    }
+
     const cacheKey = `${checkUXResearchDto.userId}-
       ${checkUXResearchDto.name}-
       ${checkUXResearchDto.version}`;
@@ -28,11 +44,11 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: checkUXResearchDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          featureName: checkUXResearchDto.name,
+          ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          user_id: checkUXResearchDto.userId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -43,18 +59,18 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
 
     const userUXResearch = await this.userUXResearchRepository.findByUserIdAndUXResearchId(
       checkUXResearchDto.userId ?? '',
-      checkUXResearchDto.featureId ?? ''
+      checkUXResearchDto.uxResearchId ?? ''
     );
 
     if (userUXResearch === null) {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: checkUXResearchDto.userId,
         timestamp: new Date().toISOString(),
         data: {
-          feature_name: checkUXResearchDto.name,
+          ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          user_id: checkUXResearchDto.userId,
           check_result: false,
           check_method: 'database',
         },
@@ -66,11 +82,11 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
     void this.auditLogService.dispatchLog({
       action: 'check_ux_research_user',
       entity: 'UXResearch',
+      entityId: checkUXResearchDto.userId,
       timestamp: new Date().toISOString(),
       data: {
-        featureName: checkUXResearchDto.name,
+        ux_research_name: checkUXResearchDto.name,
         version: checkUXResearchDto.version,
-        user_id: checkUXResearchDto.userId,
         check_result: true,
         check_method: 'database',
       },

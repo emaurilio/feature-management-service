@@ -90,6 +90,7 @@ services:
       - elasticsearch
       - redis
     environment:
+      PORT: 3000
       DB_HOST: db
       DB_PORT: 3306
       DB_USERNAME: root

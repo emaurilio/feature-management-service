@@ -23,7 +23,7 @@ export class GetUXResearchResponseUseCase {
 
       if (!getUxResearch) {
        void this.auditLogService.dispatchLog({
-        action: 'get',
+        action: 'get_ux_research_response',
         entity: 'UX-Research-Response',
         timestamp: new Date().toISOString(),
         data: {
@@ -48,7 +48,7 @@ export class GetUXResearchResponseUseCase {
 
       if (!getUXResearchResponse) {
         void this.auditLogService.dispatchLog({
-          action: 'get',
+          action: 'get_ux_research_response',
           entity: 'UX-Research-Response',
           timestamp: new Date().toISOString(),
           data: {
@@ -62,7 +62,7 @@ export class GetUXResearchResponseUseCase {
       }
 
       void this.auditLogService.dispatchLog({
-        action: 'get',
+        action: 'get_ux_research_response',
         entity: 'UX-Research-Response',
         timestamp: new Date().toISOString(),
         data: {
@@ -74,7 +74,7 @@ export class GetUXResearchResponseUseCase {
       return getUXResearchResponse;
     } catch (error) {
       void this.auditLogService.dispatchLog({
-        action: 'search',
+        action: 'get_ux_research_response',
         entity: 'UX-Research',
         timestamp: new Date().toISOString(),
         data: {
