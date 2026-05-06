@@ -166,10 +166,6 @@ describe('CheckFeatureFlagUserUseCase', () => {
       featureId: '',
     };
 
-    await useCase.execute(dtoWithoutIds);
-
-    expect(
-      userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
-    ).toHaveBeenCalledWith('', '');
+    await expect(useCase.execute(dtoWithoutIds)).rejects.toThrow('User ID is required');
   });
 });

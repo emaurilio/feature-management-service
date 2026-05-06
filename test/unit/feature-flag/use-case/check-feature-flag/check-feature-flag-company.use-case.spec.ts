@@ -154,22 +154,27 @@ describe('CheckFeatureFlagCompanyUseCase', () => {
     );
   });
 
-  it('should query repository with empty company and feature ids when they are missing', async () => {
-    cacheService.get.mockResolvedValue(null);
-    companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId.mockResolvedValue(
-      null,
-    );
-
+  it('should throw when company id is missing', async () => {
     const dtoWithoutIds: CheckFeatureFlagDto = {
       ...dtoBase,
       companyId: '',
       featureId: '',
     };
 
-    await useCase.execute(dtoWithoutIds);
+    await expect(useCase.execute(dtoWithoutIds)).rejects.toThrow(
+      'Company ID is required',
+    );
 
     expect(
       companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
-    ).toHaveBeenCalledWith('', '');
+    ).not.toHaveBeenCalled();
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'check_feature_flag_company',
+        data: expect.objectContaining({
+          error: 'Company ID is required',
+        }),
+      }),
+    );
   });
 });

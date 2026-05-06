@@ -59,7 +59,7 @@ describe('DeleteUXResearchResponseUseCase', () => {
 
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('response-1');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: 'response-1',
         timestamp: expect.any(String),
@@ -81,7 +81,7 @@ describe('DeleteUXResearchResponseUseCase', () => {
 
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('response-1');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: expect.any(String),
         data: {
@@ -110,7 +110,7 @@ describe('DeleteUXResearchResponseUseCase', () => {
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('uuid-54321-09876-fedcba');
       expect(result).toBe(true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: 'uuid-54321-09876-fedcba',
         timestamp: expect.any(String),
@@ -176,7 +176,7 @@ describe('DeleteUXResearchResponseUseCase', () => {
 
       expect(result).toBe(true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: 'response-minimal',
         timestamp: expect.any(String),

@@ -19,6 +19,16 @@ export class CheckFeatureFlagCompanyUseCase implements CheckFeatureFlagInterface
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     if (!checkFeatureFlagDto.companyId) {
+      void this.auditLogService.dispatchLog({
+        action: 'check_feature_flag_company',
+        entity: 'FeatureFlag',
+        entityId: checkFeatureFlagDto.companyId,
+        timestamp: new Date().toISOString(),
+        data: {
+          error: 'Company ID is required',
+        },
+      });
+  
       throw new Error('Company ID is required');
     }
 

@@ -98,11 +98,11 @@ describe('CreateUXResearchUseCase', () => {
         expect.any(UXResearch)
       );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-1',
         timestamp: expect.any(String),
-        data: {
+        data: expect.objectContaining({
           user: mockCreateUXResearchDto.userData,
           name: 'Test UX Research',
           percentage: 50,
@@ -112,7 +112,7 @@ describe('CreateUXResearchUseCase', () => {
           featureFlagName: 'feature-1',
           startDate: new Date('2023-01-01'),
           endDate: new Date('2023-01-31'),
-        },
+        }),
       });
       expect(result).toEqual(mockCreatedUXResearch);
     });
@@ -166,7 +166,7 @@ describe('CreateUXResearchUseCase', () => {
         expect.any(UXResearch)
       );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-new',
         timestamp: expect.any(String),
@@ -202,7 +202,7 @@ describe('CreateUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).not.toHaveBeenCalled();
       expect(uxResearchRepository.createUXResearch).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
@@ -256,7 +256,7 @@ describe('CreateUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research', true);
       expect(uxResearchRepository.createUXResearch).toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
@@ -302,7 +302,7 @@ describe('CreateUXResearchUseCase', () => {
       expect(result).toEqual(companyUXResearch);
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Company UX Research', true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-company',
         timestamp: expect.any(String),

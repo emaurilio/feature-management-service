@@ -92,8 +92,8 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
+        entityId: dtoBase.userId,
         data: expect.objectContaining({
-          entityId: dtoBase.userId,
           check_result: true,
           check_method: 'cache',
         }),
@@ -115,6 +115,8 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
+        entity: 'FeatureFlag',
+        entityId: dtoBase.userId,
         data: expect.objectContaining({
           check_result: false,
           check_method: 'cache',
@@ -153,6 +155,7 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
         entity: 'FeatureFlag',
+        entityId: dtoBase.userId,
         data: expect.objectContaining({
           check_result: true,
           check_method: 'database',
@@ -195,8 +198,9 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag_user_percentage',
+        entity: 'FeatureFlag',
+        entityId: dtoBase.userId,
         data: expect.objectContaining({
-          entityId: 'user-1',
           check_result: false,
           check_method: 'database',
         }),
@@ -216,10 +220,22 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
       featureId: '',
     };
 
-    await useCase.execute(dtoWithoutIds);
+    await expect(useCase.execute(dtoWithoutIds)).rejects.toThrow('User ID is required');
 
     expect(
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
-    ).toHaveBeenCalledWith('', '');
+    ).not.toHaveBeenCalled();
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'check_feature_flag_user_percentage',
+        entity: 'FeatureFlag',
+        entityId: 'user-1',
+        timestamp: expect.any(String),
+        data: expect.objectContaining({
+          check_result: false,
+          check_method: 'database',
+        }),
+      }),
+    );
   });
 });

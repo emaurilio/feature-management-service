@@ -98,7 +98,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     expect(userRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
         entityId: 'flag-123',
       }),
@@ -143,7 +143,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     expect(userRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
         entityId: 'flag-456',
       }),
@@ -169,9 +169,15 @@ describe('DeleteFeatureFlagUseCase', () => {
     expect(repository.softDelete).not.toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
+        timestamp: expect.any(String),
         data: expect.objectContaining({
+          user: {
+            userId: 'user-123',
+            email: 'maurilio@teste.com',
+            name: 'Maurilio',
+          },
           error: 'Feature flag not found',
         }),
       }),
@@ -210,7 +216,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     expect(repository.softDelete).toHaveBeenCalledWith('flag-123');
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
         data: expect.objectContaining({
           error: 'Delete failed',
@@ -257,7 +263,7 @@ describe('DeleteFeatureFlagUseCase', () => {
     expect(companyRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'delete',
+        action: 'delete_feature_flag',
         entity: 'FeatureFlag',
         entityId: 'flag-789',
       }),

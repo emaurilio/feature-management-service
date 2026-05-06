@@ -59,7 +59,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
       companyId: 'company-1',
       name: 'Test UX Research',
       version: 1,
-      featureId: 'ux-research-1',
+      uxResearchId: 'ux-research-1',
       percentage: 50,
     };
 
@@ -75,13 +75,13 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(cacheService.get).toHaveBeenCalledWith(hashName);
       expect(hashUXResearchService.calculateHash).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'company-1',
           check_result: true,
           check_method: 'cache',
         },
@@ -100,13 +100,13 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(cacheService.get).toHaveBeenCalledWith(hashName);
       expect(hashUXResearchService.calculateHash).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'company-1',
           check_result: false,
           check_method: 'cache',
         },
@@ -128,15 +128,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'company-1',
           check_result: true,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });
@@ -155,15 +155,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, false);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'company-1',
           check_result: false,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });
@@ -189,7 +189,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 90,
       };
 
@@ -206,15 +206,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'company-1',
           check_result: true,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });
@@ -225,7 +225,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 0,
       };
 
@@ -248,7 +248,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 100,
       };
 
@@ -271,7 +271,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: '',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 
@@ -288,15 +288,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'user-only',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'user-only',
           check_result: true,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });
@@ -307,7 +307,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: 'company-priority',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 
@@ -324,15 +324,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-priority',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          entityId: 'company-priority',
           check_result: true,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });
@@ -343,7 +343,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research & Special Characters! @#$%',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 
@@ -360,15 +360,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research & Special Characters! @#$%',
+          ux_research_name: 'Test UX Research & Special Characters! @#$%',
           version: 1,
-          entityId: 'company-1',
           check_result: true,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });
@@ -379,7 +379,7 @@ describe('CheckUXResearchPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 3,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 
@@ -396,15 +396,15 @@ describe('CheckUXResearchPercentageUseCase', () => {
       expect(hashUXResearchService.calculateHash).toHaveBeenCalledWith(hashName);
       expect(cacheService.set).toHaveBeenCalledWith(hashName, true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'check_feature_flag_percentage',
-        entity: 'FeatureFlag',
+        action: 'check_ux_research_percentage',
+        entity: 'UXResearch',
+        entityId: 'company-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 3,
-          entityId: 'company-1',
           check_result: true,
-          check_method: 'database',
+          check_method: 'cache',
         },
       });
     });

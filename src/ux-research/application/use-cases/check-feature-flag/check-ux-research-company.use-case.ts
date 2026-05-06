@@ -46,7 +46,6 @@ export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {
         data: {
           ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          company_id: checkUXResearchDto.companyId,
           check_result: cacheResult,
           check_method: 'cache',
         },
@@ -83,7 +82,6 @@ export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {
         data: {
           ux_research_name: checkUXResearchDto.name,
           version: checkUXResearchDto.version,
-          company_id: checkUXResearchDto.companyId,
           check_result: false,
           check_method: 'database',
         },
@@ -100,7 +98,6 @@ export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {
       data: {
         ux_research_name: checkUXResearchDto.name,
         version: checkUXResearchDto.version,
-        company_id: checkUXResearchDto.companyId,
         check_result: true,
         check_method: 'database',
       },

@@ -94,10 +94,10 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
       expect.objectContaining({
         action: 'check_feature_flag_company_percentage',
         entity: 'FeatureFlag',
+        timestamp: expect.any(String),
         data: expect.objectContaining({
-          featureName: dtoBase.featureName,
-          version: dtoBase.version,
-          company_id: dtoBase.companyId,
+          feature_name: 'my-feature',
+          version: 2,
           check_result: true,
           check_method: 'cache',
         }),
@@ -220,10 +220,6 @@ describe('CheckFeatureFlagCompanyPercentageUseCase', () => {
       featureId: '',
     };
 
-    await useCase.execute(dtoWithoutIds);
-
-    expect(
-      companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId,
-    ).toHaveBeenCalledWith('', '');
+    await expect(useCase.execute(dtoWithoutIds)).rejects.toThrow('Company ID is required');
   });
 });

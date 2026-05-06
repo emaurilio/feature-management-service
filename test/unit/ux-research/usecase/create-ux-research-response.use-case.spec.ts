@@ -107,7 +107,7 @@ describe('CreateUXResearchResponseUseCase', () => {
         expect.any(UXResearchResponse)
       );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: 'response-1',
         timestamp: expect.any(String),
@@ -158,7 +158,7 @@ describe('CreateUXResearchResponseUseCase', () => {
         expect.any(UXResearchResponse)
       );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: 'response-2',
         timestamp: expect.any(String),
@@ -216,7 +216,7 @@ describe('CreateUXResearchResponseUseCase', () => {
       expect(uxResearchRepository.findByName).not.toHaveBeenCalled();
       expect(uxResearchResponseRepository.createUXResearchResponse).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: expect.any(String),
         data: {
@@ -244,12 +244,12 @@ describe('CreateUXResearchResponseUseCase', () => {
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       await expect(createUXResearchResponseUseCase.execute(invalidDto))
-        .rejects.toThrow('UX research name or feature flag name is required');
+        .rejects.toThrow('UX Research name or feature flag name is required');
 
       expect(uxResearchRepository.findByName).not.toHaveBeenCalled();
       expect(uxResearchResponseRepository.createUXResearchResponse).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: expect.any(String),
         data: {
@@ -257,7 +257,7 @@ describe('CreateUXResearchResponseUseCase', () => {
           responseDate: invalidDto.responseDate,
           userId: 'user-1',
           companyId: undefined,
-          error: 'UX research must exists in database',
+          error: 'UX Research name or feature flag name is required',
         },
       });
     });
@@ -267,12 +267,12 @@ describe('CreateUXResearchResponseUseCase', () => {
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       await expect(createUXResearchResponseUseCase.execute(mockCreateUXResearchResponseDto))
-        .rejects.toThrow('UX research must exists in database');
+        .rejects.toThrow('UX Research must exists in database');
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research', false);
       expect(uxResearchResponseRepository.createUXResearchResponse).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: expect.any(String),
         data: {
@@ -280,7 +280,7 @@ describe('CreateUXResearchResponseUseCase', () => {
           responseDate: mockCreateUXResearchResponseDto.responseDate,
           userId: 'user-1',
           companyId: undefined,
-          error: 'UX research must exists in database',
+          error: 'UX Research must exists in database',
         },
       });
     });
@@ -306,7 +306,7 @@ describe('CreateUXResearchResponseUseCase', () => {
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       await expect(createUXResearchResponseUseCase.execute(mockCreateUXResearchResponseDto))
-        .rejects.toThrow('UX research must exists in database');
+        .rejects.toThrow('UX Research must exists in database');
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research', false);
       expect(uxResearchResponseRepository.createUXResearchResponse).not.toHaveBeenCalled();
@@ -324,7 +324,7 @@ describe('CreateUXResearchResponseUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research', false);
       expect(uxResearchResponseRepository.createUXResearchResponse).toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: expect.any(String),
         data: {
@@ -381,7 +381,7 @@ describe('CreateUXResearchResponseUseCase', () => {
         .rejects.toThrow('Company_id or user_id is required');
 
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         timestamp: expect.any(String),
         data: {
@@ -415,7 +415,7 @@ describe('CreateUXResearchResponseUseCase', () => {
 
       expect(result).toEqual(mockCreatedUXResearchResponse);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'create',
+        action: 'create_ux_research_response',
         entity: 'UXResearchResponse',
         entityId: 'response-1',
         timestamp: expect.any(String),

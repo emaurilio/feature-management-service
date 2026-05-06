@@ -11,6 +11,7 @@ import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
 import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';
 import { ImportUsersIdsDto } from 'src/feature-flag/application/dto/import-users-ids.dto';
+import { ImportUXResearchUsersIdsDto } from 'src/ux-research/application/dto/import-users-ids.dto';
 
 describe('ImportUsersIdsUseCase', () => {
   let useCase: ImportUsersIdsUseCase;
@@ -107,7 +108,7 @@ describe('ImportUsersIdsUseCase', () => {
     expect(userFeatureFlagRepository.createMany).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'FeatureFlag',
       }),
     );
@@ -135,7 +136,7 @@ describe('ImportUsersIdsUseCase', () => {
     );
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'import',
+        action: 'import_users_ids',
         data: expect.objectContaining({
           error: 'FeatureFlag not found',
         }),
@@ -194,7 +195,7 @@ describe('ImportUsersIdsUseCase', () => {
     await expect(useCase.execute(dto)).rejects.toThrow('Unexpected error');
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'FeatureFlag',
       }),
     );

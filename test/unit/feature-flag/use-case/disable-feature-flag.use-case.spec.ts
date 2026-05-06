@@ -90,7 +90,7 @@ describe('DisableFeatureFlagUseCase', () => {
     });
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'disable',
+        action: 'disable_feature_flag',
         entity: 'FeatureFlag',
         entityId: 'flag-123',
       }),
@@ -116,7 +116,7 @@ describe('DisableFeatureFlagUseCase', () => {
     expect(repository.updateFeatureFlag).not.toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'disable',
+        action: 'disable_feature_flag',
         entity: 'FeatureFlag',
         data: expect.objectContaining({
           error: 'Feature Flag not found',
@@ -159,7 +159,7 @@ describe('DisableFeatureFlagUseCase', () => {
     });
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'disable',
+        action: 'disable_feature_flag',
         entity: 'FeatureFlag',
         data: expect.objectContaining({
           error: 'Update failed',

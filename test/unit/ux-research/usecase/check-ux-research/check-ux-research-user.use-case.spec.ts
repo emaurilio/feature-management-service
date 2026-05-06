@@ -60,7 +60,7 @@ describe('CheckUXResearchUserUseCase', () => {
       companyId: 'company-1',
       name: 'Test UX Research',
       version: 1,
-      featureId: 'ux-research-1',
+      uxResearchId: 'ux-research-1',
       percentage: 100,
     };
 
@@ -88,11 +88,11 @@ describe('CheckUXResearchUserUseCase', () => {
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: 'user-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          user_id: 'user-1',
           check_result: true,
           check_method: 'cache',
         },
@@ -114,11 +114,11 @@ describe('CheckUXResearchUserUseCase', () => {
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: 'user-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          user_id: 'user-1',
           check_result: false,
           check_method: 'cache',
         },
@@ -142,11 +142,11 @@ describe('CheckUXResearchUserUseCase', () => {
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: 'user-1',
         timestamp: expect.any(String),
         data: {
-          feature_name: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          user_id: 'user-1',
           check_result: false,
           check_method: 'database',
         },
@@ -172,10 +172,10 @@ describe('CheckUXResearchUserUseCase', () => {
         action: 'check_ux_research_user',
         entity: 'UXResearch',
         timestamp: expect.any(String),
+        entityId: 'user-1',
         data: {
-          featureName: 'Test UX Research',
+          ux_research_name: 'Test UX Research',
           version: 1,
-          user_id: 'user-1',
           check_result: true,
           check_method: 'database',
         },
@@ -188,7 +188,7 @@ describe('CheckUXResearchUserUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 100,
       };
 
@@ -199,11 +199,24 @@ describe('CheckUXResearchUserUseCase', () => {
       userUXResearchRepository.findByUserIdAndUXResearchId.mockResolvedValue(null);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
-      const result = await checkUXResearchUserUseCase.execute(emptyUserDto);
+      await expect(checkUXResearchUserUseCase.execute(emptyUserDto))
+        .rejects.toThrow('User ID is required');
 
-      expect(result).toBe(false);
       expect(cacheService.get).toHaveBeenCalledWith(cacheKey);
       expect(userUXResearchRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('', 'ux-research-1');
+      expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
+        action: 'check_ux_research_user',
+        entity: 'UXResearch',
+        entityId: '',
+        timestamp: expect.any(String),
+        data: expect.objectContaining({
+          ux_research_name: 'Test UX Research',
+          version: 1,
+          user_id: '',
+          check_result: false,
+          check_method: 'database',
+        }),
+      });
     });
 
     it('should work with empty featureId', async () => {
@@ -212,7 +225,7 @@ describe('CheckUXResearchUserUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: '',
+        uxResearchId: '',
         percentage: 100,
       };
 
@@ -235,7 +248,7 @@ describe('CheckUXResearchUserUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research & Special Characters! @#$%',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 100,
       };
 
@@ -255,11 +268,11 @@ describe('CheckUXResearchUserUseCase', () => {
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: 'user-1',
         timestamp: expect.any(String),
         data: {
-          featureName: 'Test UX Research & Special Characters! @#$%',
+          ux_research_name: 'Test UX Research & Special Characters! @#$%',
           version: 1,
-          user_id: 'user-1',
           check_result: true,
           check_method: 'database',
         },
@@ -272,7 +285,7 @@ describe('CheckUXResearchUserUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 5,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 100,
       };
 
@@ -292,14 +305,14 @@ describe('CheckUXResearchUserUseCase', () => {
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
+        entityId: 'user-1',
         timestamp: expect.any(String),
-        data: {
-          featureName: 'Test UX Research',
+        data: expect.objectContaining({
+          ux_research_name: 'Test UX Research',
           version: 5,
-          user_id: 'user-1',
           check_result: true,
           check_method: 'database',
-        },
+        }),
       });
     });
   });

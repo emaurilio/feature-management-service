@@ -71,7 +71,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
       companyId: 'company-1',
       name: 'Test UX Research',
       version: 1,
-      featureId: 'ux-research-1',
+      uxResearchId: 'ux-research-1',
       percentage: 50,
     };
 
@@ -250,7 +250,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 90,
       };
 
@@ -286,7 +286,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 0,
       };
 
@@ -321,7 +321,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 100,
       };
 
@@ -356,7 +356,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: '',
         name: 'Test UX Research',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 
@@ -365,22 +365,22 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
       companyUXResearchRepository.findByCompanyIdAndUXResearchId.mockResolvedValue(null);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
-      const result = await checkUXResearchCompanyPercentageUseCase.execute(emptyCompanyDto);
+      await expect(checkUXResearchCompanyPercentageUseCase.execute(emptyCompanyDto))
+        .rejects.toThrow('Company ID is required');
 
-      expect(result).toBe(false);
       expect(cacheService.get).toHaveBeenCalledWith(hashName);
       expect(companyUXResearchRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('', 'ux-research-1');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_company_percentage',
         entity: 'UXResearch',
         timestamp: expect.any(String),
-        data: {
+        data: expect.objectContaining({
           ux_research_name: 'Test UX Research',
           version: 1,
           company_id: '',
           check_result: false,
-          check_method: 'database',
-        },
+          check_method: 'database',  
+        }),
       });
     });
 
@@ -390,7 +390,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 1,
-        featureId: '',
+        uxResearchId: '',
         percentage: 50,
       };
 
@@ -423,7 +423,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research & Special Characters! @#$%',
         version: 1,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 
@@ -460,7 +460,7 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         companyId: 'company-1',
         name: 'Test UX Research',
         version: 3,
-        featureId: 'ux-research-1',
+        uxResearchId: 'ux-research-1',
         percentage: 50,
       };
 

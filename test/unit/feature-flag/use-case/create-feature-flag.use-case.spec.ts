@@ -77,9 +77,22 @@ describe('CreateFeatureFlagUseCase', () => {
     expect(repository.createFeatureFlag).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'create',
+        action: 'create_feature_flag',
         entity: 'FeatureFlag',
         entityId: 'flag-123',
+        timestamp: expect.any(String),
+        data: expect.objectContaining({
+          user: {
+            userId: 'user-123',
+            email: 'maurilio@teste.com',
+            name: 'Maurilio',
+          },
+          name: 'test-flag',
+          type: 'percentage',
+          percentage: 100,
+          version: 1,
+          active: true,
+        }),
       }),
     );
   });
@@ -119,9 +132,22 @@ describe('CreateFeatureFlagUseCase', () => {
     expect(repository.createFeatureFlag).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'create',
+        action: 'create_feature_flag',
         entity: 'FeatureFlag',
         entityId: 'flag-123',
+        timestamp: expect.any(String),
+        data: expect.objectContaining({
+          user: {
+            userId: 'user-123',
+            email: 'maurilio@teste.com',
+            name: 'Maurilio',
+          },
+          name: 'test-flag',
+          type: 'percentage',
+          percentage: 100,
+          version: 1,
+          active: true,
+        }),
       }),
     );
   });
@@ -160,11 +186,17 @@ describe('CreateFeatureFlagUseCase', () => {
     );
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'create',
+        action: 'create_feature_flag',
         entity: 'FeatureFlag',
-        data: expect.objectContaining({
+        timestamp: expect.any(String),
+        data: {
+          user: {
+            userId: 'user-123',
+            email: 'maurilio@teste.com',
+            name: 'Maurilio',
+          },
           error: 'Failed to delete old feature flag',
-        }),
+        },
       }),
     );
   });
@@ -186,11 +218,17 @@ describe('CreateFeatureFlagUseCase', () => {
     );
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'create',
+        action: 'create_feature_flag',
         entity: 'FeatureFlag',
-        data: expect.objectContaining({
+        timestamp: expect.any(String),
+        data: {
+          user: {
+            userId: 'user-123',
+            email: 'maurilio@teste.com',
+            name: 'Maurilio',
+          },
           error: 'Percentage value is not allowed for this feature flag type',
-        }),
+        },
       }),
     );
   });

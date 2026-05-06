@@ -104,7 +104,7 @@ describe('DeleteUXResearchUseCase', () => {
       expect(companyUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
       expect(userUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-1',
         timestamp: expect.any(String),
@@ -254,7 +254,7 @@ describe('DeleteUXResearchUseCase', () => {
       expect(companyUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
       expect(userUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research',
         entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
@@ -276,7 +276,7 @@ describe('DeleteUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
       expect(uxResearchRepository.softDelete).toHaveBeenCalledWith('ux-research-1');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research',
         entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
@@ -333,14 +333,14 @@ describe('DeleteUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research & Special Characters! @#$%');
       expect(result).toEqual({ affected: 1 });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'delete',
+        action: 'delete_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-1',
         timestamp: expect.any(String),
         data: {
           user: specialCharsDto.userData,
-          name: 'Test UX Research & Special Characters! @#$%',
           type: UXResearchType.PERCENTAGE,
+          name: 'Test UX Research & Special Characters! @#$%',
           error: 'UX Research deleted successfully',
         },
       });

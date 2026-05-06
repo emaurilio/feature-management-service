@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/get-ux-research-response.use-case';
 import { GetUXResearchResponseDto } from 'src/ux-research/application/dto/get-ux-research-response.dto';
-import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { UXResearchResponseRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import { AuditLogService } from 'src/ux-research/application/services/log.service';
 import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
 import { UXResearchResponse } from 'src/ux-research/domain/entites/UXResearchResponse';
+import type { UXResearchResponseRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
+import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 describe('SearchUXResearchUseCase', () => {
   let getUXResearchUseCase: GetUXResearchResponseUseCase;
@@ -119,8 +119,8 @@ describe('SearchUXResearchUseCase', () => {
         15
       );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'get',
-        entity: 'UX-Research-Response',
+        action: 'get_ux_research_response',
+        entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
           user: mockGetUXResearchResponseDto.userData,
@@ -140,8 +140,8 @@ describe('SearchUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
       expect(uxResearchResponseRepository.getByUXResearchIdPaginated).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'get',
-        entity: 'UX-Research-Response',
+        action: 'get_ux_research_response',
+        entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
           user: mockGetUXResearchResponseDto.userData,
@@ -193,8 +193,8 @@ describe('SearchUXResearchUseCase', () => {
         15
       );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'get',
-        entity: 'UX-Research-Response',
+        action: 'get_ux_research_response',
+        entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
           user: mockGetUXResearchResponseDto.userData,
@@ -214,8 +214,8 @@ describe('SearchUXResearchUseCase', () => {
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'search',
-        entity: 'UX-Research',
+        action: 'get_ux_research_response',
+        entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
           user: mockGetUXResearchResponseDto.userData,
@@ -327,8 +327,8 @@ describe('SearchUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research & Special Characters! @#$%');
       expect(result).toEqual(mockPaginatedResponse);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'get',
-        entity: 'UX-Research-Response',
+        action: 'get_ux_research_response',
+        entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
           user: specialCharsDto.userData,

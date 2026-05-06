@@ -79,10 +79,11 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
       expect.objectContaining({
         action: 'check_feature_flag_percentage',
         entity: 'FeatureFlag',
+        timestamp: expect.any(String),
+        entityId: 'user-1',
         data: expect.objectContaining({
-          featureName: dtoBase.featureName,
+          feature_name: dtoBase.featureName,
           version: dtoBase.version,
-          entityId: dtoBase.userId,
           check_result: true,
           check_method: 'cache',
         }),
@@ -111,7 +112,6 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
         action: 'check_feature_flag_percentage',
         entity: 'FeatureFlag',
         data: expect.objectContaining({
-          entityId: dtoBase.userId,
           check_result: true,
           check_method: 'database',
         }),
@@ -130,6 +130,18 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
       false,
     );
     expect(result).toBe(false);
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'check_feature_flag_percentage',
+        entity: 'FeatureFlag',
+        timestamp: expect.any(String),
+        entityId: 'user-1',
+        data: expect.objectContaining({
+          check_result: false,
+          check_method: 'database',
+        }),
+      }),
+    );
   });
 
   it('should prioritize companyId when building the key and payload', async () => {
@@ -149,8 +161,11 @@ describe('CheckFeatureFlagPercentageUseCase', () => {
     expect(result).toBe(false);
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
+        action: 'check_feature_flag_percentage',
+        entity: 'FeatureFlag',
+        timestamp: expect.any(String),
+        entityId: 'company-1',
         data: expect.objectContaining({
-          entityId: 'company-1',
           check_method: 'cache',
         }),
       }),

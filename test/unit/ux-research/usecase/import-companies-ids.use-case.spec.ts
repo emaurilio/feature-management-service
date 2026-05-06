@@ -132,13 +132,13 @@ describe('ImportCompaniesIdsUseCase', () => {
       expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-3', 'ux-research-1');
       expect(companyRepository.createMany).toHaveBeenCalledWith(mockCreatedCompanies);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'UX Research',
         timestamp: expect.any(String),
         data: {
+          user: mockImportCompaniesIdsDto.userData,
           uxResearchName: 'Test UX Research',
           companiesIds: ['company-1', 'company-2', 'company-3'],
-          user: mockImportCompaniesIdsDto.userData,
         },
       });
       expect(uxResearchCacheService.invalidateCacheEntityFlags).toHaveBeenCalledWith(
@@ -160,7 +160,7 @@ describe('ImportCompaniesIdsUseCase', () => {
       expect(companyRepository.findByCompanyIdAndUXResearchId).not.toHaveBeenCalled();
       expect(companyRepository.createMany).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'UX Research',
         timestamp: expect.any(String),
         data: {
@@ -182,13 +182,13 @@ describe('ImportCompaniesIdsUseCase', () => {
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'UX Research',
         timestamp: expect.any(String),
         data: {
-          uxResearchName: 'Test UX Research',
           error: 'Database connection failed',
           user: mockImportCompaniesIdsDto.userData,
+          uxResearchName: 'Test UX Research',
         },
       });
     });
@@ -274,7 +274,7 @@ describe('ImportCompaniesIdsUseCase', () => {
       expect(companyRepository.createMany).toHaveBeenCalledWith(specialCompaniesUXResearch);
       expect(result).toEqual(specialCompaniesUXResearch);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'UX Research',
         timestamp: expect.any(String),
         data: {
@@ -283,6 +283,12 @@ describe('ImportCompaniesIdsUseCase', () => {
           user: specialCharsDto.userData,
         },
       });
+      expect(uxResearchCacheService.invalidateCacheEntityFlags).toHaveBeenCalledWith(
+        '1',
+        'Test UX Research',
+        ['company-1!@#', 'company-2$%^', 'company-3&*()']
+      );
+      expect(result).toEqual(specialCompaniesUXResearch);
     });
 
     it('should work with UX research that has no ID', async () => {
@@ -302,22 +308,32 @@ describe('ImportCompaniesIdsUseCase', () => {
         undefined,
       );
 
-      const companiesWithEmptyId = [
-        new CompanyUXResearch('', 'company-1', undefined),
-        new CompanyUXResearch('', 'company-2', undefined),
-      ];
+      const emptyCompaniesDto: ImportUXResearchCompaniesIdsDto = {
+        uxResearchName: 'Test UX Research',
+        companiesIds: [],
+        userData: {
+          userId: 'user-2',
+          email: 'user2@example.com',
+          name: 'Second User',
+        },
+      };
 
-      uxResearchRepository.findByName.mockResolvedValue(mockUXResearchWithoutId);
-      companyRepository.findByCompanyIdAndUXResearchId.mockResolvedValue(null);
-      companyRepository.createMany.mockResolvedValue(companiesWithEmptyId);
-      auditLogService.dispatchLog.mockResolvedValue(true);
-      uxResearchCacheService.invalidateCacheEntityFlags.mockResolvedValue(undefined);
+      await expect(importCompaniesIdsUseCase.execute(emptyCompaniesDto))
+        .rejects.toThrow('UX Research not found');
 
-      const result = await importCompaniesIdsUseCase.execute(mockImportCompaniesIdsDto);
-
-      expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-1', '');
-      expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-2', '');
-      expect(result).toEqual(companiesWithEmptyId);
+      expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
+      expect(companyRepository.findByCompanyIdAndUXResearchId).not.toHaveBeenCalled();
+      expect(companyRepository.createMany).not.toHaveBeenCalled();
+      expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
+        action: 'import_companies_ids',
+        entity: 'UX Research',
+        timestamp: expect.any(String),
+        data: {
+          user: emptyCompaniesDto.userData,
+          uxResearchName: 'Test UX Research',
+          error: 'UX Research not found',
+        },
+      });
     });
   });
 });

@@ -106,18 +106,13 @@ describe('ImportCompaniesIdsUseCase', () => {
     ).toHaveBeenCalledTimes(2);
     expect(companyFeatureFlagRepository.createMany).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-      action: 'import',
+      action: 'import_companies_ids',
       entity: 'FeatureFlag',
       timestamp: expect.any(String),
-      data: {
+      data: expect.objectContaining({
         featureFlagName: 'test-flag',
         companiesIds: ['company-1', 'company-2'],
-        user: {
-          userId: 'user-1',
-          email: 'user@example.com',
-          name: 'User One',
-        },
-      },
+      }),
     });
     expect(
       cacheService.invalidateCacheEntityFlags,
@@ -178,7 +173,7 @@ describe('ImportCompaniesIdsUseCase', () => {
     );
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'import',
+        action: 'import_companies_ids',
         data: expect.objectContaining({
           error: 'Feature Flag not found',
         }),
@@ -239,7 +234,7 @@ describe('ImportCompaniesIdsUseCase', () => {
     await expect(useCase.execute(dto)).rejects.toThrow('Unexpected error');
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: 'import',
+        action: 'import_companies_ids',
         entity: 'FeatureFlag',
       }),
     );

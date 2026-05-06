@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ImportUsersIdsUseCase } from 'src/ux-research/application/use-cases/import-users-ids.use-case';
 import { ImportUXResearchUsersIdsDto } from 'src/ux-research/application/dto/import-users-ids.dto';
 import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
+import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 import { AuditLogService } from 'src/ux-research/application/services/log.service';
 import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
 import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
-import { UserFeatureFlag } from 'src/feature-flag/domain/entities/UserFeatureFlag';
+import { UserUXResearch } from 'src/ux-research/domain/entites/UserUXResearch';
 
 describe('ImportUsersIdsUseCase', () => {
   let importUsersIdsUseCase: ImportUsersIdsUseCase;
   let uxResearchRepository: jest.Mocked<UXResearchRepositoryInterface>;
-  let userRepository: jest.Mocked<UserFeatureFlagRepositoryInterface>;
+  let userRepository: jest.Mocked<UserUXResearchRepositoryInterface>;
   let auditLogService: jest.Mocked<AuditLogService>;
   let uxResearchCacheService: jest.Mocked<CacheServiceInterface>;
 
@@ -21,7 +21,7 @@ describe('ImportUsersIdsUseCase', () => {
     };
 
     const mockUserRepository = {
-      findByUserIdAndFeatureFlagId: jest.fn(),
+      findByUserIdAndUXResearchId: jest.fn(),
       createMany: jest.fn(),
     };
 
@@ -93,7 +93,7 @@ describe('ImportUsersIdsUseCase', () => {
       undefined,
     );
 
-    const mockExistingUserFeatureFlag = new UserFeatureFlag(
+    const mockExistingUserUXResearch = new UserUXResearch(
       'ux-research-1',
       'user-1',
       'existing-1',
@@ -102,22 +102,22 @@ describe('ImportUsersIdsUseCase', () => {
       undefined,
     );
 
-    const mockNewUserFeatureFlag = new UserFeatureFlag(
+    const mockNewUserUXResearch = new UserUXResearch(
       'ux-research-1',
       'user-2',
       undefined,
     );
 
     const mockCreatedUsers = [
-      mockExistingUserFeatureFlag,
-      mockNewUserFeatureFlag,
-      new UserFeatureFlag('ux-research-1', 'user-3', undefined),
+      mockExistingUserUXResearch,
+      mockNewUserUXResearch,
+      new UserUXResearch('ux-research-1', 'user-3', undefined),
     ];
 
     it('should import users IDs successfully', async () => {
       uxResearchRepository.findByName.mockResolvedValue(mockUXResearch);
-      userRepository.findByUserIdAndFeatureFlagId
-        .mockResolvedValueOnce(mockExistingUserFeatureFlag)
+      userRepository.findByUserIdAndUXResearchId
+        .mockResolvedValueOnce(mockExistingUserUXResearch)
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(null);
       userRepository.createMany.mockResolvedValue(mockCreatedUsers);
@@ -127,12 +127,12 @@ describe('ImportUsersIdsUseCase', () => {
       const result = await importUsersIdsUseCase.execute(mockImportUsersIdsDto);
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
-      expect(userRepository.findByUserIdAndFeatureFlagId).toHaveBeenCalledWith('user-1', 'ux-research-1');
-      expect(userRepository.findByUserIdAndFeatureFlagId).toHaveBeenCalledWith('user-2', 'ux-research-1');
-      expect(userRepository.findByUserIdAndFeatureFlagId).toHaveBeenCalledWith('user-3', 'ux-research-1');
+      expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-1', 'ux-research-1');
+      expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-2', 'ux-research-1');
+      expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-3', 'ux-research-1');
       expect(userRepository.createMany).toHaveBeenCalledWith(mockCreatedUsers);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: expect.any(String),
         data: {
@@ -157,10 +157,10 @@ describe('ImportUsersIdsUseCase', () => {
         .rejects.toThrow('UX Research not found');
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
-      expect(userRepository.findByUserIdAndFeatureFlagId).not.toHaveBeenCalled();
+      expect(userRepository.findByUserIdAndUXResearchId).not.toHaveBeenCalled();
       expect(userRepository.createMany).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: expect.any(String),
         data: {
@@ -174,7 +174,7 @@ describe('ImportUsersIdsUseCase', () => {
     it('should handle repository errors', async () => {
       const repositoryError = new Error('Database connection failed');
       uxResearchRepository.findByName.mockResolvedValue(mockUXResearch);
-      userRepository.findByUserIdAndFeatureFlagId.mockRejectedValue(repositoryError);
+      userRepository.findByUserIdAndUXResearchId.mockRejectedValue(repositoryError);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       await expect(importUsersIdsUseCase.execute(mockImportUsersIdsDto))
@@ -182,7 +182,7 @@ describe('ImportUsersIdsUseCase', () => {
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: expect.any(String),
         data: {
@@ -211,7 +211,7 @@ describe('ImportUsersIdsUseCase', () => {
 
       const result = await importUsersIdsUseCase.execute(emptyUsersDto);
 
-      expect(userRepository.findByUserIdAndFeatureFlagId).not.toHaveBeenCalled();
+      expect(userRepository.findByUserIdAndUXResearchId).not.toHaveBeenCalled();
       expect(userRepository.createMany).toHaveBeenCalledWith([]);
       expect(result).toEqual([]);
     });
@@ -227,23 +227,23 @@ describe('ImportUsersIdsUseCase', () => {
         },
       };
 
-      const singleUserFeatureFlag = new UserFeatureFlag(
+      const singleUserUXResearch = new UserUXResearch(
         'ux-research-1',
         'user-single',
         undefined,
       );
 
       uxResearchRepository.findByName.mockResolvedValue(mockUXResearch);
-      userRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(null);
-      userRepository.createMany.mockResolvedValue([singleUserFeatureFlag]);
+      userRepository.findByUserIdAndUXResearchId.mockResolvedValue(null);
+      userRepository.createMany.mockResolvedValue([singleUserUXResearch]);
       auditLogService.dispatchLog.mockResolvedValue(true);
       uxResearchCacheService.invalidateCacheEntityFlags.mockResolvedValue(undefined);
 
       const result = await importUsersIdsUseCase.execute(singleUserDto);
 
-      expect(userRepository.findByUserIdAndFeatureFlagId).toHaveBeenCalledWith('user-single', 'ux-research-1');
-      expect(userRepository.createMany).toHaveBeenCalledWith([singleUserFeatureFlag]);
-      expect(result).toEqual([singleUserFeatureFlag]);
+      expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-single', 'ux-research-1');
+      expect(userRepository.createMany).toHaveBeenCalledWith([singleUserUXResearch]);
+      expect(result).toEqual([singleUserUXResearch]);
     });
 
     it('should work with special characters in user IDs', async () => {
@@ -257,24 +257,24 @@ describe('ImportUsersIdsUseCase', () => {
         },
       };
 
-      const specialUsersFeatureFlag = [
-        new UserFeatureFlag('ux-research-1', 'user-1!@#', undefined),
-        new UserFeatureFlag('ux-research-1', 'user-2$%^', undefined),
-        new UserFeatureFlag('ux-research-1', 'user-3&*()', undefined),
+      const specialUsersUXResearch = [
+        new UserUXResearch('ux-research-1', 'user-1!@#', undefined),
+        new UserUXResearch('ux-research-1', 'user-2$%^', undefined),
+        new UserUXResearch('ux-research-1', 'user-3&*()', undefined),
       ];
 
       uxResearchRepository.findByName.mockResolvedValue(mockUXResearch);
-      userRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(null);
-      userRepository.createMany.mockResolvedValue(specialUsersFeatureFlag);
+      userRepository.findByUserIdAndUXResearchId.mockResolvedValue(null);
+      userRepository.createMany.mockResolvedValue(specialUsersUXResearch);
       auditLogService.dispatchLog.mockResolvedValue(true);
       uxResearchCacheService.invalidateCacheEntityFlags.mockResolvedValue(undefined);
 
       const result = await importUsersIdsUseCase.execute(specialCharsDto);
 
-      expect(userRepository.createMany).toHaveBeenCalledWith(specialUsersFeatureFlag);
-      expect(result).toEqual(specialUsersFeatureFlag);
+      expect(userRepository.createMany).toHaveBeenCalledWith(specialUsersUXResearch);
+      expect(result).toEqual(specialUsersUXResearch);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: expect.any(String),
         data: {
@@ -303,20 +303,20 @@ describe('ImportUsersIdsUseCase', () => {
       );
 
       const usersWithEmptyId = [
-        new UserFeatureFlag('', 'user-1', undefined),
-        new UserFeatureFlag('', 'user-2', undefined),
+        new UserUXResearch('', 'user-1', undefined),
+        new UserUXResearch('', 'user-2', undefined),
       ];
 
       uxResearchRepository.findByName.mockResolvedValue(mockUXResearchWithoutId);
-      userRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(null);
+      userRepository.findByUserIdAndUXResearchId.mockResolvedValue(null);
       userRepository.createMany.mockResolvedValue(usersWithEmptyId);
       auditLogService.dispatchLog.mockResolvedValue(true);
       uxResearchCacheService.invalidateCacheEntityFlags.mockResolvedValue(undefined);
 
       const result = await importUsersIdsUseCase.execute(mockImportUsersIdsDto);
 
-      expect(userRepository.findByUserIdAndFeatureFlagId).toHaveBeenCalledWith('user-1', '');
-      expect(userRepository.findByUserIdAndFeatureFlagId).toHaveBeenCalledWith('user-2', '');
+      expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-1', '');
+      expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-2', '');
       expect(result).toEqual(usersWithEmptyId);
     });
 
@@ -332,28 +332,28 @@ describe('ImportUsersIdsUseCase', () => {
         },
       };
 
-      const minimalUserFeatureFlag = new UserFeatureFlag(
+      const minimalUserUXResearch = new UserUXResearch(
         'ux-research-1',
         'user-minimal',
         undefined,
       );
 
       uxResearchRepository.findByName.mockResolvedValue(mockUXResearch);
-      userRepository.findByUserIdAndFeatureFlagId.mockResolvedValue(null);
-      userRepository.createMany.mockResolvedValue([minimalUserFeatureFlag]);
+      userRepository.findByUserIdAndUXResearchId.mockResolvedValue(null);
+      userRepository.createMany.mockResolvedValue([minimalUserUXResearch]);
       auditLogService.dispatchLog.mockResolvedValue(true);
       uxResearchCacheService.invalidateCacheEntityFlags.mockResolvedValue(undefined);
 
       const result = await importUsersIdsUseCase.execute(minimalUserDataDto);
 
-      expect(result).toEqual([minimalUserFeatureFlag]);
+      expect(result).toEqual([minimalUserUXResearch]);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'import',
+        action: 'import_users_ids',
         entity: 'UX-Research',
         timestamp: expect.any(String),
         data: {
           uxResearchName: 'Test UX Research',
-          usersIds: ['user-minimal'],
+          usersIds: ['user-minimal'],                                                                                                                             
           user: minimalUserDataDto.userData,
         },
       });

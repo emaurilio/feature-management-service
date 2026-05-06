@@ -84,7 +84,7 @@ describe('DisableUXResearchUseCase', () => {
         isActive: false,
       });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-1',
         timestamp: expect.any(String),
@@ -109,7 +109,7 @@ describe('DisableUXResearchUseCase', () => {
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research');
       expect(uxResearchRepository.updateUXResearch).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
@@ -133,7 +133,7 @@ describe('DisableUXResearchUseCase', () => {
         isActive: false,
       });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         timestamp: expect.any(String),
         data: {
@@ -206,7 +206,7 @@ describe('DisableUXResearchUseCase', () => {
 
       expect(result.isActive).toBe(false);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         entityId: 'ux-research-1',
         timestamp: expect.any(String),
@@ -247,7 +247,7 @@ describe('DisableUXResearchUseCase', () => {
         isActive: false,
       });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
-        action: 'disable',
+        action: 'disable_ux_research',
         entity: 'UXResearch',
         entityId: '',
         timestamp: expect.any(String),

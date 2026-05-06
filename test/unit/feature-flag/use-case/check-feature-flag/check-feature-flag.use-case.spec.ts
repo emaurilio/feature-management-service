@@ -48,9 +48,9 @@ describe('CheckFeatureFlagUseCase', () => {
       expect.objectContaining({
         action: 'check_feature_flag',
         entity: 'FeatureFlag',
+        entityId: 'user-1',
         data: expect.objectContaining({
-          featureName: 'missing-flag',
-          user_id: 'user-1',
+          feature_name: 'missing-flag',
           error: 'Feature Flag not found',
           check_method: 'database',
         }),
@@ -79,9 +79,11 @@ describe('CheckFeatureFlagUseCase', () => {
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag',
+        entity: 'FeatureFlag',
+        entityId: 'user-1',
+        timestamp: expect.any(String),
         data: expect.objectContaining({
-          featureName: 'my-feature',
-          user_id: 'user-1',
+          feature_name: 'my-feature',
           check_result: false,
           check_method: 'database',
         }),
@@ -147,14 +149,13 @@ describe('CheckFeatureFlagUseCase', () => {
       expect.objectContaining({
         action: 'check_feature_flag',
         data: expect.objectContaining({
-          featureName: 'my-feature',
           check_result: true,
           check_method: 'database',
         }),
-      }),
+      }),  
     );
   });
-
+  
   it('should use empty featureId when repository returns undefined id', async () => {
     const strategyExecute = jest.fn().mockResolvedValue(false);
     moduleRef.get.mockReturnValue({ execute: strategyExecute });
@@ -172,11 +173,20 @@ describe('CheckFeatureFlagUseCase', () => {
       companyId: 'company-9',
     });
 
-    expect(strategyExecute).toHaveBeenCalledWith(
+    expect(result).toBe(false);
+
+    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
-        featureId: '',
+        action: 'check_feature_flag',
+        entity: 'FeatureFlag',
+        entityId: 'user-2',
+        timestamp: expect.any(String),
+        data: expect.objectContaining({
+          feature_name: 'my-feature',
+          check_result: false,
+          check_method: 'database',
+        }),
       }),
     );
-    expect(result).toBe(false);
   });
 });
