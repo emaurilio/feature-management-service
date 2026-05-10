@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { UXResearchResponseRepository } from 'src/ux-research/infraestructure/persistence/repositories/ux-research-response.repository';
-import { UXResearchResponseEntity } from 'src/ux-research/infraestructure/persistence/entities/ux-research-response.entity';
-import { UXResearchResponse } from 'src/ux-research/domain/entites/UXResearchResponse';
-import { UXResearchResponseMapper } from 'src/ux-research/infraestructure/persistence/mappers/ux-research-response.mapper';
+import { UXResearchResponseRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/ux-research-response.repository';
+import { UXResearchResponseEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/ux-research-response.entity';
+import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
+import { UXResearchResponseMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/ux-research-response.mapper';
 
 describe('UXResearchResponseRepository - getByUXResearchIdPaginated', () => {
   let repository: UXResearchResponseRepository;

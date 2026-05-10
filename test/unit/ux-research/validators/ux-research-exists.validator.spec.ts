@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UXResearchExistsConstraint } from 'src/ux-research/infraestructure/validators/ux-research-exists.validator';
-import { UXResearchRepository } from 'src/ux-research/infraestructure/persistence/repositories/ux-research.repository';
-import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
+import { UXResearchExistsConstraint } from 'src/modules/ux-research/infraestructure/validators/ux-research-exists.validator';
+import { UXResearchRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/ux-research.repository';
+import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { ValidationArguments } from 'class-validator';
 
 describe('UXResearchExistsConstraint', () => {
@@ -175,20 +175,20 @@ describe('UXResearchExistsConstraint', () => {
 
 describe('IsUXResearchPresent', () => {
   it('should be a function', () => {
-    const { IsUXResearchPresent } = require('src/ux-research/infraestructure/validators/ux-research-exists.validator');
+    const { IsUXResearchPresent } = require('src/modules/ux-research/infraestructure/validators/ux-research-exists.validator');
     
     expect(typeof IsUXResearchPresent).toBe('function');
   });
 
   it('should return a decorator function', () => {
-    const { IsUXResearchPresent } = require('src/ux-research/infraestructure/validators/ux-research-exists.validator');
+    const { IsUXResearchPresent } = require('src/modules/ux-research/infraestructure/validators/ux-research-exists.validator');
     
     const decorator = IsUXResearchPresent();
     expect(typeof decorator).toBe('function');
   });
 
   it('should work with validation options', () => {
-    const { IsUXResearchPresent } = require('src/ux-research/infraestructure/validators/ux-research-exists.validator');
+    const { IsUXResearchPresent } = require('src/modules/ux-research/infraestructure/validators/ux-research-exists.validator');
     
     const validationOptions = { message: 'Custom message' };
     const decorator = IsUXResearchPresent(validationOptions);
@@ -196,7 +196,7 @@ describe('IsUXResearchPresent', () => {
   });
 
   it('should register decorator correctly', () => {
-    const { IsUXResearchPresent } = require('src/ux-research/infraestructure/validators/ux-research-exists.validator');
+    const { IsUXResearchPresent } = require('src/modules/ux-research/infraestructure/validators/ux-research-exists.validator');
     
     class TestClass {
       name!: string;

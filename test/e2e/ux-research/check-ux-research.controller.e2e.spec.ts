@@ -1,10 +1,10 @@
 import { HttpStatus, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { UXResearchController } from 'src/ux-research/ux-research.controller';
-import { CheckUXResearchUseCase } from 'src/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
-import { JwtService } from 'src/common/auth/services/jwt.service';
+import { UXResearchController } from 'src/modules/ux-research/ux-research.controller';
+import { CheckUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
+import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
+import { JwtService } from 'src/modules/common/auth/services/jwt.service';
 import { useContainer } from 'class-validator';
 
 describe('UXResearchController - Check UX Research (e2e)', () => {

@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { HashUXResearchService } from 'src/ux-research/application/services/hash-ux-research.service';
+import { HashUXResearchService } from 'src/modules/ux-research/application/services/hash-ux-research.service';
 
 describe('HashUXResearchService', () => {
     let service: HashUXResearchService;

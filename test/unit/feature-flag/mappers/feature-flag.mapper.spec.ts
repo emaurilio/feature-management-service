@@ -1,7 +1,8 @@
-import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
-import { FeatureFlagMapper } from 'src/feature-flag/infraestructure/persistence/mappers/feature-flag.mapper';
+import { FeatureFlag } from "src/modules/feature-flag/domain/entities/FeatureFlag";
+import { FeatureFlagType } from "src/modules/feature-flag/domain/enums/feature-flag-type.enum";
+import { FeatureFlagEntity } from "src/modules/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity";
+import { FeatureFlagMapper } from "src/modules/feature-flag/infraestructure/persistence/mappers/feature-flag.mapper";
+
 
 describe('FeatureFlagMapper', () => {
   const createEntity = (

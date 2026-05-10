@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { CompanyUXResearchRepository } from 'src/ux-research/infraestructure/persistence/repositories/company-ux-research.repository';
-import { CompanyUXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/company-ux-research.entity';
-import { CompanyUXResearch } from 'src/ux-research/domain/entites/CompanyUXResearch';
-import { CompanyUXResearchMapper } from 'src/ux-research/infraestructure/persistence/mappers/company-ux-research.mapper';
+import { CompanyUXResearchRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/company-ux-research.repository';
+import { CompanyUXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/company-ux-research.entity';
+import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
+import { CompanyUXResearchMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/company-ux-research.mapper';
 
 describe('CompanyUXResearchRepository - findByCompanyId', () => {
   let repository: CompanyUXResearchRepository;

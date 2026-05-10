@@ -1,7 +1,7 @@
-import { CompanyUXResearchMapper } from 'src/ux-research/infraestructure/persistence/mappers/company-ux-research.mapper';
-import { CompanyUXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/company-ux-research.entity';
-import { CompanyUXResearch } from 'src/ux-research/domain/entites/CompanyUXResearch';
-import { UXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/ux-research.entity';
+import { CompanyUXResearchMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/company-ux-research.mapper';
+import { CompanyUXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/CompanyUXResearch.entity';
+import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
+import { UXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/UXResearch.entity';
 
 describe('CompanyUXResearchMapper', () => {
   describe('toDomain', () => {

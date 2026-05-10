@@ -1,4 +1,4 @@
-import { UserFeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/UserFeatureFlag.entity';
+import { UserFeatureFlagEntity } from 'src/modules/feature-flag/infraestructure/persistence/entities/UserFeatureFlag.entity';
 import { setSeederFactory } from 'typeorm-extension';
 
 export const UserFeatureFlagFactory = setSeederFactory<UserFeatureFlagEntity>(

@@ -1,6 +1,6 @@
-import { UserFeatureFlag } from 'src/feature-flag/domain/entities/UserFeatureFlag';
-import { UserFeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/UserFeatureFlag.entity';
-import { UserFeatureFlagMapper } from 'src/feature-flag/infraestructure/persistence/mappers/user-feature-flag.mapper';
+import { UserFeatureFlag } from 'src/modules/feature-flag/domain/entities/UserFeatureFlag';
+import { UserFeatureFlagEntity } from 'src/modules/feature-flag/infraestructure/persistence/entities/UserFeatureFlag.entity';
+import { UserFeatureFlagMapper } from 'src/modules/feature-flag/infraestructure/persistence/mappers/user-feature-flag.mapper';
 
 describe('UserFeatureFlagMapper', () => {
   const createEntity = (

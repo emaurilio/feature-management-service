@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
-import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
+import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/feature-flag.repository.interface';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
-import { ImportCompaniesIdsUseCase } from 'src/feature-flag/application/use-cases/import-companies-ids.use-case';
-import { ImportCompaniesIdsDto } from 'src/feature-flag/application/dto/import-companies-ids.dto';
+import { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
+import { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
+import { ImportCompaniesIdsUseCase } from 'src/modules/feature-flag/application/use-cases/import-companies-ids.use-case';
+import { ImportCompaniesIdsDto } from 'src/modules/feature-flag/application/dto/import-companies-ids.dto';
 
 describe('ImportCompaniesIdsUseCase', () => {
   let useCase: ImportCompaniesIdsUseCase;

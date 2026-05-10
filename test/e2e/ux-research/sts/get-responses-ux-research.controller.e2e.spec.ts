@@ -1,19 +1,19 @@
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { StsUXResearchController } from 'src/ux-research/sts-ux-research.controller';
-import { CreateUXResearchUseCase } from 'src/ux-research/application/use-cases/create-ux-research.use-case';
-import { ImportCompaniesIdsUseCase } from 'src/ux-research/application/use-cases/import-companies-ids.use-case';
-import { ImportUsersIdsUseCase } from 'src/ux-research/application/use-cases/import-users-ids.use-case';
-import { DeleteUXResearchUseCase } from 'src/ux-research/application/use-cases/delete-ux-research.use-case';
-import { SearchUXResearchUseCase } from 'src/ux-research/application/use-cases/search-feature-flag.use-case';
-import { CheckUXResearchUseCase } from 'src/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
-import { DisableUXResearchUseCase } from 'src/ux-research/application/use-cases/disable-ux-research.use-case';
-import { ActiveUXResearchUseCase } from 'src/ux-research/application/use-cases/active-ux-research.use-case';
-import { GetUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/get-ux-research-response.use-case';
-import { CreateUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/create-ux-research-response.use-case';
-import { DeleteUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/delete-ux-research-response.use-case';
-import { SimpleTokenGuard } from 'src/common/guards/simple-token.guard';
+import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
+import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
+import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
+import { ImportUsersIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-users-ids.use-case';
+import { DeleteUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research.use-case';
+import { SearchUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/search-feature-flag.use-case';
+import { CheckUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
+import { DisableUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/disable-ux-research.use-case';
+import { ActiveUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/active-ux-research.use-case';
+import { GetUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/get-ux-research-response.use-case';
+import { CreateUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research-response.use-case';
+import { DeleteUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research-response.use-case';
+import { SimpleTokenGuard } from 'src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
 
 describe('StsUXResearchController - Get UX Research Responses (e2e)', () => {
@@ -47,7 +47,7 @@ describe('StsUXResearchController - Get UX Research Responses (e2e)', () => {
           useValue: { validate: jest.fn().mockResolvedValue(true) },
         },
         {
-          provide: require('src/feature-flag/infraestructure/validators/feature-flag-exists.validator').FeatureFlagExistsConstraint,
+          provide: require('src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator').FeatureFlagExistsConstraint,
           useValue: { validate: jest.fn().mockResolvedValue(true), defaultMessage: jest.fn() },
         },
         SimpleTokenGuard,

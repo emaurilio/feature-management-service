@@ -1,6 +1,6 @@
-import { UserUXResearchMapper } from 'src/ux-research/infraestructure/persistence/mappers/user-ux-research.mapper';
-import { UserUXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/user-ux-resarch.entity';
-import { UserUXResearch } from 'src/ux-research/domain/entites/UserUXResearch';
+import { UserUXResearchMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/user-ux-research.mapper';
+import { UserUXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/user-ux-resarch.entity';
+import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXResearch';
 
 describe('UserUXResearchMapper', () => {
   describe('toDomain', () => {

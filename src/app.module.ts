@@ -3,16 +3,16 @@ import { AppController } from './app.controller';
 import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from '../data-source';
-import { FeatureFlagModule } from './feature-flag/feature-flag.module';
-import { UXResearchModule } from './ux-research/ux-research.module';
-import { MetricsModule } from './common/metrics/metrics.module';
-import { AuthModule } from './common/auth/auth.module';
-import { LoggingModule } from './common/logging/logging.module';
-import { CacheRedisModule } from './common/cache/cache.module';
-import { ElasticsearchIntegrationModule } from './common/elasticsearch/elasticsearch-integration.module';
-import { RequestLoggingInterceptor } from './common/logging/request-logging.interceptor';
+import { FeatureFlagModule } from './modules/feature-flag/feature-flag.module';
+import { UXResearchModule } from './modules/ux-research/ux-research.module';
+import { MetricsModule } from './modules/common/metrics/metrics.module';
+import { AuthModule } from './modules/common/auth/auth.module';
+import { LoggingModule } from './modules/common/logging/logging.module';
+import { CacheRedisModule } from './modules/common/cache/cache.module';
+import { ElasticsearchIntegrationModule } from './modules/common/elasticsearch/elasticsearch-integration.module';
+import { RequestLoggingInterceptor } from './modules/common/logging/request-logging.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { PrometheusInterceptor } from './common/metrics/prometheus.interceptor';
+import { PrometheusInterceptor } from './modules/common/metrics/prometheus.interceptor';
 
 @Module({
   imports: [

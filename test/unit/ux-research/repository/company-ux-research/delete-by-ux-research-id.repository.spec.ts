@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { CompanyUXResearchRepository } from 'src/ux-research/infraestructure/persistence/repositories/company-ux-research.repository';
+import { CompanyUXResearchRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/company-ux-research.repository';
 
 describe('CompanyUXResearchRepository - deleteByUXResearchId', () => {
   let repository: CompanyUXResearchRepository;

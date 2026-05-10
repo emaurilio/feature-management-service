@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { UXResearchRepository } from 'src/ux-research/infraestructure/persistence/repositories/ux-research.repository';
-import { UXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/ux-research.entity';
-import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
-import { UXResearchMapper } from 'src/ux-research/infraestructure/persistence/mappers/ux-research.mapper';
-import { UXResearchType } from 'src/ux-research/domain/enums/ux-research-type.enum';
+import { UXResearchRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/ux-research.repository';
+import { UXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/ux-research.entity';
+import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { UXResearchMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/ux-research.mapper';
+import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 
 describe('UXResearchRepository - findByName', () => {
   let repository: UXResearchRepository;

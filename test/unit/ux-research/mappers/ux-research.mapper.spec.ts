@@ -1,7 +1,7 @@
-import { UXResearchMapper } from 'src/ux-research/infraestructure/persistence/mappers/ux-research.mapper';
-import { UXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/ux-research.entity';
-import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
-import { UXResearchType } from 'src/ux-research/domain/enums/ux-research-type.enum';
+import { UXResearchMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/ux-research.mapper';
+import { UXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/ux-research.entity';
+import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 
 describe('UXResearchMapper', () => {
   describe('toDomain', () => {

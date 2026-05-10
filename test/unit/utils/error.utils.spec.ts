@@ -1,4 +1,4 @@
-import { getErrorMessage, parseError } from 'src/common/utils/error.utils';
+import { getErrorMessage, parseError } from 'src/modules/common/utils/error.utils';
 
 describe('error.utils', () => {
   describe('getErrorMessage', () => {

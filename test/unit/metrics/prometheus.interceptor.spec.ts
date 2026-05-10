@@ -3,8 +3,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, CallHandler } from '@nestjs/common';
 import { of, throwError } from 'rxjs';
-import { PrometheusInterceptor } from 'src/common/metrics/prometheus.interceptor';
-import { PrometheusService } from 'src/common/metrics/prometheus.service';
+import { PrometheusInterceptor } from 'src/modules/common/metrics/prometheus.interceptor';
+import { PrometheusService } from 'src/modules/common/metrics/prometheus.service';
 
 const createMockExecutionContext = (
   request: {

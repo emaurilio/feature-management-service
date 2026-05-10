@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { CACHE_SERVICE } from 'src/common/cache/cache-service.interface';
+import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CheckFeatureFlagDto } from 'src/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
-import { HashFeatureFlagService } from 'src/feature-flag/application/services/hash-feature-flag.service';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { CheckFeatureFlagUserPercentageUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
-import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
-import type { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
+import { CheckFeatureFlagDto } from 'src/modules/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
+import { HashFeatureFlagService } from 'src/modules/feature-flag/application/services/hash-feature-flag.service';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { CheckFeatureFlagUserPercentageUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 
 describe('CheckFeatureFlagUserPercentageUseCase', () => {
   let hashFeatureFlagService: jest.Mocked<HashFeatureFlagService>;
@@ -222,20 +222,10 @@ describe('CheckFeatureFlagUserPercentageUseCase', () => {
 
     await expect(useCase.execute(dtoWithoutIds)).rejects.toThrow('User ID is required');
 
+    expect(cacheService.get).not.toHaveBeenCalled();
     expect(
       userFeatureFlagRepository.findByUserIdAndFeatureFlagId,
     ).not.toHaveBeenCalled();
-    expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
-      expect.objectContaining({
-        action: 'check_feature_flag_user_percentage',
-        entity: 'FeatureFlag',
-        entityId: 'user-1',
-        timestamp: expect.any(String),
-        data: expect.objectContaining({
-          check_result: false,
-          check_method: 'database',
-        }),
-      }),
-    );
+    expect(auditLogService.dispatchLog).not.toHaveBeenCalled();
   });
 });

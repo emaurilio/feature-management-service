@@ -1,6 +1,6 @@
-import { UserUXResearchRepository } from 'src/ux-research/infraestructure/persistence/repositories/user-ux-research.repository';
-import { UserUXResearchEntity } from 'src/ux-research/infraestructure/persistence/entities/user-ux-resarch.entity';
-import { UserUXResearch } from 'src/ux-research/domain/entites/UserUXResearch';
+import { UserUXResearchRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/user-ux-research.repository';
+import { UserUXResearchEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/user-ux-resarch.entity';
+import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXResearch';
 import { DataSource } from 'typeorm';
 
 describe('UserUXResearchRepository', () => {

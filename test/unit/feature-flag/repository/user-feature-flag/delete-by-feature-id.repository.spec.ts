@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
+import { UserFeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
 import { DataSource } from 'typeorm';
 
 describe('UserFeatureFlagRepository - deleteByFeatureFlagId', () => {

@@ -4,8 +4,8 @@ import * as classValidator from 'class-validator';
 import {
   FeatureFlagExistsConstraint,
   IsFeatureFlagPresent,
-} from 'src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+} from 'src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator';
+import { FeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 
 jest.mock('class-validator', () => {
   const original = jest.requireActual('class-validator');

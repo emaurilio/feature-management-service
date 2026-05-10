@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CheckUXResearchCompanyPercentageUseCase } from 'src/ux-research/application/use-cases/check-feature-flag/check-ux-research-company-percentage.use-case';
-import { CheckUXResearchDto } from 'src/ux-research/application/dto/check-ux-research/check-ux-research.dto';
-import type { CompanyUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
-import { AuditLogService } from 'src/ux-research/application/services/log.service';
-import { HashUXResearchService } from 'src/ux-research/application/services/hash-ux-research.service';
-import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
-import { CompanyUXResearch } from 'src/ux-research/domain/entites/CompanyUXResearch';
+import { CheckUXResearchCompanyPercentageUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-company-percentage.use-case';
+import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research/check-ux-research.dto';
+import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
+import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
+import { HashUXResearchService } from 'src/modules/ux-research/application/services/hash-ux-research.service';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
 
 describe('CheckUXResearchCompanyPercentageUseCase', () => {
   let checkUXResearchCompanyPercentageUseCase: CheckUXResearchCompanyPercentageUseCase;
@@ -360,7 +360,6 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
         percentage: 50,
       };
 
-      const hashName = `${emptyCompanyDto.companyId}-${emptyCompanyDto.name}-${emptyCompanyDto.version}`;
       cacheService.get.mockResolvedValue(null);
       companyUXResearchRepository.findByCompanyIdAndUXResearchId.mockResolvedValue(null);
       auditLogService.dispatchLog.mockResolvedValue(true);
@@ -368,19 +367,20 @@ describe('CheckUXResearchCompanyPercentageUseCase', () => {
       await expect(checkUXResearchCompanyPercentageUseCase.execute(emptyCompanyDto))
         .rejects.toThrow('Company ID is required');
 
-      expect(cacheService.get).toHaveBeenCalledWith(hashName);
-      expect(companyUXResearchRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('', 'ux-research-1');
+      expect(cacheService.get).not.toHaveBeenCalled();
+      expect(
+        companyUXResearchRepository.findByCompanyIdAndUXResearchId,
+      ).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_company_percentage',
         entity: 'UXResearch',
+        entityId: '',
         timestamp: expect.any(String),
-        data: expect.objectContaining({
+        data: {
           ux_research_name: 'Test UX Research',
           version: 1,
-          company_id: '',
-          check_result: false,
-          check_method: 'database',  
-        }),
+          error: 'Company ID is required',
+        },
       });
     });
 

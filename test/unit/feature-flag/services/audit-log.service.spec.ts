@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bullmq';
-import { AuditLogPayload } from 'src/feature-flag/processors/types/audit-logs.types';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { LOGGING_SERVICE } from 'src/common/logging/logging-service.interface';
+import { AuditLogPayload } from 'src/modules/feature-flag/processors/types/audit-logs.types';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { LOGGING_SERVICE } from 'src/modules/common/logging/logging-service.interface';
 
 const createPayload = (
     overrides?: Partial<AuditLogPayload>,

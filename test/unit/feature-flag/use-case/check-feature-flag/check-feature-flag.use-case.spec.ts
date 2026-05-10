@@ -1,9 +1,9 @@
 import { ModuleRef } from '@nestjs/core';
-import { CheckFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import { CheckFeatureFlagUserUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user.use-case';
+import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
+import { FeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
+import { CheckFeatureFlagUserUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user.use-case';
 
 describe('CheckFeatureFlagUseCase', () => {
   let useCase: CheckFeatureFlagUseCase;

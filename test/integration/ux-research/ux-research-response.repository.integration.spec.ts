@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { UXResearchResponseRepository } from '../../../src/ux-research/infraestructure/persistence/repositories/ux-research-response.repository';
-import { UXResearchResponseEntity } from '../../../src/ux-research/infraestructure/persistence/entities/ux-research-response.entity';
-import { UXResearchResponse } from '../../../src/ux-research/domain/entites/UXResearchResponse';
+import { UXResearchResponseRepository } from '../../../src/modules/ux-research/infraestructure/persistence/repositories/ux-research-response.repository';
+import { UXResearchResponseEntity } from '../../../src/modules/ux-research/infraestructure/persistence/entities/ux-research-response.entity';
+import { UXResearchResponse } from '../../../src/modules/ux-research/domain/entites/UXResearchResponse';
 
 describe('UXResearchResponseRepository (Integration)', () => {
     let repository: UXResearchResponseRepository;

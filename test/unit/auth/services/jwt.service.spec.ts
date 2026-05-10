@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from 'jsonwebtoken';
-import { JwtService } from 'src/common/auth/services/jwt.service';
+import { JwtService } from 'src/modules/common/auth/services/jwt.service';
 
 type VerifyCallback = (err: Error | null, decoded?: JwtPayload) => void;
 let verifyCallback: VerifyCallback | null = null;

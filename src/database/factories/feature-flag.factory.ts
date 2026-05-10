@@ -1,6 +1,6 @@
-import { FeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
+import { FeatureFlagEntity } from 'src/modules/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 import { setSeederFactory } from 'typeorm-extension';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
 
 export const FeatureFlagFactory = setSeederFactory(
   FeatureFlagEntity,

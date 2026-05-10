@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrometheusService } from 'src/common/metrics/prometheus.service';
+import { PrometheusService } from 'src/modules/common/metrics/prometheus.service';
 
 const mockInc = jest.fn();
 const mockSet = jest.fn();

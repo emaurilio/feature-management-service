@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { HashFeatureFlagService } from 'src/feature-flag/application/services/hash-feature-flag.service';
+import { HashFeatureFlagService } from 'src/modules/feature-flag/application/services/hash-feature-flag.service';
 
 describe('HashFeatureFlagService', () => {
     let service: HashFeatureFlagService;

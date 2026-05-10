@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CheckUXResearchUserUseCase } from 'src/ux-research/application/use-cases/check-feature-flag/check-ux-research-user.use-case';
-import { CheckUXResearchDto } from 'src/ux-research/application/dto/check-ux-research/check-ux-research.dto';
-import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
-import { AuditLogService } from 'src/ux-research/application/services/log.service';
-import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
-import { UserUXResearch } from 'src/ux-research/domain/entites/UserUXResearch';
+import { CheckUXResearchUserUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-user.use-case';
+import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research/check-ux-research.dto';
+import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
+import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXResearch';
 
 describe('CheckUXResearchUserUseCase', () => {
   let checkUXResearchUserUseCase: CheckUXResearchUserUseCase;
@@ -192,9 +192,6 @@ describe('CheckUXResearchUserUseCase', () => {
         percentage: 100,
       };
 
-      const cacheKey = `-
-      Test UX Research-
-      1`;
       cacheService.get.mockResolvedValue(null);
       userUXResearchRepository.findByUserIdAndUXResearchId.mockResolvedValue(null);
       auditLogService.dispatchLog.mockResolvedValue(true);
@@ -202,20 +199,20 @@ describe('CheckUXResearchUserUseCase', () => {
       await expect(checkUXResearchUserUseCase.execute(emptyUserDto))
         .rejects.toThrow('User ID is required');
 
-      expect(cacheService.get).toHaveBeenCalledWith(cacheKey);
-      expect(userUXResearchRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('', 'ux-research-1');
+      expect(cacheService.get).not.toHaveBeenCalled();
+      expect(
+        userUXResearchRepository.findByUserIdAndUXResearchId,
+      ).not.toHaveBeenCalled();
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research_user',
         entity: 'UXResearch',
         entityId: '',
         timestamp: expect.any(String),
-        data: expect.objectContaining({
+        data: {
           ux_research_name: 'Test UX Research',
           version: 1,
-          user_id: '',
-          check_result: false,
-          check_method: 'database',
-        }),
+          error: 'User ID is required',
+        },
       });
     });
 

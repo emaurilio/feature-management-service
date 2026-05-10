@@ -1,6 +1,6 @@
-import { CompanyFeatureFlag } from 'src/feature-flag/domain/entities/CompanyFeatureFlag';
-import { CompanyFeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/CompanyFeatureFlag.entity';
-import { CompanyFeatureFlagMapper } from 'src/feature-flag/infraestructure/persistence/mappers/company-feature-flag.mapper';
+import { CompanyFeatureFlag } from 'src/modules/feature-flag/domain/entities/CompanyFeatureFlag';
+import { CompanyFeatureFlagEntity } from 'src/modules/feature-flag/infraestructure/persistence/entities/CompanyFeatureFlag.entity';
+import { CompanyFeatureFlagMapper } from 'src/modules/feature-flag/infraestructure/persistence/mappers/company-feature-flag.mapper';
 
 describe('CompanyFeatureFlagMapper', () => {
   const createEntity = (

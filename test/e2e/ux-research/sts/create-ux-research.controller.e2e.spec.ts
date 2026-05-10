@@ -1,22 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
-import { StsUXResearchController } from 'src/ux-research/sts-ux-research.controller';
-import { UXResearchType } from 'src/ux-research/domain/enums/ux-research-type.enum';
-import { CreateUXResearchUseCase } from 'src/ux-research/application/use-cases/create-ux-research.use-case';
-import { ImportCompaniesIdsUseCase } from 'src/ux-research/application/use-cases/import-companies-ids.use-case';
-import { ImportUsersIdsUseCase } from 'src/ux-research/application/use-cases/import-users-ids.use-case';
-import { DeleteUXResearchUseCase } from 'src/ux-research/application/use-cases/delete-ux-research.use-case';
-import { SearchUXResearchUseCase } from 'src/ux-research/application/use-cases/search-feature-flag.use-case';
-import { CheckUXResearchUseCase } from 'src/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
-import { DisableUXResearchUseCase } from 'src/ux-research/application/use-cases/disable-ux-research.use-case';
-import { ActiveUXResearchUseCase } from 'src/ux-research/application/use-cases/active-ux-research.use-case';
-import { GetUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/get-ux-research-response.use-case';
-import { CreateUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/create-ux-research-response.use-case';
-import { DeleteUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/delete-ux-research-response.use-case';
-import { SimpleTokenGuard } from 'src/common/guards/simple-token.guard';
+import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
+import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
+import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
+import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
+import { ImportUsersIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-users-ids.use-case';
+import { DeleteUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research.use-case';
+import { SearchUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/search-feature-flag.use-case';
+import { CheckUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
+import { DisableUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/disable-ux-research.use-case';
+import { ActiveUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/active-ux-research.use-case';
+import { GetUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/get-ux-research-response.use-case';
+import { CreateUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research-response.use-case';
+import { DeleteUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research-response.use-case';
+import { SimpleTokenGuard } from 'src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
-import { CreateUXResearchDto } from 'src/ux-research/application/dto/create-ux-research.dto';
+import { CreateUXResearchDto } from 'src/modules/ux-research/application/dto/create-ux-research.dto';
 
 describe('StsUXResearchController - Create (e2e)', () => {
   let app: INestApplication;
@@ -52,7 +52,7 @@ describe('StsUXResearchController - Create (e2e)', () => {
           },
         },
         {
-          provide: require('src/feature-flag/infraestructure/validators/feature-flag-exists.validator').FeatureFlagExistsConstraint,
+          provide: require('src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator').FeatureFlagExistsConstraint,
           useValue: {
             validate: jest.fn().mockImplementation(async (value?: string) => value !== 'non-existent-feature'),
             defaultMessage: jest.fn(),

@@ -3,17 +3,17 @@
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
-import { JwtService } from 'src/common/auth/services/jwt.service';
-import { ActiveFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/active-feature-flag.use-case';
-import { CheckFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
-import { CreateFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/create-feature-flag.use-case';
-import { DeleteFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/delete-feature-flag.use-case';
-import { DisableFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/disable-feature-flag.use-case';
-import { ImportCompaniesIdsUseCase } from 'src/feature-flag/application/use-cases/import-companies-ids.use-case';
-import { ImportUsersIdsUseCase } from 'src/feature-flag/application/use-cases/import-users-ids.use-case';
-import { SearchFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/search-feature-flag.use-case';
-import { FeatureFlagController } from 'src/feature-flag/feature-flag.controller';
+import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
+import { JwtService } from 'src/modules/common/auth/services/jwt.service';
+import { ActiveFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/active-feature-flag.use-case';
+import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
+import { CreateFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
+import { DeleteFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/delete-feature-flag.use-case';
+import { DisableFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/disable-feature-flag.use-case';
+import { ImportCompaniesIdsUseCase } from 'src/modules/feature-flag/application/use-cases/import-companies-ids.use-case';
+import { ImportUsersIdsUseCase } from 'src/modules/feature-flag/application/use-cases/import-users-ids.use-case';
+import { SearchFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/search-feature-flag.use-case';
+import { FeatureFlagController } from 'src/modules/feature-flag/feature-flag.controller';
 import request from 'supertest';
 
 describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {

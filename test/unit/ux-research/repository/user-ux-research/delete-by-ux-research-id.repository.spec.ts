@@ -1,4 +1,4 @@
-import { UserUXResearchRepository } from 'src/ux-research/infraestructure/persistence/repositories/user-ux-research.repository';
+import { UserUXResearchRepository } from 'src/modules/ux-research/infraestructure/persistence/repositories/user-ux-research.repository';
 import { DataSource } from 'typeorm';
 
 describe('UserUXResearchRepository', () => {

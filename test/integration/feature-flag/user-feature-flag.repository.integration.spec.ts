@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { UserFeatureFlagRepository } from '../../../src/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
-import { UserFeatureFlagEntity } from '../../../src/feature-flag/infraestructure/persistence/entities/UserFeatureFlag.entity';
-import { UserFeatureFlag } from '../../../src/feature-flag/domain/entities/UserFeatureFlag';
-import { FeatureFlagEntity } from '../../../src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
+import { UserFeatureFlagRepository } from '../../../src/modules/feature-flag/infraestructure/persistence/repositories/user-feature-flag.repository';
+import { UserFeatureFlagEntity } from '../../../src/modules/feature-flag/infraestructure/persistence/entities/UserFeatureFlag.entity';
+import { UserFeatureFlag } from '../../../src/modules/feature-flag/domain/entities/UserFeatureFlag';
+import { FeatureFlagEntity } from '../../../src/modules/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
 
 describe('UserFeatureFlagRepository (Integration)', () => {
     let repository: UserFeatureFlagRepository;

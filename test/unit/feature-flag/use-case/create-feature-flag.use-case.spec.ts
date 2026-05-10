@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateFeatureFlagDto } from 'src/feature-flag/application/dto/create-feature-flag.dto';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { CreateFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/create-feature-flag.use-case';
-import { DeleteFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/delete-feature-flag.use-case';
-import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { CreateFeatureFlagDto } from 'src/modules/feature-flag/application/dto/create-feature-flag.dto';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { CreateFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
+import { DeleteFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/delete-feature-flag.use-case';
+import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 
 describe('CreateFeatureFlagUseCase', () => {
   let useCase: CreateFeatureFlagUseCase;

@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GetUXResearchResponseUseCase } from 'src/ux-research/application/use-cases/get-ux-research-response.use-case';
-import { GetUXResearchResponseDto } from 'src/ux-research/application/dto/get-ux-research-response.dto';
-import { AuditLogService } from 'src/ux-research/application/services/log.service';
-import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
-import { UXResearchResponse } from 'src/ux-research/domain/entites/UXResearchResponse';
-import type { UXResearchResponseRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
-import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import { GetUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/get-ux-research-response.use-case';
+import { GetUXResearchResponseDto } from 'src/modules/ux-research/application/dto/get-ux-research-response.dto';
+import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
+import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
+import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 describe('SearchUXResearchUseCase', () => {
   let getUXResearchUseCase: GetUXResearchResponseUseCase;

@@ -2,7 +2,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common';
-import { SimpleTokenGuard } from 'src/common/guards/simple-token.guard';
+import { SimpleTokenGuard } from 'src/modules/common/guards/simple-token.guard';
 
 const createMockExecutionContext = (
   request: Partial<Request> = {},

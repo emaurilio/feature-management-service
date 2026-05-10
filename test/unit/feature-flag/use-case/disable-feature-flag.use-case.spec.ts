@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { DisableFeatureFlagDto } from 'src/feature-flag/application/dto/desable-feature-flag.dto';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { DisableFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/disable-feature-flag.use-case';
-import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { DisableFeatureFlagDto } from 'src/modules/feature-flag/application/dto/desable-feature-flag.dto';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { DisableFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/disable-feature-flag.use-case';
+import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
+import { FeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 
 describe('DisableFeatureFlagUseCase', () => {
   let useCase: DisableFeatureFlagUseCase;

@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { UXResearchRepository } from '../../../src/ux-research/infraestructure/persistence/repositories/ux-research.repository';
-import { UXResearchEntity } from '../../../src/ux-research/infraestructure/persistence/entities/ux-research.entity';
-import { FeatureFlagEntity } from '../../../src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
-import { UXResearch } from '../../../src/ux-research/domain/entites/UXResearch';
-import { UXResearchType } from '../../../src/ux-research/domain/enums/ux-research-type.enum';
+import { UXResearchRepository } from '../../../src/modules/ux-research/infraestructure/persistence/repositories/ux-research.repository';
+import { UXResearchEntity } from '../../../src/modules/ux-research/infraestructure/persistence/entities/ux-research.entity';
+import { FeatureFlagEntity } from '../../../src/modules/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
+import { UXResearch } from '../../../src/modules/ux-research/domain/entites/UXResearch';
+import { UXResearchType } from '../../../src/modules/ux-research/domain/enums/ux-research-type.enum';
 
 describe('UXResearchRepository (Integration)', () => {
     let repository: UXResearchRepository;

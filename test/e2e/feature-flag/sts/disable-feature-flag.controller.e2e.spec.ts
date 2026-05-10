@@ -3,19 +3,19 @@
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { StsFeatureFlagController } from '../../../../src/feature-flag/sts-feature-flag.controller';
-import { SimpleTokenGuard } from '../../../../src/common/guards/simple-token.guard';
+import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
+import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
-import { CreateFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/create-feature-flag.use-case';
-import { ImportUsersIdsUseCase } from '../../../../src/feature-flag/application/use-cases/import-users-ids.use-case';
-import { ImportCompaniesIdsUseCase } from '../../../../src/feature-flag/application/use-cases/import-companies-ids.use-case';
-import { DeleteFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/delete-feature-flag.use-case';
-import { SearchFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/search-feature-flag.use-case';
-import { CheckFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
-import { DisableFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/disable-feature-flag.use-case';
-import { ActiveFeatureFlagUseCase } from '../../../../src/feature-flag/application/use-cases/active-feature-flag.use-case';
-import { FeatureFlagRepository } from '../../../../src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
-import { FeatureFlagExistsConstraint } from '../../../../src/feature-flag/infraestructure/validators/feature-flag-exists.validator';
+import { CreateFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
+import { ImportUsersIdsUseCase } from '../../../../src/modules/feature-flag/application/use-cases/import-users-ids.use-case';
+import { ImportCompaniesIdsUseCase } from '../../../../src/modules/feature-flag/application/use-cases/import-companies-ids.use-case';
+import { DeleteFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/delete-feature-flag.use-case';
+import { SearchFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/search-feature-flag.use-case';
+import { CheckFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
+import { DisableFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/disable-feature-flag.use-case';
+import { ActiveFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/active-feature-flag.use-case';
+import { FeatureFlagRepository } from '../../../../src/modules/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { FeatureFlagExistsConstraint } from '../../../../src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 
 describe('StsFeatureFlagController Disable (E2E)', () => {
     let app: INestApplication;

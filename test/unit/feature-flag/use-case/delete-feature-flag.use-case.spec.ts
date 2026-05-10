@@ -2,14 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { DeleteFeatureFlagDto } from 'src/feature-flag/application/dto/delete-feature-flag.dto';
-import { AuditLogService } from 'src/feature-flag/application/services/audit-log.service';
-import { DeleteFeatureFlagUseCase } from 'src/feature-flag/application/use-cases/delete-feature-flag.use-case';
-import { FeatureFlag } from 'src/feature-flag/domain/entities/FeatureFlag';
-import { FeatureFlagType } from 'src/feature-flag/domain/enums/feature-flag-type.enum';
-import { CompanyFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/company-feature-flag.repository.interface';
-import { UserFeatureFlagRepositoryInterface } from 'src/feature-flag/domain/repositories/user-feature-flag.repository.interface';
-import { FeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
+import { DeleteFeatureFlagDto } from 'src/modules/feature-flag/application/dto/delete-feature-flag.dto';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { DeleteFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/delete-feature-flag.use-case';
+import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
+import { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
+import { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
+import { FeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/feature-flag.repository';
 
 describe('DeleteFeatureFlagUseCase', () => {
   let useCase: DeleteFeatureFlagUseCase;

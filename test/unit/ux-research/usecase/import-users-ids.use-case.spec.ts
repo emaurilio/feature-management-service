@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ImportUsersIdsUseCase } from 'src/ux-research/application/use-cases/import-users-ids.use-case';
-import { ImportUXResearchUsersIdsDto } from 'src/ux-research/application/dto/import-users-ids.dto';
-import type { UXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { UserUXResearchRepositoryInterface } from 'src/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
-import { AuditLogService } from 'src/ux-research/application/services/log.service';
-import type { CacheServiceInterface } from 'src/common/cache/cache-service.interface';
-import { UXResearch } from 'src/ux-research/domain/entites/UXResearch';
-import { UserUXResearch } from 'src/ux-research/domain/entites/UserUXResearch';
+import { ImportUsersIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-users-ids.use-case';
+import { ImportUXResearchUsersIdsDto } from 'src/modules/ux-research/application/dto/import-users-ids.dto';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
+import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXResearch';
 
 describe('ImportUsersIdsUseCase', () => {
   let importUsersIdsUseCase: ImportUsersIdsUseCase;

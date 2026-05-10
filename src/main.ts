@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { HttpErrorFilter } from './common/filter/http-error.filter';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { HttpErrorFilter } from './modules/common/filter/http-error.filter';
+import { TransformInterceptor } from './modules/common/interceptors/transform.interceptor';
 import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { FeatureFlagModule } from './feature-flag/feature-flag.module';
-import { UXResearchModule } from './ux-research/ux-research.module';
+import { FeatureFlagModule } from './modules/feature-flag/feature-flag.module';
+import { UXResearchModule } from './modules/ux-research/ux-research.module';
 
 function buildOpenApiBase(title: string, description: string) {
   return new DocumentBuilder()

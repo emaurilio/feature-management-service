@@ -4,8 +4,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common';
 import { JwtPayload } from 'jsonwebtoken';
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
-import { JwtService } from 'src/common/auth/services/jwt.service';
+import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
+import { JwtService } from 'src/modules/common/auth/services/jwt.service';
 
 const createMockExecutionContext = (
   request: Partial<Request> | { headers?: Record<string, string> } = {},

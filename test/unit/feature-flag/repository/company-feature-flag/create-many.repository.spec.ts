@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { CompanyFeatureFlagRepository } from 'src/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
-import { CompanyFeatureFlagEntity } from 'src/feature-flag/infraestructure/persistence/entities/CompanyFeatureFlag.entity';
-import { CompanyFeatureFlag } from 'src/feature-flag/domain/entities/CompanyFeatureFlag';
+import { CompanyFeatureFlagRepository } from 'src/modules/feature-flag/infraestructure/persistence/repositories/company-feature-flag.repository';
+import { CompanyFeatureFlagEntity } from 'src/modules/feature-flag/infraestructure/persistence/entities/CompanyFeatureFlag.entity';
+import { CompanyFeatureFlag } from 'src/modules/feature-flag/domain/entities/CompanyFeatureFlag';
 
 describe('CompanyFeatureFlagRepository - createMany', () => {
   let repository: CompanyFeatureFlagRepository;

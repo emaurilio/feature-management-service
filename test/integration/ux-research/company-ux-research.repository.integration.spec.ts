@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { CompanyUXResearchRepository } from '../../../src/ux-research/infraestructure/persistence/repositories/company-ux-research.repository';
-import { CompanyUXResearchEntity } from '../../../src/ux-research/infraestructure/persistence/entities/company-ux-research.entity';
-import { UXResearchEntity } from '../../../src/ux-research/infraestructure/persistence/entities/ux-research.entity';
-import { FeatureFlagEntity } from '../../../src/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
-import { CompanyUXResearch } from '../../../src/ux-research/domain/entites/CompanyUXResearch';
+import { CompanyUXResearchRepository } from '../../../src/modules/ux-research/infraestructure/persistence/repositories/company-ux-research.repository';
+import { CompanyUXResearchEntity } from '../../../src/modules/ux-research/infraestructure/persistence/entities/company-ux-research.entity';
+import { UXResearchEntity } from '../../../src/modules/ux-research/infraestructure/persistence/entities/ux-research.entity';
+import { FeatureFlagEntity } from '../../../src/modules/feature-flag/infraestructure/persistence/entities/FeatureFlag.entity';
+import { CompanyUXResearch } from '../../../src/modules/ux-research/domain/entites/CompanyUXResearch';
 
 describe('CompanyUXResearchRepository (Integration)', () => {
     let repository: CompanyUXResearchRepository;

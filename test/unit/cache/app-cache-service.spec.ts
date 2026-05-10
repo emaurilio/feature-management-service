@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { AppCacheService } from 'src/common/cache/cache.service';
-import { METRICS_OBSERVER } from 'src/common/metrics/metrics.observer';
+import { AppCacheService } from 'src/modules/common/cache/cache.service';
+import { METRICS_OBSERVER } from 'src/modules/common/metrics/metrics.observer';
 import { Cache } from 'cache-manager';
 
 describe('AppCacheService', () => {

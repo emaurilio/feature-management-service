@@ -1,6 +1,6 @@
-import { UXResearchResponseMapper } from 'src/ux-research/infraestructure/persistence/mappers/ux-research-response.mapper';
-import { UXResearchResponseEntity } from 'src/ux-research/infraestructure/persistence/entities/ux-research-response.entity';
-import { UXResearchResponse } from 'src/ux-research/domain/entites/UXResearchResponse';
+import { UXResearchResponseMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/ux-research-response.mapper';
+import { UXResearchResponseEntity } from 'src/modules/ux-research/infraestructure/persistence/entities/ux-research-response.entity';
+import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
 
 describe('UXResearchResponseMapper', () => {
   describe('toDomain', () => {
