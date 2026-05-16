@@ -8,6 +8,7 @@ import { UserFeatureFlag } from 'src/modules/feature-flag/domain/entities/UserFe
 import { ImportUsersIdsDto } from '../dto/import-users-ids.dto';
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class ImportUsersIdsUseCase {
@@ -43,8 +44,10 @@ export class ImportUsersIdsUseCase {
 
       const id = featureFlagExists.id;
 
-      const usersFeatureFlag = await Promise.all(
-        importUsersIdsDto.usersIds.map(async (userId) => {
+      const usersFeatureFlag = await mapWithConcurrencyLimit(
+        importUsersIdsDto.usersIds,
+        50,
+        async (userId) => {
           const existing =
             await this.userRepository.findByUserIdAndFeatureFlagId(
               userId,
@@ -54,7 +57,7 @@ export class ImportUsersIdsUseCase {
           if (existing) return existing;
 
           return new UserFeatureFlag(id ?? '', userId);
-        }),
+        },
       );
 
       const result = await this.userRepository.createMany(usersFeatureFlag);

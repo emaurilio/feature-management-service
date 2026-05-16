@@ -4,6 +4,7 @@ import { METRICS_OBSERVER } from 'src/modules/common/metrics/metrics.observer';
 import type { MetricsObserver } from 'src/modules/common/metrics/metrics.observer';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { CacheServiceInterface } from './cache-service.interface';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class AppCacheService implements CacheServiceInterface {
@@ -42,11 +43,9 @@ export class AppCacheService implements CacheServiceInterface {
     entitiesId: string[],
   ): Promise<void> {
     try {
-      await Promise.all(
-        entitiesId.map((entityId) =>
-          this.cacheManager.del(`${entityId}-${featureName}-${version}`),
-        ),
-      );
+      await mapWithConcurrencyLimit(entitiesId, 50, async (entityId) => {
+        await this.cacheManager.del(`${entityId}-${featureName}-${version}`);
+      });
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       this.logger.error(

@@ -8,6 +8,7 @@ import { ImportUXResearchUsersIdsDto } from '../dto/import-users-ids.dto';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class ImportUsersIdsUseCase {
@@ -43,8 +44,10 @@ export class ImportUsersIdsUseCase {
 
       const id = uxResearchExists.id;
 
-      const usersUXResearch = await Promise.all(
-        importUXResearchUsersIdsDto.usersIds.map(async (userId) => {
+      const usersUXResearch = await mapWithConcurrencyLimit(
+        importUXResearchUsersIdsDto.usersIds,
+        50,
+        async (userId) => {
           const existing =
             await this.userUXResearchRepository.findByUserIdAndUXResearchId(
               userId,
@@ -54,7 +57,7 @@ export class ImportUsersIdsUseCase {
           if (existing) return existing;
 
           return new UserUXResearch(id ?? '', userId);
-        }),
+        },
       );
 
       const result = await this.userUXResearchRepository.createMany(usersUXResearch);

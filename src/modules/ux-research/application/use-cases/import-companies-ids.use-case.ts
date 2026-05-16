@@ -8,6 +8,7 @@ import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/doma
 import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class ImportCompaniesIdsUseCase {
@@ -43,8 +44,10 @@ export class ImportCompaniesIdsUseCase {
 
       const id = uxResearchExists.id;
 
-      const companiesUXResearch = await Promise.all(
-        importUXResearchCompaniesIdsDto.companiesIds.map(async (companyId) => {
+      const companiesUXResearch = await mapWithConcurrencyLimit(
+        importUXResearchCompaniesIdsDto.companiesIds,
+        50,
+        async (companyId) => {
           const existing =
             await this.companyRepository.findByCompanyIdAndUXResearchId(
               companyId,
@@ -54,7 +57,7 @@ export class ImportCompaniesIdsUseCase {
           if (existing) return existing;
 
           return new CompanyUXResearch(id ?? '', companyId);
-        }),
+        },
       );
 
       const result =

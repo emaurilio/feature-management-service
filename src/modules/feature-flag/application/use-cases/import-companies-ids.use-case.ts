@@ -8,6 +8,7 @@ import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import { ImportCompaniesIdsDto } from '../dto/import-companies-ids.dto';
 import { CompanyFeatureFlag } from 'src/modules/feature-flag/domain/entities/CompanyFeatureFlag';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class ImportCompaniesIdsUseCase {
@@ -42,9 +43,10 @@ export class ImportCompaniesIdsUseCase {
       }
 
       const id = featureFlagExists.id;
-
-      const companiesFeatureFlag = await Promise.all(
-        importCompanyIdsDto.companiesIds.map(async (companyId) => {
+      const companiesFeatureFlag = await mapWithConcurrencyLimit(
+        importCompanyIdsDto.companiesIds,
+        50,
+        async (companyId) => {
           const existing =
             await this.companyRepository.findByCompanyIdAndFeatureFlagId(
               companyId,
@@ -54,7 +56,7 @@ export class ImportCompaniesIdsUseCase {
           if (existing) return existing;
 
           return new CompanyFeatureFlag(id ?? '', companyId);
-        }),
+        },
       );
 
       const result =
