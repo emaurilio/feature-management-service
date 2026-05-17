@@ -79,7 +79,7 @@ describe('UserUXResearchRepository (Integration)', () => {
         ] as Partial<UXResearchEntity>[]);
     });
 
-    it('deve persistir vários vínculos user–ux research (createMany)', async () => {
+    it('should persist multiple user–ux research links (createMany)', async () => {
         const rows = [
             new UserUXResearch('ux-research-1', 'user-mult-1'),
             new UserUXResearch('ux-research-2', 'user-mult-1'),
@@ -98,12 +98,12 @@ describe('UserUXResearchRepository (Integration)', () => {
         expect(uxIds).toEqual(['ux-research-1', 'ux-research-2']);
     });
 
-    it('deve retornar array vazio em findByUserId quando não há vínculos', async () => {
+    it('should return empty array when there are no links', async () => {
         const result = await repository.findByUserId('user-inexistente');
         expect(result).toEqual([]);
     });
 
-    it('deve buscar vínculos por userId', async () => {
+    it('should find links by userId', async () => {
         await repository.createMany([
             new UserUXResearch('ux-research-1', 'user-search'),
             new UserUXResearch('ux-research-2', 'user-search'),
@@ -130,7 +130,7 @@ describe('UserUXResearchRepository (Integration)', () => {
         ).toBe(true);
     });
 
-    it('deve buscar um vínculo por userId e uxResearchId', async () => {
+    it('should find a link by userId and uxResearchId', async () => {
         await repository.createMany([
             new UserUXResearch('ux-research-other', 'user-specific'),
         ]);
@@ -151,7 +151,7 @@ describe('UserUXResearchRepository (Integration)', () => {
         expect(notFound).toBeNull();
     });
 
-    it('deve aplicar soft delete por uxResearchId e retornar true', async () => {
+    it('should apply soft delete by uxResearchId and return true', async () => {
         await repository.createMany([
             new UserUXResearch('ux-research-delete', 'user-a'),
             new UserUXResearch('ux-research-delete', 'user-b'),
@@ -178,7 +178,7 @@ describe('UserUXResearchRepository (Integration)', () => {
         });
     });
 
-    it('deve retornar true em deleteByUXResearchId quando não há linhas', async () => {
+    it('should return true when there are no links', async () => {
         const result = await repository.deleteByUXResearchId(
             'ux-research-inexistente',
         );

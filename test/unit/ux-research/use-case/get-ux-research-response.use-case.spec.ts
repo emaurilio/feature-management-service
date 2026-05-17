@@ -7,7 +7,7 @@ import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXRes
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
-describe('SearchUXResearchUseCase', () => {
+describe('GetUXResearchResponseUseCase', () => {
   let getUXResearchUseCase: GetUXResearchResponseUseCase;
   let uxResearchRepository: jest.Mocked<UXResearchRepositoryInterface>;
   let uxResearchResponseRepository: jest.Mocked<UXResearchResponseRepositoryInterface>;

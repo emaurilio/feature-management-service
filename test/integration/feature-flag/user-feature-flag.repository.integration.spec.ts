@@ -38,7 +38,6 @@ describe('UserFeatureFlagRepository (Integration)', () => {
         await repository.clear();
         await dataSource.getRepository(FeatureFlagEntity).clear();
         
-        // Insert parent feature flags to satisfy foreign key constraints
         const featureRepo = dataSource.getRepository(FeatureFlagEntity);
         await featureRepo.save([
             { id: 'feature-1', nameVersion: 'f1', name: 'f1', percentage: 0, version: 1, type: 'percentage' },
@@ -51,7 +50,7 @@ describe('UserFeatureFlagRepository (Integration)', () => {
         ] as any);
     });
 
-    it('deve criar várias user feature flags (createMany)', async () => {
+    it('should create multiple user feature flags (createMany)', async () => {
         const flags = [
             new UserFeatureFlag('feature-1', 'user-1'),
             new UserFeatureFlag('feature-2', 'user-1'),
@@ -66,7 +65,7 @@ describe('UserFeatureFlagRepository (Integration)', () => {
         expect(dbEntities).toHaveLength(2);
     });
 
-    it('deve buscar user feature flags pelo userId', async () => {
+    it('should find user feature flags by userId', async () => {
         await repository.createMany([
             new UserFeatureFlag('feat-1', 'user-search'),
             new UserFeatureFlag('feat-2', 'user-search'),
@@ -81,7 +80,7 @@ describe('UserFeatureFlagRepository (Integration)', () => {
         expect(results?.some(r => r.featureId === 'feat-2')).toBeTruthy();
     });
 
-    it('deve buscar uma user feature flag por userId e featureId', async () => {
+    it('should find a user feature flag by userId and featureId', async () => {
         await repository.createMany([
             new UserFeatureFlag('feat-specific', 'user-specific')
         ]);
@@ -96,7 +95,7 @@ describe('UserFeatureFlagRepository (Integration)', () => {
         expect(notFound).toBeNull();
     });
 
-    it('deve deletar user feature flags pelo featureId (soft delete)', async () => {
+    it('should delete user feature flags by featureId (soft delete)', async () => {
         await repository.createMany([
             new UserFeatureFlag('feat-delete', 'user-1'),
             new UserFeatureFlag('feat-delete', 'user-2'),

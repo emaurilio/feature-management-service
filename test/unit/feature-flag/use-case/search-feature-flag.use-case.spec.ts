@@ -9,7 +9,7 @@ import { AuditLogService } from 'src/modules/feature-flag/application/services/a
 import { SearchFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/search-feature-flag.use-case';
 import { SearchFeatureFlagDto } from 'src/modules/feature-flag/application/dto/search-feature-flag.dto';
 
-describe('FeatureFlagRepository - searchByNamePaginated', () => {
+describe('SearchFeatureFlagUseCase', () => {
   let repository: jest.Mocked<FeatureFlagRepository>;
   let auditLogService: jest.Mocked<AuditLogService>;
   let useCase: SearchFeatureFlagUseCase;
@@ -44,7 +44,7 @@ describe('FeatureFlagRepository - searchByNamePaginated', () => {
     expect(useCase).toBeDefined();
   });
 
-  it('should search feature flags by name and return paginated results', async () => {
+  it('should be able to search feature flags by name and return paginated results', async () => {
     const searchFeatureFlagDto: SearchFeatureFlagDto = {
       name: 'test',
       page: 1,
@@ -105,7 +105,7 @@ describe('FeatureFlagRepository - searchByNamePaginated', () => {
     expect(result.items[1].name).toBe('test-2');
   });
 
-  it('should return empty results when no feature flags match the search', async () => {
+  it('should be able to return empty results when no feature flags match the search', async () => {
     const searchFeatureFlagDto: SearchFeatureFlagDto = {
       name: 'test',
       page: 1,
@@ -136,7 +136,7 @@ describe('FeatureFlagRepository - searchByNamePaginated', () => {
     expect(result.items).toEqual([]);
   });
 
-  it('should search feature flags by name and return paginated results - page 2', async () => {
+  it('should be able to search feature flags by name and return paginated results - page 2', async () => {
     const searchFeatureFlagDto: SearchFeatureFlagDto = {
       name: 'test',
       page: 2,

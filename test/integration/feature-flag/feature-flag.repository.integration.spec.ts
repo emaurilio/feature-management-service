@@ -38,7 +38,7 @@ describe('FeatureFlagRepository (Integration)', () => {
     await repository.clear();
   });
 
-  it('deve criar uma nova feature flag no banco de dados', async () => {
+  it('should create a new feature flag in the database', async () => {
     const featureFlag = new FeatureFlag(
       'minha-feature-flag-1',
       'minha-feature-flag',
@@ -59,7 +59,7 @@ describe('FeatureFlagRepository (Integration)', () => {
     expect(savedEntity?.name).toBe('minha-feature-flag');
   });
 
-  it('deve buscar uma feature flag pelo nome', async () => {
+  it('should find a feature flag by name', async () => {
     const featureFlag = new FeatureFlag(
       'outra-feature-flag-1',
       'outra-feature-flag',
@@ -76,7 +76,7 @@ describe('FeatureFlagRepository (Integration)', () => {
     expect(result?.name).toBe('outra-feature-flag');
   });
 
-  it('deve buscar de forma paginada e pelo nome (like)', async () => {
+  it('should find paginated and by name (like)', async () => {
     const flag1 = new FeatureFlag('id-1', 'search-flag-1', 10, 1, true, FeatureFlagType.PERCENTAGE);
     const flag2 = new FeatureFlag('id-2', 'search-flag-2', 20, 1, true, FeatureFlagType.PERCENTAGE);
     const flag3 = new FeatureFlag('id-3', 'other-flag', 30, 1, true, FeatureFlagType.PERCENTAGE);
@@ -97,7 +97,7 @@ describe('FeatureFlagRepository (Integration)', () => {
     expect(resultPage2.data[0].name).toBe('search-flag-2');
   });
 
-  it('deve atualizar parcialmente uma feature flag', async () => {
+  it('should update a feature flag partially', async () => {
     const flag = new FeatureFlag('id-update', 'update-flag', 100, 1, true, FeatureFlagType.PERCENTAGE);
     const created = await repository.createFeatureFlag(flag);
 
@@ -110,7 +110,7 @@ describe('FeatureFlagRepository (Integration)', () => {
     expect(dbEntity?.isActive).toBe(false);
   });
 
-  it('deve fazer o soft delete de uma feature flag', async () => {
+  it('should do the soft delete of a feature flag', async () => {
     const flag = new FeatureFlag('id-delete', 'delete-flag', 100, 1, true, FeatureFlagType.PERCENTAGE);
     const created = await repository.createFeatureFlag(flag);
 

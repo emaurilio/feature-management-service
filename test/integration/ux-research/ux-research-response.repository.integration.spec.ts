@@ -42,7 +42,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         await repository.clear();
     });
 
-    it('deve persistir resposta (createUXResearchResponse)', async () => {
+    it('should persist response (createUXResearchResponse)', async () => {
         const domain = new UXResearchResponse(
             { score: 9, note: 'ok' },
             responseDate,
@@ -64,7 +64,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         expect(row?.response).toEqual({ score: 9, note: 'ok' });
     });
 
-    it('searchByUXResearchIdPaginated deve retornar meta e items vazios quando não há dados', async () => {
+    it('searchByUXResearchIdPaginated should return empty meta and items when there are no data', async () => {
         const result = await repository.searchByUXResearchIdPaginated(
             'sem-dados',
             1,
@@ -80,7 +80,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         expect(result?.meta.totalPages).toBe(0);
     });
 
-    it('searchByUXResearchIdPaginated deve paginar resultados', async () => {
+    it('searchByUXResearchIdPaginated should paginate results', async () => {
         for (let i = 0; i < 5; i++) {
             await repository.createUXResearchResponse(
                 new UXResearchResponse(
@@ -112,7 +112,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         expect(page3?.meta.currentPage).toBe(3);
     });
 
-    it('getByUXResearchIdPaginated deve retornar null quando não há respostas', async () => {
+    it('getByUXResearchIdPaginated should return null when there are no responses', async () => {
         const result = await repository.getByUXResearchIdPaginated(
             'nada-aqui',
             1,
@@ -121,7 +121,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         expect(result).toBeNull();
     });
 
-    it('getByUXResearchIdPaginated deve mapear itens para o domínio', async () => {
+    it('getByUXResearchIdPaginated should map items to the domain', async () => {
         await repository.createUXResearchResponse(
             new UXResearchResponse(
                 { ok: true },
@@ -147,7 +147,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         expect(result?.meta.totalItems).toBe(1);
     });
 
-    it('deleteUXResearchResponse deve fazer soft delete por id', async () => {
+    it('deleteUXResearchResponse should do the soft delete by id', async () => {
         const saved = await repository.createUXResearchResponse(
             new UXResearchResponse(
                 { x: 1 },
@@ -171,7 +171,7 @@ describe('UXResearchResponseRepository (Integration)', () => {
         expect(withDeleted?.deletedAt).not.toBeNull();
     });
 
-    it('deleteUXResearchResponse deve retornar false para id inexistente', async () => {
+    it('deleteUXResearchResponse should return false for non-existent id', async () => {
         const result = await repository.deleteUXResearchResponse(
             '00000000-0000-0000-0000-000000000000',
         );

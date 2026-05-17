@@ -2,18 +2,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Job } from 'bullmq';
-import { DeadletterLogsProcessor } from 'src/modules/feature-flag/processors/deadletter-logs.processor';
-import { DeadLetterLogPayload } from 'src/modules/feature-flag/processors/types/deadletter-logs.types';
-import { AuditLogPayload } from 'src/modules/feature-flag/processors/types/audit-logs.types';
+import { DeadletterUXResearchProcessor } from 'src/modules/ux-research/processors/deadletter-logs.processor';
+import { DeadLetterLogPayload } from 'src/modules/ux-research/processors/types/deadletter-logs.types';
+import { AuditLogPayload } from 'src/modules/ux-research/processors/types/audit-logs.types';
 
 const createOriginalPayload = (
   overrides?: Partial<AuditLogPayload>,
 ): AuditLogPayload => ({
-  action: 'test-flag',
-  entity: 'feature-flag',
-  entityId: 'flag-123',
+  action: 'search_ux_research',
+  entity: 'UXResearch',
+  entityId: 'ux-research-1',
   timestamp: new Date().toISOString(),
-  data: { flagName: 'test-flag', enabled: true },
+  data: { name: 'pesquisa-x' },
   ...overrides,
 });
 
@@ -36,8 +36,8 @@ const createMockJob = (
     ...overrides,
   }) as unknown as Job<DeadLetterLogPayload, void, string>;
 
-describe('DeadletterLogsProcessor', () => {
-  let processor: DeadletterLogsProcessor;
+describe('DeadletterUXResearchProcessor (ux-research)', () => {
+  let processor: DeadletterUXResearchProcessor;
   let elasticsearchService: jest.Mocked<ElasticsearchService>;
 
   beforeEach(async () => {
@@ -47,12 +47,14 @@ describe('DeadletterLogsProcessor', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        DeadletterLogsProcessor,
+        DeadletterUXResearchProcessor,
         { provide: ElasticsearchService, useValue: elasticsearchMock },
       ],
     }).compile();
 
-    processor = module.get<DeadletterLogsProcessor>(DeadletterLogsProcessor);
+    processor = module.get<DeadletterUXResearchProcessor>(
+      DeadletterUXResearchProcessor,
+    );
     elasticsearchService = module.get(ElasticsearchService);
   });
 
@@ -68,7 +70,7 @@ describe('DeadletterLogsProcessor', () => {
       await processor.process(job);
 
       expect(elasticsearchService.index).toHaveBeenCalledWith({
-        index: 'deadletter-audit-feature-flags',
+        index: 'deadletter-audit-ux-research',
         document: expect.objectContaining({
           ...payload,
           processedAt: expect.any(String),
@@ -88,6 +90,7 @@ describe('DeadletterLogsProcessor', () => {
         index: string;
         document: Record<string, unknown>;
       };
+      expect(call.index).toBe('deadletter-audit-ux-research');
       expect(call.document.processedAt).toBeDefined();
       expect(
         new Date(call.document.processedAt as string).getTime(),
@@ -98,7 +101,7 @@ describe('DeadletterLogsProcessor', () => {
     });
 
     it('should index full payload including originalPayload and error', async () => {
-      const originalPayload = createOriginalPayload({ entity: 'my-flag' });
+      const originalPayload = createOriginalPayload({ entity: 'UXResearch' });
       const payload = createDeadLetterPayload({
         originalPayload,
         error: 'Connection refused',
@@ -109,7 +112,7 @@ describe('DeadletterLogsProcessor', () => {
       await processor.process(job);
 
       expect(elasticsearchService.index).toHaveBeenCalledWith({
-        index: 'deadletter-audit-feature-flags',
+        index: 'deadletter-audit-ux-research',
         document: expect.objectContaining({
           originalPayload: { ...originalPayload },
           error: 'Connection refused',

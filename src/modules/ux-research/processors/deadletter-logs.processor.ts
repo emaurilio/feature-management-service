@@ -16,7 +16,7 @@ export class DeadletterUXResearchProcessor extends WorkerHost {
 
   async process(job: Job<DeadLetterLogPayload, void, string>): Promise<void> {
     this.logger.warn(
-      `Processando deadletter para flag: ${job.data.originalPayload.entity}`,
+      `Processando deadletter para UX Research: ${job.data.originalPayload.entity}`,
     );
 
     try {
@@ -34,7 +34,7 @@ export class DeadletterUXResearchProcessor extends WorkerHost {
     data: DeadLetterLogPayload,
   ): Promise<void> {
     await this.elasticsearchService.index({
-      index: 'deadletter-audit-feature-flags',
+      index: 'deadletter-audit-ux-research',
       document: {
         ...data,
         processedAt: new Date().toISOString(),
@@ -42,7 +42,7 @@ export class DeadletterUXResearchProcessor extends WorkerHost {
     });
 
     this.logger.log(
-      `Deadletter salvo em Elasticsearch para flag: ${data.originalPayload.entity}`,
+      `Deadletter salvo em Elasticsearch para UX Research: ${data.originalPayload.entity}`,
     );
   }
 }

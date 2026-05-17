@@ -34,7 +34,7 @@ const createPayload = (
   ...overrides,
 });
 
-describe('AuditLogsProcessor', () => {
+describe('AuditLogsProcessor (feature-flag)', () => {
   let processor: AuditLogsProcessor;
   let elasticsearchService: jest.Mocked<ElasticsearchService>;
   let deadletterQueue: { add: jest.Mock };

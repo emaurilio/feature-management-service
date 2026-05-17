@@ -38,7 +38,6 @@ describe('CompanyFeatureFlagRepository (Integration)', () => {
         await repository.clear();
         await dataSource.getRepository(FeatureFlagEntity).clear();
         
-        // Insert parent feature flags to satisfy foreign key constraints
         const featureRepo = dataSource.getRepository(FeatureFlagEntity);
         await featureRepo.save([
             { id: 'feature-1', nameVersion: 'f1', name: 'f1', percentage: 0, version: 1, type: 'percentage' },
@@ -51,7 +50,7 @@ describe('CompanyFeatureFlagRepository (Integration)', () => {
         ] as any);
     });
 
-    it('deve criar uma nova company feature flag', async () => {
+    it('should create a new company feature flag', async () => {
         const companyFlag = new CompanyFeatureFlag('feature-1', 'company-1');
         const result = await repository.createCompanyFeatureFlag(companyFlag);
 
@@ -65,7 +64,7 @@ describe('CompanyFeatureFlagRepository (Integration)', () => {
         expect(dbEntity?.featureId).toBe('feature-1');
     });
 
-    it('deve criar várias company feature flags (createMany)', async () => {
+    it('should create multiple company feature flags (createMany)', async () => {
         const flags = [
             new CompanyFeatureFlag('feature-1', 'company-mult-1'),
             new CompanyFeatureFlag('feature-2', 'company-mult-1'),
@@ -79,7 +78,7 @@ describe('CompanyFeatureFlagRepository (Integration)', () => {
         expect(dbEntities).toHaveLength(2);
     });
 
-    it('deve buscar company feature flags pelo companyId', async () => {
+    it('should find company feature flags by companyId', async () => {
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('feat-1', 'comp-search'));
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('feat-2', 'comp-search'));
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('feat-1', 'other-comp'));
@@ -92,7 +91,7 @@ describe('CompanyFeatureFlagRepository (Integration)', () => {
         expect(results?.some(r => r.featureId === 'feat-2')).toBeTruthy();
     });
 
-    it('deve buscar uma company feature flag por companyId e featureId', async () => {
+    it('should find a company feature flag by companyId and featureId', async () => {
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('feat-specific', 'comp-specific'));
 
         const result = await repository.findByCompanyIdAndFeatureFlagId('comp-specific', 'feat-specific');
@@ -105,7 +104,7 @@ describe('CompanyFeatureFlagRepository (Integration)', () => {
         expect(notFound).toBeNull();
     });
 
-    it('deve deletar company feature flags pelo featureId (soft delete)', async () => {
+    it('should delete company feature flags by featureId (soft delete)', async () => {
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('feat-delete', 'comp-1'));
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('feat-delete', 'comp-2'));
         await repository.createCompanyFeatureFlag(new CompanyFeatureFlag('other-feat', 'comp-1'));

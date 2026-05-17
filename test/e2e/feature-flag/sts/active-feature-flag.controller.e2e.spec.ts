@@ -73,7 +73,6 @@ describe('StsFeatureFlagController Active (E2E)', () => {
     });
 
     describe('POST /sts/feature-flags/active', () => {
-        // Controller uses DisableFeatureFlagDto which maps exactly to these fields
         const activeFeatureFlagDto = {
             feature_flag_name: 'test-feature-flag',
             user_data: {

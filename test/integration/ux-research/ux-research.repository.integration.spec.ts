@@ -40,7 +40,7 @@ describe('UXResearchRepository (Integration)', () => {
         await dataSource.getRepository(FeatureFlagEntity).clear();
     });
 
-    it('deve persistir e retornar domínio (createUXResearch)', async () => {
+    it('should persist and return domain (createUXResearch)', async () => {
         const domain = new UXResearch(
             'nv-create-1',
             'ux-name-create',
@@ -64,7 +64,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(row?.nameVersion).toBe('nv-create-1');
     });
 
-    it('deve buscar por nome (findByName)', async () => {
+    it('should find by name (findByName)', async () => {
         await repository.createUXResearch(
             new UXResearch(
                 'nv-find',
@@ -85,7 +85,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(missing).toBeNull();
     });
 
-    it('findByName com withDeleted deve incluir registro soft-deleted', async () => {
+    it('findByName withDeleted should include soft-deleted record', async () => {
         const created = await repository.createUXResearch(
             new UXResearch(
                 'nv-del-name',
@@ -106,7 +106,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(withDeleted?.deletedAt).toBeDefined();
     });
 
-    it('deve buscar por featureFlagName (getByFeatureFlagName)', async () => {
+    it('should find by featureFlagName (getByFeatureFlagName)', async () => {
         await repository.createUXResearch(
             new UXResearch(
                 'nv-ff',
@@ -127,7 +127,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(await repository.getByFeatureFlagName('outra-flag')).toBeNull();
     });
 
-    it('searchByNamePaginated deve usar LIKE e paginar', async () => {
+    it('searchByNamePaginated should use LIKE and paginate', async () => {
         await repository.createUXResearch(
             new UXResearch(
                 'nv-s1',
@@ -169,7 +169,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(page2.total).toBe(2);
     });
 
-    it('updateUXResearch deve aplicar alterações e retornar domínio', async () => {
+    it('updateUXResearch should apply changes and return domain', async () => {
         const created = await repository.createUXResearch(
             new UXResearch(
                 'nv-upd',
@@ -191,7 +191,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(updated.name).toBe('ux-update-target');
     });
 
-    it('deleteUXResearch deve soft delete e retornar true', async () => {
+    it('deleteUXResearch should soft delete and return true', async () => {
         const created = await repository.createUXResearch(
             new UXResearch(
                 'nv-del',
@@ -209,7 +209,7 @@ describe('UXResearchRepository (Integration)', () => {
         expect(await repository.findOne({ where: { id: created.id } })).toBeNull();
     });
 
-    it('deleteUXResearch deve retornar false para id inexistente', async () => {
+    it('deleteUXResearch should return false for non-existent id', async () => {
         const ok = await repository.deleteUXResearch(
             '00000000-0000-0000-0000-000000000000',
         );
