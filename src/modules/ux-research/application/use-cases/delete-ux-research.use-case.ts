@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteUXResearchDto } from '../dto/delete-ux-research.dto';
+import { DeleteUxResearchResponseDto } from '../dto/response/delete-ux-research-response.dto';
+import { DeleteUxResearchResponseMapper } from '../mappers/delete-ux-research-response.mapper';
 import { isCompanyType, isUserType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
@@ -19,7 +21,9 @@ export class DeleteUXResearchUseCase {
     private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(deleteUXResearchDto: DeleteUXResearchDto) {
+  async execute(
+    deleteUXResearchDto: DeleteUXResearchDto,
+  ): Promise<DeleteUxResearchResponseDto> {
     try {
       const uxResearchExists = await this.uxResearchRepository.findByName(
         deleteUXResearchDto.name,
@@ -58,7 +62,10 @@ export class DeleteUXResearchUseCase {
         },
       });
 
-      return result;
+      return DeleteUxResearchResponseMapper.toResponse(
+        uxResearchExists,
+        (result.affected ?? 0) > 0,
+      );
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'delete_ux_research',

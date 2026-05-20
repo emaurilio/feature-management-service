@@ -32,49 +32,9 @@ export class CreateUXResearchUseCase {
       );
 
       if (uxResearchExists) {
-        const newVersion = uxResearchExists.version + 1;
-        const newUXResearch = new UXResearch(
-          `${createUXResearchDto.name}-${newVersion}`,
-          createUXResearchDto.name,
-          createUXResearchDto.percentage || 0,
-          newVersion,
-          true,
-          createUXResearchDto.type,
-          createUXResearchDto.featureFlagName,
-          createUXResearchDto.startDate,
-          createUXResearchDto.endDate,
-        );
-
-        const deleteOldUXResearch =
-          await this.deleteUXResearchUseCase.execute({
-            name: createUXResearchDto.name!,
-            userData: createUXResearchDto.userData,
-          });
-
-        if (!deleteOldUXResearch) {
-          throw new Error('Failed to delete old UX Research');
-        }
-
-        const result =
-          await this.uxResearchRepository.createUXResearch(newUXResearch);
-
-        void this.auditLogService.dispatchLog({
-          action: 'create_ux_research',
-          entity: 'UXResearch',
-          entityId: result.id,
-          timestamp: new Date().toISOString(),
-          data: {
-            user: createUXResearchDto.userData,
-            name: createUXResearchDto.name,
-            percentage: createUXResearchDto.percentage,
-            version: newVersion,
-            active: true,
-            type: createUXResearchDto.type,
-          },
-        });
-
-        return result;
+        return await this.createNewVersion(createUXResearchDto, uxResearchExists);
       }
+
       const newUXResearch = new UXResearch(
         `${createUXResearchDto.name}-1`,
         createUXResearchDto.name,
@@ -121,5 +81,56 @@ export class CreateUXResearchUseCase {
 
       throw new Error(getErrorMessage(error));
     }
+  }
+
+  private async createNewVersion(
+    createUXResearchDto: CreateUXResearchDto,
+    existingUXResearch: UXResearch,
+  ) {
+    const newVersion = existingUXResearch.version + 1;
+    const newUXResearch = new UXResearch(
+      `${createUXResearchDto.name}-${newVersion}`,
+      createUXResearchDto.name,
+      createUXResearchDto.percentage || 0,
+      newVersion,
+      true,
+      createUXResearchDto.type,
+      createUXResearchDto.featureFlagName,
+      createUXResearchDto.startDate,
+      createUXResearchDto.endDate,
+    );
+
+    const isAlreadySoftDeleted = existingUXResearch.deletedAt != null;
+
+    if (!isAlreadySoftDeleted) {
+      const deleteOldUXResearch = await this.deleteUXResearchUseCase.execute({
+        name: createUXResearchDto.name!,
+        userData: createUXResearchDto.userData,
+      });
+
+      if (!deleteOldUXResearch.deleted) {
+        throw new Error('Failed to delete old UX Research');
+      }
+    }
+
+    const result =
+      await this.uxResearchRepository.createUXResearch(newUXResearch);
+
+    void this.auditLogService.dispatchLog({
+      action: 'create_ux_research',
+      entity: 'UXResearch',
+      entityId: result.id,
+      timestamp: new Date().toISOString(),
+      data: {
+        user: createUXResearchDto.userData,
+        name: createUXResearchDto.name,
+        percentage: createUXResearchDto.percentage,
+        version: newVersion,
+        active: true,
+        type: createUXResearchDto.type,
+      },
+    });
+
+    return result;
   }
 }

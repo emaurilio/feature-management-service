@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
-import { CreateUXResearchResponseDto } from '../dto/create-ux-research-response.dto';
+import { CreateUXResearchResponseDto } from '../dto/response/create-ux-research-response.dto';
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';

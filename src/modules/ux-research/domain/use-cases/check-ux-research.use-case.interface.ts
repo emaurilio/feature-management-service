@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research/check-ux-research.dto';
+import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research.dto';
 
 export class CheckUXResearchInterface {
   execute(

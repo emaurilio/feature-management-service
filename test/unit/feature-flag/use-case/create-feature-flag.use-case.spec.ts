@@ -124,11 +124,12 @@ describe('CreateFeatureFlagUseCase', () => {
     const mockResult = { id: 'flag-123', ...createFeatureFlagDto };
     repository.findByName.mockResolvedValue(existingFeatureFlag);
     repository.createFeatureFlag.mockResolvedValue(mockResult as any);
-    deleteFeatureFlagUseCase.execute.mockResolvedValue(true as any);
+    deleteFeatureFlagUseCase.execute.mockResolvedValue({ deleted: true } as any);
 
     const result = await useCase.execute(createFeatureFlagDto);
 
     expect(result).toEqual(mockResult);
+    expect(deleteFeatureFlagUseCase.execute).toHaveBeenCalled();
     expect(repository.createFeatureFlag).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -145,9 +146,51 @@ describe('CreateFeatureFlagUseCase', () => {
           name: 'test-flag',
           type: 'percentage',
           percentage: 100,
-          version: 1,
+          version: 2,
           active: true,
         }),
+      }),
+    );
+  });
+
+  it('should create a new version when only a soft-deleted feature flag exists', async () => {
+    const createFeatureFlagDto: CreateFeatureFlagDto = {
+      name: 'test-flag',
+      type: FeatureFlagType.PERCENTAGE,
+      percentage: 100,
+      userData: {
+        userId: 'user-123',
+        email: 'maurilio@teste.com',
+        name: 'Maurilio',
+      },
+    };
+
+    const softDeletedFeatureFlag = new FeatureFlag(
+      'test-flag-6',
+      'test-flag',
+      50,
+      6,
+      true,
+      FeatureFlagType.PERCENTAGE,
+      'existing-flag',
+      new Date('2023-01-01'),
+      new Date('2023-01-01'),
+      new Date('2023-06-01'),
+    );
+
+    const mockResult = { id: 'flag-new', ...createFeatureFlagDto };
+    repository.findByName.mockResolvedValue(softDeletedFeatureFlag);
+    repository.createFeatureFlag.mockResolvedValue(mockResult as any);
+
+    const result = await useCase.execute(createFeatureFlagDto);
+
+    expect(result).toEqual(mockResult);
+    expect(deleteFeatureFlagUseCase.execute).not.toHaveBeenCalled();
+    expect(repository.createFeatureFlag).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'test-flag',
+        nameVersion: 'test-flag-7',
+        version: 7,
       }),
     );
   });
@@ -179,7 +222,7 @@ describe('CreateFeatureFlagUseCase', () => {
     const mockResult = { id: 'flag-123', ...createFeatureFlagDto };
     repository.findByName.mockResolvedValue(existingFeatureFlag);
     repository.createFeatureFlag.mockResolvedValue(mockResult as any);
-    deleteFeatureFlagUseCase.execute.mockResolvedValue(false as any);
+    deleteFeatureFlagUseCase.execute.mockResolvedValue({ deleted: false } as any);
 
     await expect(useCase.execute(createFeatureFlagDto)).rejects.toThrow(
       'Failed to delete old feature flag',

@@ -32,46 +32,9 @@ export class CreateFeatureFlagUseCase {
       );
 
       if (featureFlagExists) {
-        const newVersion = featureFlagExists.version + 1;
-        const newFeatureFlag = new FeatureFlag(
-          `${createFeatureFlagDto.name}-${newVersion}`,
-          createFeatureFlagDto.name,
-          createFeatureFlagDto.percentage || 0,
-          newVersion,
-          true,
-          createFeatureFlagDto.type,
-        );
-
-        const deleteOldFeatureFlag =
-          await this.deleteFeatureFlagUseCase.execute({
-            name: featureFlagExists.name,
-            userData: createFeatureFlagDto.userData,
-          });
-
-        if (!deleteOldFeatureFlag) {
-          throw new Error('Failed to delete old feature flag');
-        }
-
-        const result =
-          await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
-
-        void this.auditLogService.dispatchLog({
-          action: 'create_feature_flag',
-          entity: 'FeatureFlag',
-          entityId: result.id,
-          timestamp: new Date().toISOString(),
-          data: {
-            user: createFeatureFlagDto.userData,
-            name: createFeatureFlagDto.name,
-            percentage: createFeatureFlagDto.percentage,
-            version: 1,
-            active: true,
-            type: createFeatureFlagDto.type,
-          },
-        });
-
-        return result;
+        return await this.createNewVersion(createFeatureFlagDto, featureFlagExists);
       }
+
       const newFeatureFlag = new FeatureFlag(
         `${createFeatureFlagDto.name}-1`,
         createFeatureFlagDto.name,
@@ -112,5 +75,53 @@ export class CreateFeatureFlagUseCase {
 
       throw new Error(getErrorMessage(error));
     }
+  }
+
+  private async createNewVersion(
+    createFeatureFlagDto: CreateFeatureFlagDto,
+    existingFeatureFlag: FeatureFlag,
+  ) {
+    const newVersion = existingFeatureFlag.version + 1;
+    const newFeatureFlag = new FeatureFlag(
+      `${createFeatureFlagDto.name}-${newVersion}`,
+      createFeatureFlagDto.name,
+      createFeatureFlagDto.percentage || 0,
+      newVersion,
+      true,
+      createFeatureFlagDto.type,
+    );
+
+    const isAlreadySoftDeleted = existingFeatureFlag.deletedAt != null;
+
+    if (!isAlreadySoftDeleted) {
+      const deleteOldFeatureFlag = await this.deleteFeatureFlagUseCase.execute({
+        name: existingFeatureFlag.name,
+        userData: createFeatureFlagDto.userData,
+      });
+
+      if (!deleteOldFeatureFlag.deleted) {
+        throw new Error('Failed to delete old feature flag');
+      }
+    }
+
+    const result =
+      await this.featureFlagRepository.createFeatureFlag(newFeatureFlag);
+
+    void this.auditLogService.dispatchLog({
+      action: 'create_feature_flag',
+      entity: 'FeatureFlag',
+      entityId: result.id,
+      timestamp: new Date().toISOString(),
+      data: {
+        user: createFeatureFlagDto.userData,
+        name: createFeatureFlagDto.name,
+        percentage: createFeatureFlagDto.percentage,
+        version: newVersion,
+        active: true,
+        type: createFeatureFlagDto.type,
+      },
+    });
+
+    return result;
   }
 }

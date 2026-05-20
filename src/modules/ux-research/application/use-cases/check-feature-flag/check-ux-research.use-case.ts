@@ -1,11 +1,14 @@
 import { ModuleRef } from '@nestjs/core';
-import { CheckUXResearchDto } from '../../dto/check-ux-research/check-ux-research.dto';
+import { CheckUXResearchDto } from '../../dto/check-ux-research.dto';
 import { AuditLogService } from '../../services/log.service';
 import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { CheckUXResearchValidateDto } from '../../dto/check-ux-research-validate.dto';
+import { CheckUxResearchResponseDto } from '../../dto/response/check-ux-research-response.dto';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import { CheckUxResearchResponseMapper } from '../../mappers/check-ux-research-response.mapper';
+import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { CheckUXResearchCompanyUseCase } from './check-ux-research-company.use-case';
 import { CheckUXResearchUserUseCase } from './check-ux-research-user.use-case';
 import { CheckUXResearchUserPercentageUseCase } from './check-ux-research-user-percentage.use-case';
@@ -33,7 +36,7 @@ export class CheckUXResearchUseCase {
 
   async execute(
     checkUXResearchValidateDto: CheckUXResearchValidateDto,
-  ): Promise<boolean> {
+  ): Promise<CheckUxResearchResponseDto> {
     if (!checkUXResearchValidateDto.userId && !checkUXResearchValidateDto.companyId) {
       void this.auditLogService.dispatchLog({
         action: 'check_ux_research',
@@ -86,7 +89,7 @@ export class CheckUXResearchUseCase {
         },
       });
 
-      return false;
+      return this.buildResponse(getUXResearch, false);
     }
 
     if (!this.isWithinResearchPeriod(getUXResearch)) {
@@ -136,7 +139,10 @@ export class CheckUXResearchUseCase {
         companyId: checkUXResearchValidateDto.companyId,
       });
 
-      return checkByFeatureFlag;
+      return this.buildResponse(
+        getUXResearch,
+        checkByFeatureFlag.checkFeatureFlag,
+      );
     }
 
     const useCaseClass = this.strategies[getUXResearch.type];
@@ -168,7 +174,14 @@ export class CheckUXResearchUseCase {
       },
     });
 
-    return checkResult;
+    return this.buildResponse(getUXResearch, checkResult);
+  }
+
+  private buildResponse(
+    uxResearch: UXResearch,
+    checkUxResearch: boolean,
+  ): CheckUxResearchResponseDto {
+    return CheckUxResearchResponseMapper.toResponse(uxResearch, checkUxResearch);
   }
 
   private isWithinResearchPeriod (getUXResearch): boolean {

@@ -4,7 +4,7 @@
     "^src/(.*)$": "<rootDir>/src/$1"
   },
   "rootDir": "..",
-  "roots": ["<rootDir>/test/e2e", "<rootDir>/test/utils", "<rootDir>/test"],
+  "roots": ["<rootDir>/test/e2e"],
   "testEnvironment": "node",
   "testRegex": ".e2e.spec.ts$",
   "transform": {

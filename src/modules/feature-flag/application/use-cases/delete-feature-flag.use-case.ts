@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteFeatureFlagDto } from '../dto/delete-feature-flag.dto';
+import { DeleteFeatureFlagResponseDto } from '../dto/response/delete-feature-flag-response.dto';
+import { DeleteFeatureFlagResponseMapper } from '../mappers/delete-feature-flag-response.mapper';
 import {
   isCompanyType,
   isUserType,
@@ -22,7 +24,9 @@ export class DeleteFeatureFlagUseCase {
     private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(deleteFeatureFlagDto: DeleteFeatureFlagDto) {
+  async execute(
+    deleteFeatureFlagDto: DeleteFeatureFlagDto,
+  ): Promise<DeleteFeatureFlagResponseDto> {
     try {
       const featureFlagExists = await this.featureFlagRepository.findByName(
         deleteFeatureFlagDto.name,
@@ -61,7 +65,10 @@ export class DeleteFeatureFlagUseCase {
         },
       });
 
-      return result;
+      return DeleteFeatureFlagResponseMapper.toResponse(
+        featureFlagExists,
+        (result.affected ?? 0) > 0,
+      );
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'delete_feature_flag',

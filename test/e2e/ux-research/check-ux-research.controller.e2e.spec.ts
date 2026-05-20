@@ -18,8 +18,19 @@ describe('UXResearchController - Check UX Research (e2e)', () => {
     verifyTokenAsync: jest.fn(),
   };
 
-  const CHECK_PATH = '/v1/api/ux-research/check';
+  const CHECK_PATH = '/v1/ux-research/check';
   const AUTH_VALID = 'Bearer valid-test-jwt';
+
+  const mockCheckResponse = (checkUxResearch: boolean) => ({
+    id: 'ux-research-1',
+    name: 'test-ux-research',
+    nameVersion: 'test-ux-research-1',
+    type: 'percentage',
+    percentage: 100,
+    version: 1,
+    isActive: true,
+    checkUxResearch,
+  });
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -54,23 +65,24 @@ describe('UXResearchController - Check UX Research (e2e)', () => {
     }
   });
 
-  describe('POST /v1/api/ux-research/check', () => {
+  describe('POST /v1/ux-research/check', () => {
     const checkBody = {
       name: 'test-ux-research',
       user_id: 'user-123',
       company_id: 'company-456',
     };
 
-    it('should check UX research successfully (201 Created)', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => true);
+    it('should check UX research successfully (200 OK)', async () => {
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(true));
 
       const response = await request(app.getHttpServer())
         .post(CHECK_PATH)
         .set('Authorization', AUTH_VALID)
         .send(checkBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(JSON.parse(response.text)).toBe(true);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toEqual(mockCheckResponse(true));
+      expect(response.body.checkUxResearch).toBe(true);
       expect(mockCheckUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           name: checkBody.name,
@@ -80,20 +92,20 @@ describe('UXResearchController - Check UX Research (e2e)', () => {
       );
     });
 
-    it('should return 201 with false when use case resolves false', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => false);
+    it('should return 200 with false when use case resolves false', async () => {
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(false));
 
       const response = await request(app.getHttpServer())
         .post(CHECK_PATH)
         .set('Authorization', AUTH_VALID)
         .send(checkBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(JSON.parse(response.text)).toBe(false);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body.checkUxResearch).toBe(false);
     });
 
     it('should accept only user_id', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => true);
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(true));
       const body = {
         name: 'test-ux-research',
         user_id: 'user-only',
@@ -104,7 +116,7 @@ describe('UXResearchController - Check UX Research (e2e)', () => {
         .set('Authorization', AUTH_VALID)
         .send(body);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(mockCheckUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           name: body.name,
@@ -114,7 +126,7 @@ describe('UXResearchController - Check UX Research (e2e)', () => {
     });
 
     it('should accept only company_id', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => true);
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(true));
       const body = {
         name: 'test-ux-research',
         company_id: 'company-only',
@@ -125,7 +137,7 @@ describe('UXResearchController - Check UX Research (e2e)', () => {
         .set('Authorization', AUTH_VALID)
         .send(body);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(mockCheckUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           name: body.name,

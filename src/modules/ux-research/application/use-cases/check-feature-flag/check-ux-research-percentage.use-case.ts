@@ -4,7 +4,7 @@ import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
-import { CheckUXResearchDto } from '../../dto/check-ux-research/check-ux-research.dto';
+import { CheckUXResearchDto } from '../../dto/check-ux-research.dto';
 import type { CheckUXResearchInterface } from 'src/modules/ux-research/domain/use-cases/check-ux-research.use-case.interface';
 
 @Injectable()

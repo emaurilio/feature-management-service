@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/get-ux-research-response.use-case';
-import { GetUXResearchResponseDto } from 'src/modules/ux-research/application/dto/get-ux-research-response.dto';
+import { GetUXResearchResponseDto } from 'src/modules/ux-research/application/dto/response/get-ux-research-response.dto';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';

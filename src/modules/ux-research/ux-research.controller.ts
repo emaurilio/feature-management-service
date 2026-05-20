@@ -1,12 +1,13 @@
-import { Body, Controller, Post, UseGuards, Version } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Version } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CheckUxResearchResponseDto } from './application/dto/response/check-ux-research-response.dto';
 import { CheckUXResearchUseCase } from './application/use-cases/check-feature-flag/check-ux-research.use-case';
 import { CheckUXResearchValidateDto } from './application/dto/check-ux-research-validate.dto';
 
 @ApiTags('Public')
 @ApiBearerAuth('JWT-auth')
-@Controller('api/ux-research')
+@Controller('ux-research')
 @UseGuards(JwtAuthGuard)
 export class UXResearchController {
     constructor(
@@ -14,6 +15,8 @@ export class UXResearchController {
     ) { }
     @Version('1')
     @Post('check')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({ type: CheckUxResearchResponseDto })
     async checkValidate(@Body() checkValidate: CheckUXResearchValidateDto) {
         return await this.checkFeatureFlagUseCase.execute(checkValidate);
     }

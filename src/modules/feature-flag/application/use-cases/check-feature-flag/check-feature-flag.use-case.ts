@@ -4,11 +4,14 @@ import { CheckFeatureFlagPercentageUseCase } from './check-feature-flag-percenta
 import { CheckFeatureFlagUserPercentageUseCase } from './check-feature-flag-user-percentage.use-case';
 import { ModuleRef } from '@nestjs/core';
 import { CheckFeatureFlagValidateDto } from '../../dto/check-feature-flag-validate.dto';
-import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
+import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
+import { CheckFeatureFlagResponseDto } from '../../dto/response/check-feature-flag-response.dto';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
 import { AuditLogService } from '../../services/audit-log.service';
 import { Inject } from '@nestjs/common';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import { CheckFeatureFlagResponseMapper } from '../../mappers/check-feature-flag-response.mapper';
+import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
 
 export class CheckFeatureFlagUseCase {
   constructor(
@@ -28,7 +31,7 @@ export class CheckFeatureFlagUseCase {
 
   async execute(
     checkFeatureFlagValidateDto: CheckFeatureFlagValidateDto,
-  ): Promise<boolean> {
+  ): Promise<CheckFeatureFlagResponseDto> {
     if (!checkFeatureFlagValidateDto.userId && !checkFeatureFlagValidateDto.companyId) {
       throw new Error(
         `User ID or Company ID is required`,
@@ -70,7 +73,7 @@ export class CheckFeatureFlagUseCase {
         },
       });
 
-      return false;
+      return this.buildResponse(getFeatureFlag, false);
     }
 
     const useCaseClass = this.strategies[getFeatureFlag.type];
@@ -113,6 +116,13 @@ export class CheckFeatureFlagUseCase {
       },
     });
 
-    return checkResult;
+    return this.buildResponse(getFeatureFlag, checkResult);
+  }
+
+  private buildResponse(
+    featureFlag: FeatureFlag,
+    checkFeatureFlag: boolean,
+  ): CheckFeatureFlagResponseDto {
+    return CheckFeatureFlagResponseMapper.toResponse(featureFlag, checkFeatureFlag);
   }
 }

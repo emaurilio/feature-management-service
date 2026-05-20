@@ -2,7 +2,7 @@ import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface'
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
+import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
 import { AuditLogService } from '../../services/audit-log.service';
 import { Injectable } from '@nestjs/common';

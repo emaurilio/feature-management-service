@@ -68,10 +68,16 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
             company_id: 'company-456',
         };
 
-        it('should check feature flag validation successfully (201 Created)', async () => {
+        it('should check feature flag validation successfully (200 OK)', async () => {
             const mockResult = {
-                isValid: true,
-                message: 'Feature flag is enabled',
+                id: 'flag-id',
+                name: 'test-feature-flag',
+                nameVersion: 'test-feature-flag-1',
+                type: 'percentage',
+                percentage: 50,
+                version: 1,
+                isActive: true,
+                checkFeatureFlag: true,
             };
 
             mockCheckFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
@@ -81,7 +87,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
                 .set('Authorization', API_KEY)
                 .send(checkFeatureFlagDto);
 
-            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.status).toBe(HttpStatus.OK);
             expect(response.body).toEqual(mockResult);
             expect(mockCheckFeatureFlagUseCase.execute).toHaveBeenCalledWith(
                 expect.objectContaining({

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CheckFeatureFlagDto } from 'src/modules/feature-flag/application/dto/check-feature-flag/check-feature-flag.dto';
+import { CheckFeatureFlagDto } from 'src/modules/feature-flag/application/dto/check-feature-flag.dto';
 import { HashFeatureFlagService } from 'src/modules/feature-flag/application/services/hash-feature-flag.service';
 import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
 import { CheckFeatureFlagUserPercentageUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-user-percentage.use-case';

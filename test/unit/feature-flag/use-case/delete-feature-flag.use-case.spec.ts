@@ -91,7 +91,16 @@ describe('DeleteFeatureFlagUseCase', () => {
 
     const result = await useCase.execute(deleteFeatureFlagDto);
 
-    expect(result).toEqual(mockUpdateResult);
+    expect(result).toEqual({
+      id: 'flag-123',
+      name: 'test-flag',
+      nameVersion: 'test-flag-1',
+      type: FeatureFlagType.PERCENTAGE,
+      percentage: 50,
+      version: 1,
+      isActive: true,
+      deleted: true,
+    });
     expect(repository.findByName).toHaveBeenCalledWith('test-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-123');
     expect(companyRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
@@ -134,7 +143,16 @@ describe('DeleteFeatureFlagUseCase', () => {
 
     const result = await useCase.execute(deleteFeatureFlagDto);
 
-    expect(result).toEqual(mockUpdateResult);
+    expect(result).toEqual({
+      id: 'flag-456',
+      name: 'company-flag',
+      nameVersion: 'company-flag-1',
+      type: FeatureFlagType.COMPANY,
+      percentage: 0,
+      version: 1,
+      isActive: true,
+      deleted: true,
+    });
     expect(repository.findByName).toHaveBeenCalledWith('company-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-456');
     expect(companyRepository.deleteByFeatureFlagId).toHaveBeenCalledWith(
@@ -254,7 +272,16 @@ describe('DeleteFeatureFlagUseCase', () => {
 
     const result = await useCase.execute(deleteFeatureFlagDto);
 
-    expect(result).toEqual(mockUpdateResult);
+    expect(result).toEqual({
+      id: 'flag-789',
+      name: 'user-flag',
+      nameVersion: 'user-flag-1',
+      type: FeatureFlagType.USER,
+      percentage: 0,
+      version: 1,
+      isActive: true,
+      deleted: true,
+    });
     expect(repository.findByName).toHaveBeenCalledWith('user-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-789');
     expect(userRepository.deleteByFeatureFlagId).toHaveBeenCalledWith(

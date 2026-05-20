@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckUXResearchCompanyUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-company.use-case';
-import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research/check-ux-research.dto';
+import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research.dto';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';

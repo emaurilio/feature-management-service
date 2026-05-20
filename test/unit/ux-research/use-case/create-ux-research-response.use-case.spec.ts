@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research-response.use-case';
-import { CreateUXResearchResponseDto } from 'src/modules/ux-research/application/dto/create-ux-research-response.dto';
+import { CreateUXResearchResponseDto } from 'src/modules/ux-research/application/dto/response/create-ux-research-response.dto';
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';

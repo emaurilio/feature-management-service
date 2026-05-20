@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
+import {
+    INestApplication,
+    HttpStatus,
+    ValidationPipe,
+    VersioningType,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
 import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
@@ -52,6 +57,10 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
         }).compile();
 
         app = moduleFixture.createNestApplication();
+        app.enableVersioning({
+            type: VersioningType.URI,
+            defaultVersion: '1',
+        });
         app.useGlobalPipes(
             new ValidationPipe({ transform: true, whitelist: true }),
         );
@@ -67,29 +76,36 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
         }
     });
 
-    describe('POST /api/feature-flags/check-feature-flag', () => {
+    describe('POST /v1/feature-flags/check-feature-flag', () => {
         const checkFeatureFlagDto = {
             name: 'test-feature-flag',
             user_id: 'user-123',
             company_id: 'company-456',
         };
 
-        it('should check feature flag validation successfully (201 Created)', async () => {
+        it('should check feature flag validation successfully (200 OK)', async () => {
             const mockResult = {
-                isValid: true,
-                message: 'Feature flag is enabled',
+                id: 'flag-id',
+                name: 'test-feature-flag',
+                nameVersion: 'test-feature-flag-1',
+                type: 'percentage',
+                percentage: 50,
+                version: 1,
+                isActive: true,
+                checkFeatureFlag: true,
             };
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             mockCheckFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .post('/api/feature-flags/check-feature-flag')
+                .post('/v1/feature-flags/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(checkFeatureFlagDto);
 
-            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.status).toBe(HttpStatus.OK);
             expect(response.body).toEqual(mockResult);
+            expect(response.body.checkFeatureFlag).toBe(true);
             expect(mockCheckFeatureFlagUseCase.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
                     name: checkFeatureFlagDto.name,
@@ -104,7 +120,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             const response = await request(app.getHttpServer())
-                .post('/api/feature-flags/check-feature-flag')
+                .post('/v1/feature-flags/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(invalidDto);
 
@@ -117,7 +133,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             const response = await request(app.getHttpServer())
-                .post('/api/feature-flags/check-feature-flag')
+                .post('/v1/feature-flags/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(invalidDto);
 
@@ -130,7 +146,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             const response = await request(app.getHttpServer())
-                .post('/api/feature-flags/check-feature-flag')
+                .post('/v1/feature-flags/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(invalidDto);
 
@@ -140,7 +156,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .post('/api/feature-flags/check-feature-flag')
+                .post('/v1/feature-flags/check-feature-flag')
                 .send(checkFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -149,7 +165,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
         it('should return 401 Unauthorized if token is invalid', async () => {
             mockJwtService.verifyTokenAsync.mockRejectedValue(new Error('Invalid token'));
             const response = await request(app.getHttpServer())
-                .post('/api/feature-flags/check-feature-flag')
+                .post('/v1/feature-flags/check-feature-flag')
                 .set('Authorization', 'Bearer wrong-token')
                 .send(checkFeatureFlagDto);
 

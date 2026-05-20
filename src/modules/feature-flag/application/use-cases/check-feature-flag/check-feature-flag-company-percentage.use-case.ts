@@ -1,6 +1,6 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
-import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
+import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { AuditLogService } from '../../services/audit-log.service';
 import { Inject, Injectable } from '@nestjs/common';

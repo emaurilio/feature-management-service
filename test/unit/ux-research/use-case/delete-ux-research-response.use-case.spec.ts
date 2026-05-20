@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeleteUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research-response.use-case';
-import { DeleteUXResearchResponseDto } from 'src/modules/ux-research/application/dto/delete-ux-research-response.dto';
+import { DeleteUXResearchResponseDto } from 'src/modules/ux-research/application/dto/response/delete-ux-research-response.dto';
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
+import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
 
 describe('DeleteUXResearchResponseUseCase', () => {
   let deleteUXResearchResponseUseCase: DeleteUXResearchResponseUseCase;
@@ -11,6 +12,7 @@ describe('DeleteUXResearchResponseUseCase', () => {
 
   beforeEach(async () => {
     const mockUXResearchResponseRepository = {
+      findById: jest.fn(),
       deleteUXResearchResponse: jest.fn(),
     };
 
@@ -51,12 +53,23 @@ describe('DeleteUXResearchResponseUseCase', () => {
       },
     };
 
+    const mockUXResearchResponse = new UXResearchResponse(
+      { answer: 'yes' },
+      new Date('2024-01-01T00:00:00.000Z'),
+      'ux-research-1',
+      'user-1',
+      'company-1',
+      'response-1',
+    );
+
     it('should delete UX research response successfully', async () => {
+      uxResearchResponseRepository.findById.mockResolvedValue(mockUXResearchResponse);
       uxResearchResponseRepository.deleteUXResearchResponse.mockResolvedValue(true);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       const result = await deleteUXResearchResponseUseCase.execute(mockDeleteUXResearchResponseDto);
 
+      expect(uxResearchResponseRepository.findById).toHaveBeenCalledWith('response-1');
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('response-1');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'delete_ux_research_response',
@@ -65,14 +78,32 @@ describe('DeleteUXResearchResponseUseCase', () => {
         timestamp: expect.any(String),
         data: {
           user: mockDeleteUXResearchResponseDto.userData,
-          message: 'UX Research deleted successfully',
+          message: 'UX Research response deleted successfully',
         },
       });
-      expect(result).toBe(true);
+      expect(result).toEqual({
+        id: 'response-1',
+        uxResearchId: 'ux-research-1',
+        userId: 'user-1',
+        companyId: 'company-1',
+        responseDate: '2024-01-01T00:00:00.000Z',
+        deleted: true,
+      });
+    });
+
+    it('should throw when UX research response is not found', async () => {
+      uxResearchResponseRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        deleteUXResearchResponseUseCase.execute(mockDeleteUXResearchResponseDto),
+      ).rejects.toThrow('UX Research response not found');
+
+      expect(uxResearchResponseRepository.deleteUXResearchResponse).not.toHaveBeenCalled();
     });
 
     it('should handle repository errors', async () => {
       const repositoryError = new Error('Database connection failed');
+      uxResearchResponseRepository.findById.mockResolvedValue(mockUXResearchResponse);
       uxResearchResponseRepository.deleteUXResearchResponse.mockRejectedValue(repositoryError);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
@@ -102,13 +133,17 @@ describe('DeleteUXResearchResponseUseCase', () => {
         },
       };
 
+      uxResearchResponseRepository.findById.mockResolvedValue(
+        new UXResearchResponse({}, new Date('2024-01-01T00:00:00.000Z'), 'ux-1', undefined, undefined, 'uuid-54321-09876-fedcba'),
+      );
       uxResearchResponseRepository.deleteUXResearchResponse.mockResolvedValue(true);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       const result = await deleteUXResearchResponseUseCase.execute(uuidDto);
 
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('uuid-54321-09876-fedcba');
-      expect(result).toBe(true);
+      expect(result.deleted).toBe(true);
+      expect(result.id).toBe('uuid-54321-09876-fedcba');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
@@ -116,7 +151,7 @@ describe('DeleteUXResearchResponseUseCase', () => {
         timestamp: expect.any(String),
         data: {
           user: uuidDto.userData,
-          message: 'UX Research deleted successfully',
+          message: 'UX Research response deleted successfully',
         },
       });
     });
@@ -131,13 +166,16 @@ describe('DeleteUXResearchResponseUseCase', () => {
         },
       };
 
+      uxResearchResponseRepository.findById.mockResolvedValue(
+        new UXResearchResponse({}, new Date('2024-01-01T00:00:00.000Z'), 'ux-1', undefined, undefined, ''),
+      );
       uxResearchResponseRepository.deleteUXResearchResponse.mockResolvedValue(false);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       const result = await deleteUXResearchResponseUseCase.execute(emptyIdDto);
 
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('');
-      expect(result).toBe(false);
+      expect(result.deleted).toBe(false);
     });
 
     it('should work with special characters in response ID', async () => {
@@ -150,13 +188,16 @@ describe('DeleteUXResearchResponseUseCase', () => {
         },
       };
 
+      uxResearchResponseRepository.findById.mockResolvedValue(
+        new UXResearchResponse({}, new Date('2024-01-01T00:00:00.000Z'), 'ux-1', undefined, undefined, 'response-123!@#$%^&*()'),
+      );
       uxResearchResponseRepository.deleteUXResearchResponse.mockResolvedValue(true);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       const result = await deleteUXResearchResponseUseCase.execute(specialCharsDto);
 
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('response-123!@#$%^&*()');
-      expect(result).toBe(true);
+      expect(result.deleted).toBe(true);
     });
 
     it('should work with different user data formats', async () => {
@@ -169,12 +210,15 @@ describe('DeleteUXResearchResponseUseCase', () => {
         },
       };
 
+      uxResearchResponseRepository.findById.mockResolvedValue(
+        new UXResearchResponse({}, new Date('2024-01-01T00:00:00.000Z'), 'ux-1', undefined, undefined, 'response-minimal'),
+      );
       uxResearchResponseRepository.deleteUXResearchResponse.mockResolvedValue(true);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       const result = await deleteUXResearchResponseUseCase.execute(minimalUserDataDto);
 
-      expect(result).toBe(true);
+      expect(result.deleted).toBe(true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'delete_ux_research_response',
         entity: 'UXResearchResponse',
@@ -182,18 +226,19 @@ describe('DeleteUXResearchResponseUseCase', () => {
         timestamp: expect.any(String),
         data: {
           user: minimalUserDataDto.userData,
-          message: 'UX Research deleted successfully',
+          message: 'UX Research response deleted successfully',
         },
       });
     });
 
     it('should return false when repository returns false', async () => {
+      uxResearchResponseRepository.findById.mockResolvedValue(mockUXResearchResponse);
       uxResearchResponseRepository.deleteUXResearchResponse.mockResolvedValue(false);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       const result = await deleteUXResearchResponseUseCase.execute(mockDeleteUXResearchResponseDto);
 
-      expect(result).toBe(false);
+      expect(result.deleted).toBe(false);
       expect(uxResearchResponseRepository.deleteUXResearchResponse).toHaveBeenCalledWith('response-1');
     });
   });

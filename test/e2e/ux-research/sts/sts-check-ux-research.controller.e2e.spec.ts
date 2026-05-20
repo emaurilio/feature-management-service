@@ -25,6 +25,17 @@ describe('StsUXResearchController - Check UX Research (e2e)', () => {
 
   const API_KEY = 'test-api-key';
 
+  const mockCheckResponse = (checkUxResearch: boolean) => ({
+    id: 'ux-research-1',
+    name: 'test-ux-research',
+    nameVersion: 'test-ux-research-1',
+    type: 'percentage',
+    percentage: 100,
+    version: 1,
+    isActive: true,
+    checkUxResearch,
+  });
+
   beforeAll(async () => {
     process.env.API_KEY = API_KEY;
 
@@ -79,16 +90,17 @@ describe('StsUXResearchController - Check UX Research (e2e)', () => {
       company_id: 'company-456',
     };
 
-    it('should check UX research successfully (201 Created)', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => true);
+    it('should check UX research successfully (200 OK)', async () => {
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(true));
 
       const response = await request(app.getHttpServer())
         .post('/sts/ux-research/check-ux-research')
         .set('Authorization', API_KEY)
         .send(checkBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(JSON.parse(response.text)).toBe(true);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toEqual(mockCheckResponse(true));
+      expect(response.body.checkUxResearch).toBe(true);
       expect(mockCheckUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           name: checkBody.name,
@@ -98,20 +110,20 @@ describe('StsUXResearchController - Check UX Research (e2e)', () => {
       );
     });
 
-    it('should return 201 with false when use case resolves false', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => false);
+    it('should return 200 with false when use case resolves false', async () => {
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(false));
 
       const response = await request(app.getHttpServer())
         .post('/sts/ux-research/check-ux-research')
         .set('Authorization', API_KEY)
         .send(checkBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(JSON.parse(response.text)).toBe(false);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body.checkUxResearch).toBe(false);
     });
 
     it('should accept only user_id', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => true);
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(true));
       const body = {
         name: 'test-ux-research',
         user_id: 'user-only',
@@ -122,7 +134,7 @@ describe('StsUXResearchController - Check UX Research (e2e)', () => {
         .set('Authorization', API_KEY)
         .send(body);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(mockCheckUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           name: body.name,
@@ -132,7 +144,7 @@ describe('StsUXResearchController - Check UX Research (e2e)', () => {
     });
 
     it('should accept only company_id', async () => {
-      mockCheckUXResearchUseCase.execute.mockImplementation(async () => true);
+      mockCheckUXResearchUseCase.execute.mockResolvedValue(mockCheckResponse(true));
       const body = {
         name: 'test-ux-research',
         company_id: 'company-only',
@@ -143,7 +155,7 @@ describe('StsUXResearchController - Check UX Research (e2e)', () => {
         .set('Authorization', API_KEY)
         .send(body);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(mockCheckUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           name: body.name,

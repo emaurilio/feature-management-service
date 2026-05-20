@@ -151,7 +151,7 @@ describe('CreateUXResearchUseCase', () => {
       );
 
       uxResearchRepository.findByName.mockResolvedValue(existingUXResearch);
-      deleteUXResearchUseCase.execute.mockResolvedValue(true as any);
+      deleteUXResearchUseCase.execute.mockResolvedValue({ deleted: true } as any);
       uxResearchRepository.createUXResearch.mockResolvedValue(newVersionUXResearch);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
@@ -179,6 +179,56 @@ describe('CreateUXResearchUseCase', () => {
           type: UXResearchType.PERCENTAGE,
         },
       });
+      expect(result).toEqual(newVersionUXResearch);
+    });
+
+    it('should create a new version when only a soft-deleted UX research exists', async () => {
+      const softDeletedUXResearch = new UXResearch(
+        'Test UX Research-6',
+        'Test UX Research',
+        50,
+        6,
+        true,
+        UXResearchType.PERCENTAGE,
+        'feature-1',
+        new Date('2023-01-01'),
+        new Date('2023-01-31'),
+        'ux-research-deleted',
+        new Date('2023-01-01T10:00:00Z'),
+        new Date('2023-01-02T10:00:00Z'),
+        new Date('2023-06-01T00:00:00Z'),
+      );
+
+      const newVersionUXResearch = new UXResearch(
+        'Test UX Research-7',
+        'Test UX Research',
+        50,
+        7,
+        true,
+        UXResearchType.PERCENTAGE,
+        'feature-1',
+        new Date('2023-01-01'),
+        new Date('2023-01-31'),
+        'ux-research-new',
+        new Date('2023-01-01T10:00:00Z'),
+        new Date('2023-01-02T10:00:00Z'),
+        undefined,
+      );
+
+      uxResearchRepository.findByName.mockResolvedValue(softDeletedUXResearch);
+      uxResearchRepository.createUXResearch.mockResolvedValue(newVersionUXResearch);
+      auditLogService.dispatchLog.mockResolvedValue(true);
+
+      const result = await createUXResearchUseCase.execute(mockCreateUXResearchDto);
+
+      expect(deleteUXResearchUseCase.execute).not.toHaveBeenCalled();
+      expect(uxResearchRepository.createUXResearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Test UX Research',
+          nameVersion: 'Test UX Research-7',
+          version: 7,
+        }),
+      );
       expect(result).toEqual(newVersionUXResearch);
     });
 
@@ -230,7 +280,7 @@ describe('CreateUXResearchUseCase', () => {
       );
 
       uxResearchRepository.findByName.mockResolvedValue(existingUXResearch);
-      deleteUXResearchUseCase.execute.mockResolvedValue(false as any);
+      deleteUXResearchUseCase.execute.mockResolvedValue({ deleted: false } as any);
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       await expect(createUXResearchUseCase.execute(mockCreateUXResearchDto))

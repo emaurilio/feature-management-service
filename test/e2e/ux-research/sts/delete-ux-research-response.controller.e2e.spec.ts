@@ -1,4 +1,4 @@
-import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
+import { HttpStatus, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
@@ -55,6 +55,10 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.enableVersioning({
+      type: VersioningType.URI,
+      defaultVersion: '1',
+    });
     app.useGlobalPipes(
       new ValidationPipe({ transform: true, whitelist: true }),
     );
@@ -83,15 +87,24 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
     };
 
     it('should delete UX research response (201 Created)', async () => {
-      mockDeleteUXResearchResponseUseCase.execute.mockImplementation(async () => true);
+      const mockResult = {
+        id: 'response-uuid-1',
+        uxResearchId: 'ux-research-1',
+        userId: 'user-123',
+        companyId: 'company-456',
+        responseDate: '2024-01-01T00:00:00.000Z',
+        deleted: true,
+      };
+      mockDeleteUXResearchResponseUseCase.execute.mockResolvedValue(mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .set('Authorization', API_KEY)
         .send(validBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(JSON.parse(response.text)).toBe(true);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toEqual(mockResult);
+      expect(response.body.deleted).toBe(true);
       expect(mockDeleteUXResearchResponseUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           uxResponseId: validBody.ux_research_response_id,
@@ -105,7 +118,7 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
       delete invalidBody.ux_research_response_id;
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .set('Authorization', API_KEY)
         .send(invalidBody);
 
@@ -115,7 +128,7 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
 
     it('should return 400 if ux_research_response_id is empty', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .set('Authorization', API_KEY)
         .send({
           ...validBody,
@@ -131,7 +144,7 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
       delete invalidBody.user_data;
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .set('Authorization', API_KEY)
         .send(invalidBody);
 
@@ -141,7 +154,7 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
 
     it('should return 400 if user_data is not an object', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .set('Authorization', API_KEY)
         .send({
           ...validBody,
@@ -154,7 +167,7 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
 
     it('should return 401 if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .send(validBody);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -162,7 +175,7 @@ describe('StsUXResearchController - Delete UX Research Response (e2e)', () => {
 
     it('should return 401 if token is invalid', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/delete-ux-research-response')
+        .delete('/v1/sts/ux-research/delete-ux-research-response')
         .set('Authorization', 'wrong-token')
         .send(validBody);
 

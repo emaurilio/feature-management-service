@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
-import { DisableFeatureFlagDto } from '../dto/desable-feature-flag.dto';
+import { DisableFeatureFlagDto } from '../dto/disable-feature-flag.dto';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()

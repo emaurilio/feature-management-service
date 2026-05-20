@@ -51,6 +51,16 @@ export class UXResearchResponseRepository
         };
     }
 
+    async findById(id: string): Promise<UXResearchResponse | null> {
+        const entity = await this.findOne({ where: { id } });
+
+        if (!entity) {
+            return null;
+        }
+
+        return UXResearchResponseMapper.toDomain(entity);
+    }
+
     async deleteUXResearchResponse(id: string): Promise<boolean> {
         const result = await this.softDelete(id);
         return (result.affected ?? 0) > 0;

@@ -6,6 +6,8 @@ export interface UXResearchResponseRepositoryInterface {
 
     searchByUXResearchIdPaginated(uxResearchId: string, page: number, limit: number): Promise<any>;
 
+    findById(id: string): Promise<UXResearchResponse | null>;
+
     deleteUXResearchResponse(id: string): Promise<boolean>;
 
     getByUXResearchIdPaginated(uxResearchId: string, page?: number, limit?: number): Promise<{

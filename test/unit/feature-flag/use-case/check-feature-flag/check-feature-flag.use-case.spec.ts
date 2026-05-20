@@ -62,6 +62,7 @@ describe('CheckFeatureFlagUseCase', () => {
     featureFlagRepository.findByName.mockResolvedValue({
       id: 'feature-id',
       name: 'my-feature',
+      nameVersion: 'my-feature-2',
       version: 2,
       percentage: 50,
       isActive: false,
@@ -74,7 +75,8 @@ describe('CheckFeatureFlagUseCase', () => {
       companyId: 'company-1',
     });
 
-    expect(result).toBe(false);
+    expect(result.checkFeatureFlag).toBe(false);
+    expect(result.name).toBe('my-feature');
     expect(moduleRef.get).not.toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -117,6 +119,7 @@ describe('CheckFeatureFlagUseCase', () => {
     featureFlagRepository.findByName.mockResolvedValue({
       id: 'feature-id',
       name: 'my-feature',
+      nameVersion: 'my-feature-2',
       version: 2,
       percentage: 25,
       isActive: true,
@@ -144,7 +147,8 @@ describe('CheckFeatureFlagUseCase', () => {
         percentage: 25,
       }),
     );
-    expect(result).toBe(true);
+    expect(result.checkFeatureFlag).toBe(true);
+    expect(result.id).toBe('feature-id');
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
         action: 'check_feature_flag',
@@ -161,6 +165,7 @@ describe('CheckFeatureFlagUseCase', () => {
     moduleRef.get.mockReturnValue({ execute: strategyExecute });
     featureFlagRepository.findByName.mockResolvedValue({
       name: 'my-feature',
+      nameVersion: 'my-feature-1',
       version: 1,
       percentage: 10,
       isActive: true,
@@ -173,7 +178,7 @@ describe('CheckFeatureFlagUseCase', () => {
       companyId: 'company-9',
     });
 
-    expect(result).toBe(false);
+    expect(result.checkFeatureFlag).toBe(false);
 
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({

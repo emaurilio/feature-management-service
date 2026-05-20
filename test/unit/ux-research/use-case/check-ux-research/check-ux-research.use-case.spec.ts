@@ -169,7 +169,8 @@ describe('CheckUXResearchUseCase', () => {
 
       const result = await checkUXResearchUseCase.execute(mockCheckUXResearchValidateDto);
 
-      expect(result).toBe(false);
+      expect(result.checkUxResearch).toBe(false);
+      expect(result.name).toBe('Test UX Research');
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research',
         entity: 'UXResearch',
@@ -300,11 +301,21 @@ describe('CheckUXResearchUseCase', () => {
 
       uxResearchRepository.findByName.mockResolvedValue(uxResearchWithFeatureFlag);
       featureFlagRepository.findByName.mockResolvedValue(mockFeatureFlag);
-      checkFeatureFlagUseCase.execute.mockResolvedValue(true);
+      checkFeatureFlagUseCase.execute.mockResolvedValue({
+        id: 'feature-1',
+        name: 'feature-1',
+        nameVersion: 'feature-1-v1',
+        type: mockFeatureFlag.type,
+        percentage: 100,
+        version: 1,
+        isActive: true,
+        checkFeatureFlag: true,
+      });
 
       const result = await checkUXResearchUseCase.execute(mockCheckUXResearchValidateDto);
 
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
+      expect(result.featureFlagName).toBe('feature-1');
       expect(checkFeatureFlagUseCase.execute).toHaveBeenCalledWith({
         name: 'feature-1',
         userId: 'user-1',
@@ -371,7 +382,7 @@ describe('CheckUXResearchUseCase', () => {
         userId: 'user-1',
         companyId: 'company-1',
       });
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'check_ux_research',
         entity: 'UXResearch',
@@ -421,7 +432,7 @@ describe('CheckUXResearchUseCase', () => {
         userId: 'user-1',
         companyId: 'company-1',
       });
-      expect(result).toBe(false);
+      expect(result.checkUxResearch).toBe(false);
     });
 
     it('should execute percentage strategy correctly', async () => {
@@ -460,7 +471,7 @@ describe('CheckUXResearchUseCase', () => {
         userId: 'user-1',
         companyId: 'company-1',
       });
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
     });
 
     it('should execute user_percentage strategy correctly', async () => {
@@ -499,7 +510,7 @@ describe('CheckUXResearchUseCase', () => {
         userId: 'user-1',
         companyId: 'company-1',
       });
-      expect(result).toBe(false);
+      expect(result.checkUxResearch).toBe(false);
     });
 
     it('should execute company_percentage strategy correctly', async () => {
@@ -538,7 +549,7 @@ describe('CheckUXResearchUseCase', () => {
         userId: 'user-1',
         companyId: 'company-1',
       });
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
     });
 
     it('should work with only userId provided', async () => {
@@ -573,7 +584,7 @@ describe('CheckUXResearchUseCase', () => {
 
       const result = await checkUXResearchUseCase.execute(userOnlyDto);
 
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
       expect(mockCompanyUseCase.execute).toHaveBeenCalledWith({
         name: 'Test UX Research',
         version: 1,
@@ -615,7 +626,7 @@ describe('CheckUXResearchUseCase', () => {
 
       const result = await checkUXResearchUseCase.execute(companyOnlyDto);
 
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
       expect(mockCompanyUseCase.execute).toHaveBeenCalledWith({
         name: 'Test UX Research',
         version: 1,
@@ -652,7 +663,7 @@ describe('CheckUXResearchUseCase', () => {
 
       const result = await checkUXResearchUseCase.execute(mockCheckUXResearchValidateDto);
 
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
     });
 
     it('should work with UX research that has no ID', async () => {
@@ -682,7 +693,7 @@ describe('CheckUXResearchUseCase', () => {
 
       const result = await checkUXResearchUseCase.execute(mockCheckUXResearchValidateDto);
 
-      expect(result).toBe(true);
+      expect(result.checkUxResearch).toBe(true);
       expect(mockPercentageUseCase.execute).toHaveBeenCalledWith({
         name: 'Test UX Research',
         version: 1,

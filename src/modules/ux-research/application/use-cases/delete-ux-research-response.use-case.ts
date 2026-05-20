@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
-import { DeleteUXResearchResponseDto } from '../dto/delete-ux-research-response.dto';
+import { DeleteUXResearchResponseDto } from '../dto/response/delete-ux-research-response.dto';
+import { DeleteUxResearchItemResponseDto } from '../dto/response/delete-ux-research-item-response.dto';
+import { DeleteUxResearchItemResponseMapper } from '../mappers/delete-ux-research-item-response.mapper';
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 
 @Injectable()
@@ -12,9 +14,19 @@ export class DeleteUXResearchResponseUseCase {
     private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(deleteUXResearchResponseDto: DeleteUXResearchResponseDto) {
+  async execute(
+    deleteUXResearchResponseDto: DeleteUXResearchResponseDto,
+  ): Promise<DeleteUxResearchItemResponseDto> {
     try {
-      const result = await this.uxResearchResponseRepository.deleteUXResearchResponse(
+      const uxResearchResponse = await this.uxResearchResponseRepository.findById(
+        deleteUXResearchResponseDto.uxResponseId,
+      );
+
+      if (!uxResearchResponse) {
+        throw new Error('UX Research response not found');
+      }
+
+      const deleted = await this.uxResearchResponseRepository.deleteUXResearchResponse(
         deleteUXResearchResponseDto.uxResponseId,
       );
 
@@ -25,11 +37,14 @@ export class DeleteUXResearchResponseUseCase {
         timestamp: new Date().toISOString(),
         data: {
           user: deleteUXResearchResponseDto.userData,
-          message: 'UX Research deleted successfully',
+          message: 'UX Research response deleted successfully',
         },
       });
 
-      return result;
+      return DeleteUxResearchItemResponseMapper.toResponse(
+        uxResearchResponse,
+        deleted,
+      );
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'delete_ux_research_response',

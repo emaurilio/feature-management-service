@@ -1,6 +1,6 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import { Inject } from '@nestjs/common';
-import { CheckFeatureFlagDto } from '../../dto/check-feature-flag/check-feature-flag.dto';
+import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { Injectable } from '@nestjs/common';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';

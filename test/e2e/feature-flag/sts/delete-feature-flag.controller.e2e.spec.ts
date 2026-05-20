@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
+import { INestApplication, HttpStatus, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
@@ -54,6 +54,10 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
         }).compile();
 
         app = moduleFixture.createNestApplication();
+        app.enableVersioning({
+            type: VersioningType.URI,
+            defaultVersion: '1',
+        });
         app.useGlobalPipes(
             new ValidationPipe({ transform: true, whitelist: true }),
         );
@@ -79,16 +83,27 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
             },
         };
 
-        it('should delete a feature flag (201 Created)', async () => {
-            mockDeleteFeatureFlagUseCase.execute.mockResolvedValue(true);
+        it('should delete a feature flag (200 OK)', async () => {
+            const mockResult = {
+                id: 'flag-id',
+                name: 'test-feature-flag',
+                nameVersion: 'test-feature-flag-1',
+                type: 'percentage',
+                percentage: 50,
+                version: 1,
+                isActive: true,
+                deleted: true,
+            };
+            mockDeleteFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flags/delete')
                 .set('Authorization', API_KEY)
                 .send(deleteFeatureFlagDto);
 
-            expect(response.status).toBe(HttpStatus.CREATED);
-            expect(response.text).toBe('true');
+            expect(response.status).toBe(HttpStatus.OK);
+            expect(response.body).toEqual(mockResult);
+            expect(response.body.deleted).toBe(true);
             expect(mockDeleteFeatureFlagUseCase.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
                     name: deleteFeatureFlagDto.name,
@@ -101,7 +116,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
             const { name, ...invalidDto } = deleteFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flags/delete')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -113,7 +128,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
             const { user_data, ...invalidDto } = deleteFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flags/delete')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -123,7 +138,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flags/delete')
                 .send(deleteFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -131,7 +146,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
 
         it('should return 401 Unauthorized if token is invalid', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flags/delete')
                 .set('Authorization', 'wrong-token')
                 .send(deleteFeatureFlagDto);
 

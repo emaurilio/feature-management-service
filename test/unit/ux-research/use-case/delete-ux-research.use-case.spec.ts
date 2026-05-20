@@ -115,7 +115,8 @@ describe('DeleteUXResearchUseCase', () => {
           error: 'UX Research deleted successfully',
         },
       });
-      expect(result).toEqual({ affected: 1 });
+      expect(result.deleted).toBe(true);
+      expect(result.name).toBe('Test UX Research');
     });
 
     it('should delete UX research and company relations for company type', async () => {
@@ -146,7 +147,8 @@ describe('DeleteUXResearchUseCase', () => {
       expect(uxResearchRepository.softDelete).toHaveBeenCalledWith('ux-research-company');
       expect(companyUXResearchRepository.deleteByUXResearchId).toHaveBeenCalledWith('ux-research-company');
       expect(userUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
-      expect(result).toEqual({ affected: 1 });
+      expect(result.deleted).toBe(true);
+      expect(result.name).toBe('Company UX Research');
     });
 
     it('should delete UX research and user relations for user type', async () => {
@@ -177,7 +179,8 @@ describe('DeleteUXResearchUseCase', () => {
       expect(uxResearchRepository.softDelete).toHaveBeenCalledWith('ux-research-user');
       expect(companyUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
       expect(userUXResearchRepository.deleteByUXResearchId).toHaveBeenCalledWith('ux-research-user');
-      expect(result).toEqual({ affected: 1 });
+      expect(result.deleted).toBe(true);
+      expect(result.name).toBe('User UX Research');
     });
 
     it('should delete UX research and user relations for user_percentage type', async () => {
@@ -208,7 +211,8 @@ describe('DeleteUXResearchUseCase', () => {
       expect(uxResearchRepository.softDelete).toHaveBeenCalledWith('ux-research-user-percentage');
       expect(companyUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
       expect(userUXResearchRepository.deleteByUXResearchId).toHaveBeenCalledWith('ux-research-user-percentage');
-      expect(result).toEqual({ affected: 1 });
+      expect(result.deleted).toBe(true);
+      expect(result.name).toBe('User Percentage UX Research');
     });
 
     it('should delete UX research and company relations for company_percentage type', async () => {
@@ -239,7 +243,8 @@ describe('DeleteUXResearchUseCase', () => {
       expect(uxResearchRepository.softDelete).toHaveBeenCalledWith('ux-research-company-percentage');
       expect(companyUXResearchRepository.deleteByUXResearchId).toHaveBeenCalledWith('ux-research-company-percentage');
       expect(userUXResearchRepository.deleteByUXResearchId).not.toHaveBeenCalled();
-      expect(result).toEqual({ affected: 1 });
+      expect(result.deleted).toBe(true);
+      expect(result.name).toBe('Company Percentage UX Research');
     });
 
     it('should throw error when UX research not found', async () => {
@@ -311,7 +316,7 @@ describe('DeleteUXResearchUseCase', () => {
       const result = await deleteUXResearchUseCase.execute(mockDeleteUXResearchDto);
 
       expect(uxResearchRepository.softDelete).toHaveBeenCalledWith('');
-      expect(result).toEqual({ affected: 0 });
+      expect(result.deleted).toBe(false);
     });
 
     it('should work with special characters in UX research name', async () => {
@@ -331,7 +336,7 @@ describe('DeleteUXResearchUseCase', () => {
       const result = await deleteUXResearchUseCase.execute(specialCharsDto);
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research & Special Characters! @#$%');
-      expect(result).toEqual({ affected: 1 });
+      expect(result.deleted).toBe(true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'delete_ux_research',
         entity: 'UXResearch',
