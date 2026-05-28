@@ -109,19 +109,24 @@ describe('StsUXResearchController - Import Companies IDs (e2e)', () => {
 
     it('should import companies IDs successfully with valid data', () => {
       mockImportCompaniesIdsUseCase.execute.mockResolvedValue({
-        message: 'Companies IDs imported successfully',
-        importedCount: validImportDto.companies_ids.length,
+        uxResearchName: 'Test UX Research',
+        totalReceived: validImportDto.companies_ids.length,
+        imported: validImportDto.companies_ids.length,
+        skipped: 0,
       });
 
       return request(app.getHttpServer())
         .post('/sts/ux-research/import-companies-ids')
         .set('Authorization', 'test-api-key')
         .send(validImportDto)
-        .expect(201)
+        .expect(200)
         .expect((res) => {
-          expect(res.body).toBeDefined();
-          expect(res.body.message).toContain('Companies IDs imported successfully');
-          expect(res.body.importedCount).toBe(validImportDto.companies_ids.length);
+          expect(res.body).toEqual({
+            uxResearchName: 'Test UX Research',
+            totalReceived: validImportDto.companies_ids.length,
+            imported: validImportDto.companies_ids.length,
+            skipped: 0,
+          });
         });
     });
 

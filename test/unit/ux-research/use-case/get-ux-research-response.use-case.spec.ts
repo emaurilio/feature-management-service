@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/get-ux-research-response.use-case';
 import { GetUXResearchResponseDto } from 'src/modules/ux-research/application/dto/response/get-ux-research-response.dto';
+import { GetUxResearchResponsesResponseMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-responses-response.mapper';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
@@ -127,7 +128,9 @@ describe('GetUXResearchResponseUseCase', () => {
           name: 'Test UX Research',
         },
       });
-      expect(result).toEqual(mockPaginatedResponse);
+      expect(result).toEqual(
+        GetUxResearchResponsesResponseMapper.toResponse(mockPaginatedResponse),
+      );
     });
 
     it('should throw error when UX research not found', async () => {
@@ -258,7 +261,9 @@ describe('GetUXResearchResponseUseCase', () => {
         2,
         25
       );
-      expect(result).toEqual(customPaginatedResponse);
+      expect(result).toEqual(
+        GetUxResearchResponsesResponseMapper.toResponse(customPaginatedResponse),
+      );
     });
 
     it('should work with default pagination values', async () => {
@@ -282,7 +287,9 @@ describe('GetUXResearchResponseUseCase', () => {
         undefined,
         undefined
       );
-      expect(result).toEqual(mockPaginatedResponse);
+      expect(result).toEqual(
+        GetUxResearchResponsesResponseMapper.toResponse(mockPaginatedResponse),
+      );
     });
 
     it('should work with empty string name', async () => {
@@ -325,7 +332,9 @@ describe('GetUXResearchResponseUseCase', () => {
       const result = await getUXResearchUseCase.execute(specialCharsDto);
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research & Special Characters! @#$%');
-      expect(result).toEqual(mockPaginatedResponse);
+      expect(result).toEqual(
+        GetUxResearchResponsesResponseMapper.toResponse(mockPaginatedResponse),
+      );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'get_ux_research_response',
         entity: 'UXResearch',
@@ -366,7 +375,9 @@ describe('GetUXResearchResponseUseCase', () => {
 
       const result = await getUXResearchUseCase.execute(emptyResponseDto);
 
-      expect(result).toEqual(emptyPaginatedResponse);
+      expect(result).toEqual(
+        GetUxResearchResponsesResponseMapper.toResponse(emptyPaginatedResponse),
+      );
       expect(result.items).toEqual([]);
     });
   });

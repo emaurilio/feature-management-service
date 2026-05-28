@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Version } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CheckUxResearchResponseDto } from './application/dto/response/check-ux-research-response.dto';
+import { CheckUxResearchResponseDto } from './application/dto/dto-response/check-ux-research.response.dto';
 import { CheckUXResearchUseCase } from './application/use-cases/check-feature-flag/check-ux-research.use-case';
 import { CheckUXResearchValidateDto } from './application/dto/check-ux-research-validate.dto';
 

@@ -6,6 +6,7 @@ import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/doma
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { GetUxResearchResponseItemMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response-item.mapper';
 
 describe('CreateUXResearchResponseUseCase', () => {
   let createUXResearchResponseUseCase: CreateUXResearchResponseUseCase;
@@ -119,7 +120,9 @@ describe('CreateUXResearchResponseUseCase', () => {
           companyId: undefined,
         },
       });
-      expect(result).toEqual(mockCreatedUXResearchResponse);
+      expect(result).toEqual(
+        GetUxResearchResponseItemMapper.toResponse(mockCreatedUXResearchResponse),
+      );
     });
 
     it('should create UX research response successfully with company ID', async () => {
@@ -170,7 +173,9 @@ describe('CreateUXResearchResponseUseCase', () => {
           companyId: 'company-1',
         },
       });
-      expect(result).toEqual(mockCompanyResponse);
+      expect(result).toEqual(
+        GetUxResearchResponseItemMapper.toResponse(mockCompanyResponse),
+      );
     });
 
     it('should create UX research response using feature flag name', async () => {
@@ -193,7 +198,9 @@ describe('CreateUXResearchResponseUseCase', () => {
       const result = await createUXResearchResponseUseCase.execute(featureFlagDto);
 
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('feature-1', false);
-      expect(result).toEqual(mockCreatedUXResearchResponse);
+      expect(result).toEqual(
+        GetUxResearchResponseItemMapper.toResponse(mockCreatedUXResearchResponse),
+      );
     });
 
     it('should throw error when both user ID and company ID are missing', async () => {
@@ -357,7 +364,9 @@ describe('CreateUXResearchResponseUseCase', () => {
 
       const result = await createUXResearchResponseUseCase.execute(dtoWithPercentage);
 
-      expect(result).toEqual(mockCreatedUXResearchResponse);
+      expect(result).toEqual(
+        GetUxResearchResponseItemMapper.toResponse(mockCreatedUXResearchResponse),
+      );
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research', false);
     });
 
@@ -413,7 +422,9 @@ describe('CreateUXResearchResponseUseCase', () => {
 
       const result = await createUXResearchResponseUseCase.execute(dtoWithSpecialChars);
 
-      expect(result).toEqual(mockCreatedUXResearchResponse);
+      expect(result).toEqual(
+        GetUxResearchResponseItemMapper.toResponse(mockCreatedUXResearchResponse),
+      );
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'create_ux_research_response',
         entity: 'UXResearchResponse',

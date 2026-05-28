@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteUXResearchDto } from '../dto/delete-ux-research.dto';
-import { DeleteUxResearchResponseDto } from '../dto/response/delete-ux-research-response.dto';
+import { GetUxResearchResponseDto } from '../dto/dto-response/get-ux-research.response.dto';
 import { DeleteUxResearchResponseMapper } from '../mappers/delete-ux-research-response.mapper';
 import { isCompanyType, isUserType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
@@ -23,7 +23,7 @@ export class DeleteUXResearchUseCase {
 
   async execute(
     deleteUXResearchDto: DeleteUXResearchDto,
-  ): Promise<DeleteUxResearchResponseDto> {
+  ): Promise<GetUxResearchResponseDto> {
     try {
       const uxResearchExists = await this.uxResearchRepository.findByName(
         deleteUXResearchDto.name,

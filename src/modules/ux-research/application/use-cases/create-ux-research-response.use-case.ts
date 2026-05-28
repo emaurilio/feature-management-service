@@ -5,6 +5,9 @@ import { CreateUXResearchResponseDto } from '../dto/response/create-ux-research-
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
+import { GetUxResearchResponseItemDto } from '../dto/dto-response/response/get-ux-research-response-item.dto';
+import { GetUxResearchResponseItemMapper } from '../mappers/get-ux-research-response-item.mapper';
+import { UXResearchResponseMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/ux-research-response.mapper';
 
 @Injectable()
 export class CreateUXResearchResponseUseCase {
@@ -16,7 +19,9 @@ export class CreateUXResearchResponseUseCase {
     private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(createUXResearchResponseDto: CreateUXResearchResponseDto) {
+  async execute(
+    createUXResearchResponseDto: CreateUXResearchResponseDto,
+  ): Promise<GetUxResearchResponseItemDto> {
     try {
       if (
         !createUXResearchResponseDto.companyId &&
@@ -117,7 +122,12 @@ export class CreateUXResearchResponseUseCase {
           },
         });
 
-      return result;
+      const uxResearchResponse =
+        result instanceof UXResearchResponse
+          ? result
+          : UXResearchResponseMapper.toDomain(result);
+
+      return GetUxResearchResponseItemMapper.toResponse(uxResearchResponse);
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'create_ux_research_response',

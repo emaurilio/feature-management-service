@@ -5,6 +5,7 @@ import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/doma
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { DeleteUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research.use-case';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { GetUxResearchResponseMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response.mapper';
 import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 
 describe('CreateUXResearchUseCase', () => {
@@ -114,7 +115,9 @@ describe('CreateUXResearchUseCase', () => {
           endDate: new Date('2023-01-31'),
         }),
       });
-      expect(result).toEqual(mockCreatedUXResearch);
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse(mockCreatedUXResearch),
+      );
     });
 
     it('should create new version when UX research already exists', async () => {
@@ -179,7 +182,9 @@ describe('CreateUXResearchUseCase', () => {
           type: UXResearchType.PERCENTAGE,
         },
       });
-      expect(result).toEqual(newVersionUXResearch);
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse(newVersionUXResearch),
+      );
     });
 
     it('should create a new version when only a soft-deleted UX research exists', async () => {
@@ -229,7 +234,9 @@ describe('CreateUXResearchUseCase', () => {
           version: 7,
         }),
       );
-      expect(result).toEqual(newVersionUXResearch);
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse(newVersionUXResearch),
+      );
     });
 
     it('should throw error when percentage is required but not provided', async () => {
@@ -349,7 +356,9 @@ describe('CreateUXResearchUseCase', () => {
 
       const result = await createUXResearchUseCase.execute(companyDto);
 
-      expect(result).toEqual(companyUXResearch);
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse(companyUXResearch),
+      );
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Company UX Research', true);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'create_ux_research',
@@ -403,7 +412,9 @@ describe('CreateUXResearchUseCase', () => {
 
       const result = await createUXResearchUseCase.execute(emptyNameDto);
 
-      expect(result).toEqual(emptyNameUXResearch);
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse(emptyNameUXResearch),
+      );
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('', true);
     });
 
@@ -441,7 +452,9 @@ describe('CreateUXResearchUseCase', () => {
 
       const result = await createUXResearchUseCase.execute(specialCharsDto);
 
-      expect(result).toEqual(specialCharsUXResearch);
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse(specialCharsUXResearch),
+      );
       expect(uxResearchRepository.findByName).toHaveBeenCalledWith('Test UX Research & Special Characters! @#$%', true);
     });
   });

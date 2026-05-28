@@ -5,6 +5,8 @@ import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { isPercentageType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { GetUxResearchResponseDto } from '../dto/dto-response/get-ux-research.response.dto';
+import { GetUxResearchResponseMapper } from '../mappers/get-ux-research-response.mapper';
 import { DeleteUXResearchUseCase } from './delete-ux-research.use-case';
 
 @Injectable()
@@ -16,7 +18,9 @@ export class CreateUXResearchUseCase {
     private readonly deleteUXResearchUseCase: DeleteUXResearchUseCase,
   ) { }
 
-  async execute(createUXResearchDto: CreateUXResearchDto) {
+  async execute(
+    createUXResearchDto: CreateUXResearchDto,
+  ): Promise<GetUxResearchResponseDto> {
     try {
       if (
         isPercentageType(createUXResearchDto.type) &&
@@ -67,7 +71,7 @@ export class CreateUXResearchUseCase {
         },
       });
 
-      return result;
+      return GetUxResearchResponseMapper.toResponse(result);
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'create_ux_research',
@@ -86,7 +90,7 @@ export class CreateUXResearchUseCase {
   private async createNewVersion(
     createUXResearchDto: CreateUXResearchDto,
     existingUXResearch: UXResearch,
-  ) {
+  ): Promise<GetUxResearchResponseDto> {
     const newVersion = existingUXResearch.version + 1;
     const newUXResearch = new UXResearch(
       `${createUXResearchDto.name}-${newVersion}`,
@@ -131,6 +135,6 @@ export class CreateUXResearchUseCase {
       },
     });
 
-    return result;
+    return GetUxResearchResponseMapper.toResponse(result);
   }
 }

@@ -10,6 +10,9 @@ export class UXResearchResponseMapper {
             entity.userId,
             entity.companyId,
             entity.id,
+            entity.createdAt,
+            entity.updatedAt,
+            entity.deletedAt,
         );
     }
 

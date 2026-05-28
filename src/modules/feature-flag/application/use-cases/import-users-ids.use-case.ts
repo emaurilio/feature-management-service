@@ -6,6 +6,8 @@ import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import { UserFeatureFlag } from 'src/modules/feature-flag/domain/entities/UserFeatureFlag';
 import { ImportUsersIdsDto } from '../dto/import-users-ids.dto';
+import { ImportFeatureFlagIdsResponseDto } from '../dto/dto-response/import-feature-flag-ids-response.dto';
+import { ImportFeatureFlagIdsResponseMapper } from '../mappers/import-feature-flag-ids-response.mapper';
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
@@ -22,7 +24,9 @@ export class ImportUsersIdsUseCase {
     private readonly featureFlagCacheService: CacheServiceInterface,
   ) { }
 
-  async execute(importUsersIdsDto: ImportUsersIdsDto) {
+  async execute(
+    importUsersIdsDto: ImportUsersIdsDto,
+  ): Promise<ImportFeatureFlagIdsResponseDto> {
     try {
       const featureFlagExists = await this.featureFlagRepository.findByName(
         importUsersIdsDto.featureFlagName,
@@ -43,8 +47,10 @@ export class ImportUsersIdsUseCase {
       }
 
       const id = featureFlagExists.id;
+      const toCreate: UserFeatureFlag[] = [];
+      let skipped = 0;
 
-      const usersFeatureFlag = await mapWithConcurrencyLimit(
+      await mapWithConcurrencyLimit(
         importUsersIdsDto.usersIds,
         50,
         async (userId) => {
@@ -54,13 +60,18 @@ export class ImportUsersIdsUseCase {
               id ?? '',
             );
 
-          if (existing) return existing;
+          if (existing) {
+            skipped++;
+            return;
+          }
 
-          return new UserFeatureFlag(id ?? '', userId);
+          toCreate.push(new UserFeatureFlag(id ?? '', userId));
         },
       );
 
-      const result = await this.userRepository.createMany(usersFeatureFlag);
+      if (toCreate.length > 0) {
+        await this.userRepository.createMany(toCreate);
+      }
 
       void this.auditLogService.dispatchLog({
         action: 'import_users_ids',
@@ -80,7 +91,12 @@ export class ImportUsersIdsUseCase {
         importUsersIdsDto.usersIds,
       );
 
-      return result;
+      return ImportFeatureFlagIdsResponseMapper.toResponse({
+        featureFlagName: importUsersIdsDto.featureFlagName,
+        totalReceived: importUsersIdsDto.usersIds.length,
+        imported: toCreate.length,
+        skipped,
+      });
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'import_users_ids',

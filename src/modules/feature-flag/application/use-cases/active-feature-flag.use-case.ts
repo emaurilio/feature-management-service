@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { ActiveFeatureFlagDto } from '../dto/active-feature-flag.dto';
+import { GetFeatureFlagResponseDto } from '../dto/dto-response/get-feature-flag-response.dto';
+import { GetFeatureFlagResponseMapper } from '../mappers/get-feature-flag-response.mapper';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 @Injectable()
@@ -12,7 +14,9 @@ export class ActiveFeatureFlagUseCase {
     private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(activeFeatureFlagDto: ActiveFeatureFlagDto) {
+  async execute(
+    activeFeatureFlagDto: ActiveFeatureFlagDto,
+  ): Promise<GetFeatureFlagResponseDto> {
     try {
       const featureFlagExists = await this.featureFlagRepository.findByName(
         activeFeatureFlagDto.featureFlagName,
@@ -40,7 +44,7 @@ export class ActiveFeatureFlagUseCase {
         },
       });
 
-      return result;
+      return GetFeatureFlagResponseMapper.toResponse(result);
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'activate_feature_flag',

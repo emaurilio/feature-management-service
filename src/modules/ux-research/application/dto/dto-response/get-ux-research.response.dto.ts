@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
+import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 
-export class GetFeatureFlagResponseDto {
+export class GetUxResearchResponseDto {
   @ApiProperty({ required: false })
   id?: string;
 
@@ -11,8 +11,8 @@ export class GetFeatureFlagResponseDto {
   @ApiProperty()
   nameVersion: string;
 
-  @ApiProperty({ enum: FeatureFlagType })
-  type: FeatureFlagType;
+  @ApiProperty({ enum: UXResearchType })
+  type: UXResearchType;
 
   @ApiProperty()
   percentage: number;
@@ -24,6 +24,15 @@ export class GetFeatureFlagResponseDto {
   isActive: boolean;
 
   @ApiProperty({ required: false })
+  featureFlagName?: string;
+
+  @ApiProperty({ required: false })
+  startDate?: string;
+
+  @ApiProperty({ required: false })
+  endDate?: string;
+
+  @ApiProperty({ required: false })
   createdAt?: Date;
 
   @ApiProperty({ required: false })
@@ -31,4 +40,7 @@ export class GetFeatureFlagResponseDto {
 
   @ApiProperty({ required: false })
   deletedAt?: Date;
+
+  @ApiProperty({ required: false })
+  deleted?: boolean;
 }

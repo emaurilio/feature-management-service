@@ -4,9 +4,10 @@ import { AuditLogService } from '../../services/log.service';
 import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { CheckUXResearchValidateDto } from '../../dto/check-ux-research-validate.dto';
-import { CheckUxResearchResponseDto } from '../../dto/response/check-ux-research-response.dto';
+import { CheckUxResearchResponseDto } from '../../dto/dto-response/check-ux-research.response.dto';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import { CheckFeatureFlagResponseDto } from 'src/modules/feature-flag/application/dto/dto-response/check-feature-flag-response.dto';
 import { CheckUxResearchResponseMapper } from '../../mappers/check-ux-research-response.mapper';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { CheckUXResearchCompanyUseCase } from './check-ux-research-company.use-case';
@@ -142,6 +143,7 @@ export class CheckUXResearchUseCase {
       return this.buildResponse(
         getUXResearch,
         checkByFeatureFlag.checkFeatureFlag,
+        checkByFeatureFlag,
       );
     }
 
@@ -180,8 +182,13 @@ export class CheckUXResearchUseCase {
   private buildResponse(
     uxResearch: UXResearch,
     checkUxResearch: boolean,
+    featureFlag?: CheckFeatureFlagResponseDto,
   ): CheckUxResearchResponseDto {
-    return CheckUxResearchResponseMapper.toResponse(uxResearch, checkUxResearch);
+    return CheckUxResearchResponseMapper.toResponse(
+      uxResearch,
+      checkUxResearch,
+      featureFlag,
+    );
   }
 
   private isWithinResearchPeriod (getUXResearch): boolean {

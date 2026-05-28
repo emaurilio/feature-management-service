@@ -5,7 +5,7 @@ import { CheckFeatureFlagUserPercentageUseCase } from './check-feature-flag-user
 import { ModuleRef } from '@nestjs/core';
 import { CheckFeatureFlagValidateDto } from '../../dto/check-feature-flag-validate.dto';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
-import { CheckFeatureFlagResponseDto } from '../../dto/response/check-feature-flag-response.dto';
+import { CheckFeatureFlagResponseDto } from '../../dto/dto-response/check-feature-flag-response.dto';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
 import { AuditLogService } from '../../services/audit-log.service';
 import { Inject } from '@nestjs/common';

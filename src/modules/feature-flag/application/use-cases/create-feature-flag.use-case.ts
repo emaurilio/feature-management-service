@@ -3,6 +3,8 @@ import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import { GetFeatureFlagResponseDto } from '../dto/dto-response/get-feature-flag-response.dto';
+import { GetFeatureFlagResponseMapper } from '../mappers/get-feature-flag-response.mapper';
 import { DeleteFeatureFlagUseCase } from './delete-feature-flag.use-case';
 import { isPercentageType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
@@ -16,7 +18,9 @@ export class CreateFeatureFlagUseCase {
     private readonly deleteFeatureFlagUseCase: DeleteFeatureFlagUseCase,
   ) { }
 
-  async execute(createFeatureFlagDto: CreateFeatureFlagDto) {
+  async execute(
+    createFeatureFlagDto: CreateFeatureFlagDto,
+  ): Promise<GetFeatureFlagResponseDto> {
     try {
       if (
         isPercentageType(createFeatureFlagDto.type) &&
@@ -61,7 +65,7 @@ export class CreateFeatureFlagUseCase {
         },
       });
 
-      return result;
+      return GetFeatureFlagResponseMapper.toResponse(result);
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'create_feature_flag',
@@ -80,7 +84,7 @@ export class CreateFeatureFlagUseCase {
   private async createNewVersion(
     createFeatureFlagDto: CreateFeatureFlagDto,
     existingFeatureFlag: FeatureFlag,
-  ) {
+  ): Promise<GetFeatureFlagResponseDto> {
     const newVersion = existingFeatureFlag.version + 1;
     const newFeatureFlag = new FeatureFlag(
       `${createFeatureFlagDto.name}-${newVersion}`,
@@ -122,6 +126,6 @@ export class CreateFeatureFlagUseCase {
       },
     });
 
-    return result;
+    return GetFeatureFlagResponseMapper.toResponse(result);
   }
 }

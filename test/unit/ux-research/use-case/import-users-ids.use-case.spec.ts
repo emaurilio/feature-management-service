@@ -130,7 +130,10 @@ describe('ImportUsersIdsUseCase', () => {
       expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-1', 'ux-research-1');
       expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-2', 'ux-research-1');
       expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-3', 'ux-research-1');
-      expect(userRepository.createMany).toHaveBeenCalledWith(mockCreatedUsers);
+      expect(userRepository.createMany).toHaveBeenCalledWith([
+        mockNewUserUXResearch,
+        new UserUXResearch('ux-research-1', 'user-3', undefined),
+      ]);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'import_users_ids',
         entity: 'UX-Research',
@@ -146,7 +149,12 @@ describe('ImportUsersIdsUseCase', () => {
         'Test UX Research',
         ['user-1', 'user-2', 'user-3']
       );
-      expect(result).toEqual(mockCreatedUsers);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 3,
+        imported: 2,
+        skipped: 1,
+      });
     });
 
     it('should throw error when UX research not found', async () => {
@@ -212,8 +220,13 @@ describe('ImportUsersIdsUseCase', () => {
       const result = await importUsersIdsUseCase.execute(emptyUsersDto);
 
       expect(userRepository.findByUserIdAndUXResearchId).not.toHaveBeenCalled();
-      expect(userRepository.createMany).toHaveBeenCalledWith([]);
-      expect(result).toEqual([]);
+      expect(userRepository.createMany).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 0,
+        imported: 0,
+        skipped: 0,
+      });
     });
 
     it('should work with single user ID', async () => {
@@ -243,7 +256,12 @@ describe('ImportUsersIdsUseCase', () => {
 
       expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-single', 'ux-research-1');
       expect(userRepository.createMany).toHaveBeenCalledWith([singleUserUXResearch]);
-      expect(result).toEqual([singleUserUXResearch]);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 1,
+        imported: 1,
+        skipped: 0,
+      });
     });
 
     it('should work with special characters in user IDs', async () => {
@@ -272,7 +290,12 @@ describe('ImportUsersIdsUseCase', () => {
       const result = await importUsersIdsUseCase.execute(specialCharsDto);
 
       expect(userRepository.createMany).toHaveBeenCalledWith(specialUsersUXResearch);
-      expect(result).toEqual(specialUsersUXResearch);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 3,
+        imported: 3,
+        skipped: 0,
+      });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'import_users_ids',
         entity: 'UX-Research',
@@ -317,7 +340,12 @@ describe('ImportUsersIdsUseCase', () => {
 
       expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-1', '');
       expect(userRepository.findByUserIdAndUXResearchId).toHaveBeenCalledWith('user-2', '');
-      expect(result).toEqual(usersWithEmptyId);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 3,
+        imported: 3,
+        skipped: 0,
+      });
     });
 
     
@@ -346,7 +374,12 @@ describe('ImportUsersIdsUseCase', () => {
 
       const result = await importUsersIdsUseCase.execute(minimalUserDataDto);
 
-      expect(result).toEqual([minimalUserUXResearch]);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 1,
+        imported: 1,
+        skipped: 0,
+      });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'import_users_ids',
         entity: 'UX-Research',

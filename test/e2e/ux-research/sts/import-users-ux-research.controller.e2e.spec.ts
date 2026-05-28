@@ -100,8 +100,10 @@ describe('StsUXResearchController - Import Users IDs (e2e)', () => {
 
     it('should import users IDs successfully with valid data', async () => {
       mockImportUsersIdsUseCase.execute.mockImplementation(async () => ({
-        message: 'Users IDs imported successfully',
-        importedCount: validBody.users_ids.length,
+        uxResearchName: 'Test UX Research',
+        totalReceived: validBody.users_ids.length,
+        imported: validBody.users_ids.length,
+        skipped: 0,
       }));
 
       const response = await request(app.getHttpServer())
@@ -109,9 +111,13 @@ describe('StsUXResearchController - Import Users IDs (e2e)', () => {
         .set('Authorization', API_KEY)
         .send(validBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.message).toContain('Users IDs imported successfully');
-      expect(response.body.importedCount).toBe(validBody.users_ids.length);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: validBody.users_ids.length,
+        imported: validBody.users_ids.length,
+        skipped: 0,
+      });
     });
 
     it('should return 401 without authorization token', async () => {

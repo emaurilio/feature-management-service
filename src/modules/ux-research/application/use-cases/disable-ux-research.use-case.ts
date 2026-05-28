@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DisableUXResearchDto } from '../dto/desable-ux-research.dto';
+import { GetUxResearchResponseDto } from '../dto/dto-response/get-ux-research.response.dto';
+import { GetUxResearchResponseMapper } from '../mappers/get-ux-research-response.mapper';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 @Injectable()
@@ -12,7 +14,9 @@ export class DisableUXResearchUseCase {
     private readonly auditLogService: AuditLogService,
   ) { }
 
-  async execute(disableUXResearchDto: DisableUXResearchDto) {
+  async execute(
+    disableUXResearchDto: DisableUXResearchDto,
+  ): Promise<GetUxResearchResponseDto> {
     try {
       const uxResearchExists = await this.uxResearchRepository.findByName(
         disableUXResearchDto.uxResearchName,
@@ -40,7 +44,7 @@ export class DisableUXResearchUseCase {
         },
       });
 
-      return result;
+      return GetUxResearchResponseMapper.toResponse(result);
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'disable_ux_research',

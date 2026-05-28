@@ -15,10 +15,10 @@ import { DisableFeatureFlagDto } from './application/dto/disable-feature-flag.dt
 import { DisableFeatureFlagUseCase } from './application/use-cases/disable-feature-flag.use-case';
 import { ActiveFeatureFlagUseCase } from './application/use-cases/active-feature-flag.use-case';
 import { ApiOkResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { DeleteFeatureFlagResponseDto } from './application/dto/response/delete-feature-flag-response.dto';
-import { CheckFeatureFlagResponseDto } from './application/dto/response/check-feature-flag-response.dto';
-import { GetFeatureFlagResponseDto } from './application/dto/response/get-feature-flag-response.dto';
-import { SearchFeatureFlagPaginatedResponseDto } from './application/dto/response/search-feature-flag-response.dto';
+import { CheckFeatureFlagResponseDto } from './application/dto/dto-response/check-feature-flag-response.dto';
+import { GetFeatureFlagResponseDto } from './application/dto/dto-response/get-feature-flag-response.dto';
+import { SearchFeatureFlagPaginatedResponseDto } from './application/dto/dto-response/search-feature-flag-response.dto';
+import { ImportFeatureFlagIdsResponseDto } from './application/dto/dto-response/import-feature-flag-ids-response.dto';
 import { DeleteFeatureFlagDto } from './application/dto/delete-feature-flag.dto';
 import { ActiveFeatureFlagDto } from './application/dto/active-feature-flag.dto';
 
@@ -46,6 +46,8 @@ export class StsFeatureFlagController {
 
   @Version('1')
   @Post('import-companies-ids')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: ImportFeatureFlagIdsResponseDto })
   async importCompaniesIds(
     @Body() importCompaniesIdsDto: ImportCompaniesIdsDto,
   ) {
@@ -54,6 +56,8 @@ export class StsFeatureFlagController {
 
   @Version('1')
   @Post('import-users-ids')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: ImportFeatureFlagIdsResponseDto })
   async importUsersIds(@Body() importUsersIdsDto: ImportUsersIdsDto) {
     return this.importUsersIdsUseCase.execute(importUsersIdsDto);
   }
@@ -61,7 +65,7 @@ export class StsFeatureFlagController {
   @Version('1')
   @Delete('delete')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: DeleteFeatureFlagResponseDto })
+  @ApiOkResponse({ type: GetFeatureFlagResponseDto })
   async delete(@Body() deleteFeatureFlagDto: DeleteFeatureFlagDto) {
     return await this.deleteFeatureFlagUseCase.execute(deleteFeatureFlagDto);
   }

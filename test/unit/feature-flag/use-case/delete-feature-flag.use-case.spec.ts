@@ -4,6 +4,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeleteFeatureFlagDto } from 'src/modules/feature-flag/application/dto/delete-feature-flag.dto';
 import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { GetFeatureFlagResponseMapper } from 'src/modules/feature-flag/application/mappers/get-feature-flag-response.mapper';
 import { DeleteFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/delete-feature-flag.use-case';
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
 import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
@@ -91,16 +92,11 @@ describe('DeleteFeatureFlagUseCase', () => {
 
     const result = await useCase.execute(deleteFeatureFlagDto);
 
-    expect(result).toEqual({
-      id: 'flag-123',
-      name: 'test-flag',
-      nameVersion: 'test-flag-1',
-      type: FeatureFlagType.PERCENTAGE,
-      percentage: 50,
-      version: 1,
-      isActive: true,
-      deleted: true,
-    });
+    expect(result).toEqual(
+      GetFeatureFlagResponseMapper.toResponse(existingFeatureFlag, {
+        deleted: true,
+      }),
+    );
     expect(repository.findByName).toHaveBeenCalledWith('test-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-123');
     expect(companyRepository.deleteByFeatureFlagId).not.toHaveBeenCalled();
@@ -143,16 +139,11 @@ describe('DeleteFeatureFlagUseCase', () => {
 
     const result = await useCase.execute(deleteFeatureFlagDto);
 
-    expect(result).toEqual({
-      id: 'flag-456',
-      name: 'company-flag',
-      nameVersion: 'company-flag-1',
-      type: FeatureFlagType.COMPANY,
-      percentage: 0,
-      version: 1,
-      isActive: true,
-      deleted: true,
-    });
+    expect(result).toEqual(
+      GetFeatureFlagResponseMapper.toResponse(companyFeatureFlag, {
+        deleted: true,
+      }),
+    );
     expect(repository.findByName).toHaveBeenCalledWith('company-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-456');
     expect(companyRepository.deleteByFeatureFlagId).toHaveBeenCalledWith(
@@ -272,16 +263,11 @@ describe('DeleteFeatureFlagUseCase', () => {
 
     const result = await useCase.execute(deleteFeatureFlagDto);
 
-    expect(result).toEqual({
-      id: 'flag-789',
-      name: 'user-flag',
-      nameVersion: 'user-flag-1',
-      type: FeatureFlagType.USER,
-      percentage: 0,
-      version: 1,
-      isActive: true,
-      deleted: true,
-    });
+    expect(result).toEqual(
+      GetFeatureFlagResponseMapper.toResponse(userFeatureFlag, {
+        deleted: true,
+      }),
+    );
     expect(repository.findByName).toHaveBeenCalledWith('user-flag');
     expect(repository.softDelete).toHaveBeenCalledWith('flag-789');
     expect(userRepository.deleteByFeatureFlagId).toHaveBeenCalledWith(

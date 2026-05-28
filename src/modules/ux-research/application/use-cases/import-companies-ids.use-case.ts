@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { ImportUXResearchCompaniesIdsDto } from '../dto/import-companies-ids.dto';
+import { ImportUxResearchIdsResponseDto } from '../dto/dto-response/import-ux-research-ids-response.dto';
+import { ImportUxResearchIdsResponseMapper } from '../mappers/import-ux-research-ids-response.mapper';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
@@ -22,7 +24,9 @@ export class ImportCompaniesIdsUseCase {
     private readonly uxResearchCacheService: CacheServiceInterface,
   ) { }
 
-  async execute(importUXResearchCompaniesIdsDto: ImportUXResearchCompaniesIdsDto) {
+  async execute(
+    importUXResearchCompaniesIdsDto: ImportUXResearchCompaniesIdsDto,
+  ): Promise<ImportUxResearchIdsResponseDto> {
     try {
       const uxResearchExists = await this.uXResearchRepository.findByName(
         importUXResearchCompaniesIdsDto.uxResearchName,
@@ -44,7 +48,10 @@ export class ImportCompaniesIdsUseCase {
 
       const id = uxResearchExists.id;
 
-      const companiesUXResearch = await mapWithConcurrencyLimit(
+      const toCreate: CompanyUXResearch[] = [];
+      let skipped = 0;
+
+      await mapWithConcurrencyLimit(
         importUXResearchCompaniesIdsDto.companiesIds,
         50,
         async (companyId) => {
@@ -54,14 +61,18 @@ export class ImportCompaniesIdsUseCase {
               id ?? '',
             );
 
-          if (existing) return existing;
+          if (existing) {
+            skipped++;
+            return;
+          }
 
-          return new CompanyUXResearch(id ?? '', companyId);
+          toCreate.push(new CompanyUXResearch(id ?? '', companyId));
         },
       );
 
-      const result =
-        await this.companyRepository.createMany(companiesUXResearch);
+      if (toCreate.length > 0) {
+        await this.companyRepository.createMany(toCreate);
+      }
 
       void this.auditLogService.dispatchLog({
         action: 'import_companies_ids',
@@ -80,7 +91,12 @@ export class ImportCompaniesIdsUseCase {
         importUXResearchCompaniesIdsDto.companiesIds,
       );
 
-      return result;
+      return ImportUxResearchIdsResponseMapper.toResponse({
+        uxResearchName: importUXResearchCompaniesIdsDto.uxResearchName,
+        totalReceived: importUXResearchCompaniesIdsDto.companiesIds.length,
+        imported: toCreate.length,
+        skipped,
+      });
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'import_companies_ids',

@@ -3,7 +3,7 @@ import { CheckFeatureFlagValidateDto } from './application/dto/check-feature-fla
 import { CheckFeatureFlagUseCase } from './application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CheckFeatureFlagResponseDto } from './application/dto/response/check-feature-flag-response.dto';
+import { CheckFeatureFlagResponseDto } from './application/dto/dto-response/check-feature-flag-response.dto';
 
 @ApiTags('Public')
 @ApiBearerAuth('JWT-auth')

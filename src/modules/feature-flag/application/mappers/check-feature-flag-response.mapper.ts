@@ -1,5 +1,6 @@
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
-import { CheckFeatureFlagResponseDto } from '../dto/response/check-feature-flag-response.dto';
+import { CheckFeatureFlagResponseDto } from '../dto/dto-response/check-feature-flag-response.dto';
+import { GetFeatureFlagResponseMapper } from './get-feature-flag-response.mapper';
 
 export class CheckFeatureFlagResponseMapper {
   static toResponse(
@@ -7,13 +8,7 @@ export class CheckFeatureFlagResponseMapper {
     checkFeatureFlag: boolean,
   ): CheckFeatureFlagResponseDto {
     return {
-      id: featureFlag.id,
-      name: featureFlag.name,
-      nameVersion: featureFlag.nameVersion,
-      type: featureFlag.type,
-      percentage: featureFlag.percentage,
-      version: featureFlag.version,
-      isActive: featureFlag.isActive,
+      ...GetFeatureFlagResponseMapper.toResponse(featureFlag),
       checkFeatureFlag,
     };
   }

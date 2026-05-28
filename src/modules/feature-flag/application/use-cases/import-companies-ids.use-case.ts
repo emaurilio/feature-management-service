@@ -7,6 +7,8 @@ import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import { ImportCompaniesIdsDto } from '../dto/import-companies-ids.dto';
+import { ImportFeatureFlagIdsResponseDto } from '../dto/dto-response/import-feature-flag-ids-response.dto';
+import { ImportFeatureFlagIdsResponseMapper } from '../mappers/import-feature-flag-ids-response.mapper';
 import { CompanyFeatureFlag } from 'src/modules/feature-flag/domain/entities/CompanyFeatureFlag';
 import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
@@ -22,7 +24,9 @@ export class ImportCompaniesIdsUseCase {
     private readonly featureFlagCacheService: CacheServiceInterface,
   ) { }
 
-  async execute(importCompanyIdsDto: ImportCompaniesIdsDto) {
+  async execute(
+    importCompanyIdsDto: ImportCompaniesIdsDto,
+  ): Promise<ImportFeatureFlagIdsResponseDto> {
     try {
       const featureFlagExists = await this.featureFlagRepository.findByName(
         importCompanyIdsDto.featureFlagName,
@@ -43,7 +47,10 @@ export class ImportCompaniesIdsUseCase {
       }
 
       const id = featureFlagExists.id;
-      const companiesFeatureFlag = await mapWithConcurrencyLimit(
+      const toCreate: CompanyFeatureFlag[] = [];
+      let skipped = 0;
+
+      await mapWithConcurrencyLimit(
         importCompanyIdsDto.companiesIds,
         50,
         async (companyId) => {
@@ -53,14 +60,18 @@ export class ImportCompaniesIdsUseCase {
               id ?? '',
             );
 
-          if (existing) return existing;
+          if (existing) {
+            skipped++;
+            return;
+          }
 
-          return new CompanyFeatureFlag(id ?? '', companyId);
+          toCreate.push(new CompanyFeatureFlag(id ?? '', companyId));
         },
       );
 
-      const result =
-        await this.companyRepository.createMany(companiesFeatureFlag);
+      if (toCreate.length > 0) {
+        await this.companyRepository.createMany(toCreate);
+      }
 
       void this.auditLogService.dispatchLog({
         action: 'import_companies_ids',
@@ -80,7 +91,12 @@ export class ImportCompaniesIdsUseCase {
         importCompanyIdsDto.companiesIds,
       );
 
-      return result;
+      return ImportFeatureFlagIdsResponseMapper.toResponse({
+        featureFlagName: importCompanyIdsDto.featureFlagName,
+        totalReceived: importCompanyIdsDto.companiesIds.length,
+        imported: toCreate.length,
+        skipped,
+      });
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'import_companies_ids',

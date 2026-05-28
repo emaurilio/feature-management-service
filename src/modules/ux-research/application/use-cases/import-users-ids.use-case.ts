@@ -5,6 +5,8 @@ import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXResearch';
 import { ImportUXResearchUsersIdsDto } from '../dto/import-users-ids.dto';
+import { ImportUxResearchIdsResponseDto } from '../dto/dto-response/import-ux-research-ids-response.dto';
+import { ImportUxResearchIdsResponseMapper } from '../mappers/import-ux-research-ids-response.mapper';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
@@ -22,7 +24,9 @@ export class ImportUsersIdsUseCase {
     private readonly uxResearchCacheService: CacheServiceInterface,
   ) { }
 
-  async execute(importUXResearchUsersIdsDto: ImportUXResearchUsersIdsDto) {
+  async execute(
+    importUXResearchUsersIdsDto: ImportUXResearchUsersIdsDto,
+  ): Promise<ImportUxResearchIdsResponseDto> {
     try {
       const uxResearchExists = await this.uxResearchRepository.findByName(
         importUXResearchUsersIdsDto.uxResearchName,
@@ -44,7 +48,10 @@ export class ImportUsersIdsUseCase {
 
       const id = uxResearchExists.id;
 
-      const usersUXResearch = await mapWithConcurrencyLimit(
+      const toCreate: UserUXResearch[] = [];
+      let skipped = 0;
+
+      await mapWithConcurrencyLimit(
         importUXResearchUsersIdsDto.usersIds,
         50,
         async (userId) => {
@@ -54,13 +61,18 @@ export class ImportUsersIdsUseCase {
               id ?? '',
             );
 
-          if (existing) return existing;
+          if (existing) {
+            skipped++;
+            return;
+          }
 
-          return new UserUXResearch(id ?? '', userId);
+          toCreate.push(new UserUXResearch(id ?? '', userId));
         },
       );
 
-      const result = await this.userUXResearchRepository.createMany(usersUXResearch);
+      if (toCreate.length > 0) {
+        await this.userUXResearchRepository.createMany(toCreate);
+      }
 
       void this.auditLogService.dispatchLog({
         action: 'import_users_ids',
@@ -79,7 +91,12 @@ export class ImportUsersIdsUseCase {
         importUXResearchUsersIdsDto.usersIds,
       );
 
-      return result;
+      return ImportUxResearchIdsResponseMapper.toResponse({
+        uxResearchName: importUXResearchUsersIdsDto.uxResearchName,
+        totalReceived: importUXResearchUsersIdsDto.usersIds.length,
+        imported: toCreate.length,
+        skipped,
+      });
     } catch (error) {
       void this.auditLogService.dispatchLog({
         action: 'import_users_ids',

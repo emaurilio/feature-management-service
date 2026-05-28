@@ -4,6 +4,7 @@ import { DisableUXResearchDto } from 'src/modules/ux-research/application/dto/de
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { GetUxResearchResponseMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response.mapper';
 
 describe('DisableUXResearchUseCase', () => {
   let disableUXResearchUseCase: DisableUXResearchUseCase;
@@ -93,10 +94,12 @@ describe('DisableUXResearchUseCase', () => {
           name: 'Test UX Research',
         },
       });
-      expect(result).toEqual({
-        ...mockUXResearch,
-        isActive: false,
-      });
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse({
+          ...mockUXResearch,
+          isActive: false,
+        } as UXResearch),
+      );
     });
 
     it('should throw error when UX research not found', async () => {

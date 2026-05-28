@@ -97,8 +97,13 @@ describe('FeatureFlagController Import Users (E2E)', () => {
       },
     };
 
-    it('should import user ids (201 Created)', async () => {
-      const mockResult = [{ id: 'link-1' }, { id: 'link-2' }];
+    it('should import user ids (200 OK)', async () => {
+      const mockResult = {
+        featureFlagName: 'test-feature-flag',
+        totalReceived: 2,
+        imported: 2,
+        skipped: 0,
+      };
       mockFeatureFlagRepository.findByName.mockResolvedValue({
         id: 'some-id',
         name: 'test-feature-flag',
@@ -110,7 +115,7 @@ describe('FeatureFlagController Import Users (E2E)', () => {
         .set('Authorization', API_KEY)
         .send(importUserIdDto);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toEqual(mockResult);
     });
 

@@ -117,7 +117,12 @@ describe('ImportCompaniesIdsUseCase', () => {
     expect(
       cacheService.invalidateCacheEntityFlags,
     ).toHaveBeenCalled();
-    expect(result).toBeDefined();
+    expect(result).toEqual({
+      featureFlagName: 'test-flag',
+      totalReceived: 2,
+      imported: 2,
+      skipped: 0,
+    });
   });
 
   it('should skip creation for companies that already have the flag', async () => {
@@ -146,13 +151,15 @@ describe('ImportCompaniesIdsUseCase', () => {
         id: 'existing-id',
       } as any,
     );
-    companyFeatureFlagRepository.createMany.mockResolvedValue([] as any);
+    const result = await useCase.execute(dto);
 
-    await useCase.execute(dto);
-
-    expect(companyFeatureFlagRepository.createMany).toHaveBeenCalledWith([
-      { id: 'existing-id' },
-    ]);
+    expect(companyFeatureFlagRepository.createMany).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      featureFlagName: 'test-flag',
+      totalReceived: 1,
+      imported: 0,
+      skipped: 1,
+    });
   });
 
   it('should throw when feature flag is not found', async () => {
@@ -179,41 +186,6 @@ describe('ImportCompaniesIdsUseCase', () => {
         }),
       }),
     );
-  });
-
-  it('should skip creation for companies that already have the flag', async () => {
-    const dto: ImportCompaniesIdsDto = {
-      featureFlagName: 'test-flag',
-      companiesIds: ['company-existing'],
-      userData: {
-        userId: 'user-1',
-        email: 'user@example.com',
-        name: 'User One',
-      },
-    };
-
-    const mockFeatureFlag = new FeatureFlag(
-      'flag-1-uuid',
-      'test-flag',
-      100,
-      1,
-      true,
-      FeatureFlagType.PERCENTAGE,
-    );
-
-    featureFlagRepository.findByName.mockResolvedValue(mockFeatureFlag);
-    companyFeatureFlagRepository.findByCompanyIdAndFeatureFlagId.mockResolvedValue(
-      {
-        id: 'existing-id',
-      } as any,
-    );
-    companyFeatureFlagRepository.createMany.mockResolvedValue([] as any);
-
-    await useCase.execute(dto);
-
-    expect(companyFeatureFlagRepository.createMany).toHaveBeenCalledWith([
-      { id: 'existing-id' },
-    ]);
   });
 
   it('should throw an error and log if an exception occurs', async () => {

@@ -316,6 +316,16 @@ describe('CheckUXResearchUseCase', () => {
 
       expect(result.checkUxResearch).toBe(true);
       expect(result.featureFlagName).toBe('feature-1');
+      expect(result.featureFlag).toEqual({
+        id: 'feature-1',
+        name: 'feature-1',
+        nameVersion: 'feature-1-v1',
+        type: mockFeatureFlag.type,
+        percentage: 100,
+        version: 1,
+        isActive: true,
+        checkFeatureFlag: true,
+      });
       expect(checkFeatureFlagUseCase.execute).toHaveBeenCalledWith({
         name: 'feature-1',
         userId: 'user-1',

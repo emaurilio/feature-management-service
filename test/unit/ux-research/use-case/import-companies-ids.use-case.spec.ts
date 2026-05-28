@@ -130,7 +130,10 @@ describe('ImportCompaniesIdsUseCase', () => {
       expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-1', 'ux-research-1');
       expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-2', 'ux-research-1');
       expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-3', 'ux-research-1');
-      expect(companyRepository.createMany).toHaveBeenCalledWith(mockCreatedCompanies);
+      expect(companyRepository.createMany).toHaveBeenCalledWith([
+        mockNewCompanyUXResearch,
+        new CompanyUXResearch('ux-research-1', 'company-3', undefined),
+      ]);
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'import_companies_ids',
         entity: 'UX Research',
@@ -146,7 +149,12 @@ describe('ImportCompaniesIdsUseCase', () => {
         'Test UX Research',
         ['company-1', 'company-2', 'company-3']
       );
-      expect(result).toEqual(mockCreatedCompanies);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 3,
+        imported: 2,
+        skipped: 1,
+      });
     });
 
     it('should throw error when UX research not found', async () => {
@@ -212,8 +220,13 @@ describe('ImportCompaniesIdsUseCase', () => {
       const result = await importCompaniesIdsUseCase.execute(emptyCompaniesDto);
 
       expect(companyRepository.findByCompanyIdAndUXResearchId).not.toHaveBeenCalled();
-      expect(companyRepository.createMany).toHaveBeenCalledWith([]);
-      expect(result).toEqual([]);
+      expect(companyRepository.createMany).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 0,
+        imported: 0,
+        skipped: 0,
+      });
     });
 
     it('should work with single company ID', async () => {
@@ -243,7 +256,12 @@ describe('ImportCompaniesIdsUseCase', () => {
 
       expect(companyRepository.findByCompanyIdAndUXResearchId).toHaveBeenCalledWith('company-single', 'ux-research-1');
       expect(companyRepository.createMany).toHaveBeenCalledWith([singleCompanyUXResearch]);
-      expect(result).toEqual([singleCompanyUXResearch]);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 1,
+        imported: 1,
+        skipped: 0,
+      });
     });
 
     it('should work with special characters in company IDs', async () => {
@@ -272,7 +290,12 @@ describe('ImportCompaniesIdsUseCase', () => {
       const result = await importCompaniesIdsUseCase.execute(specialCharsDto);
 
       expect(companyRepository.createMany).toHaveBeenCalledWith(specialCompaniesUXResearch);
-      expect(result).toEqual(specialCompaniesUXResearch);
+      expect(result).toEqual({
+        uxResearchName: 'Test UX Research',
+        totalReceived: 3,
+        imported: 3,
+        skipped: 0,
+      });
       expect(auditLogService.dispatchLog).toHaveBeenCalledWith({
         action: 'import_companies_ids',
         entity: 'UX Research',
@@ -288,7 +311,6 @@ describe('ImportCompaniesIdsUseCase', () => {
         'Test UX Research',
         ['company-1!@#', 'company-2$%^', 'company-3&*()']
       );
-      expect(result).toEqual(specialCompaniesUXResearch);
     });
 
     it('should work with UX research that has no ID', async () => {

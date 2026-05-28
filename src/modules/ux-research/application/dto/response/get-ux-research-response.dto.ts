@@ -3,7 +3,7 @@ import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
 import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetUXResearchResponseDto {
+export class GetUXResearchResponsesDto {
   @IsNotEmpty({ message: 'UX Research Name is required' })
   @IsString({ message: 'UX Research Name must be a string' })
   name: string;

@@ -4,6 +4,7 @@ import { ActiveUXResearchDto } from 'src/modules/ux-research/application/dto/act
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
+import { GetUxResearchResponseMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response.mapper';
 
 describe('ActiveUXResearchUseCase', () => {
   let activeUXResearchUseCase: ActiveUXResearchUseCase;
@@ -93,10 +94,12 @@ describe('ActiveUXResearchUseCase', () => {
           name: 'Test UX Research',
         },
       });
-      expect(result).toEqual({
-        ...mockUXResearch,
-        isActive: true,
-      });
+      expect(result).toEqual(
+        GetUxResearchResponseMapper.toResponse({
+          ...mockUXResearch,
+          isActive: true,
+        } as UXResearch),
+      );
     });
 
     it('should throw error when UX research not found', async () => {

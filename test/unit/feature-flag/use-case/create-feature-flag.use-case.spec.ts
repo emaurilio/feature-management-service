@@ -4,6 +4,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFeatureFlagDto } from 'src/modules/feature-flag/application/dto/create-feature-flag.dto';
 import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
+import { GetFeatureFlagResponseMapper } from 'src/modules/feature-flag/application/mappers/get-feature-flag-response.mapper';
 import { CreateFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { DeleteFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/delete-feature-flag.use-case';
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
@@ -67,13 +68,23 @@ describe('CreateFeatureFlagUseCase', () => {
       },
     };
 
-    const mockResult = { id: 'flag-123', ...createFeatureFlagDto };
+    const createdFeatureFlag = new FeatureFlag(
+      'test-flag-1',
+      'test-flag',
+      100,
+      1,
+      true,
+      FeatureFlagType.PERCENTAGE,
+      'flag-123',
+    );
     repository.findByName.mockResolvedValue(null);
-    repository.createFeatureFlag.mockResolvedValue(mockResult as any);
+    repository.createFeatureFlag.mockResolvedValue(createdFeatureFlag);
 
     const result = await useCase.execute(createFeatureFlagDto);
 
-    expect(result).toEqual(mockResult);
+    expect(result).toEqual(
+      GetFeatureFlagResponseMapper.toResponse(createdFeatureFlag),
+    );
     expect(repository.createFeatureFlag).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -121,14 +132,24 @@ describe('CreateFeatureFlagUseCase', () => {
       updatedAt: new Date(),
     };
 
-    const mockResult = { id: 'flag-123', ...createFeatureFlagDto };
+    const createdFeatureFlag = new FeatureFlag(
+      'test-flag-2',
+      'test-flag',
+      100,
+      2,
+      true,
+      FeatureFlagType.PERCENTAGE,
+      'flag-123',
+    );
     repository.findByName.mockResolvedValue(existingFeatureFlag);
-    repository.createFeatureFlag.mockResolvedValue(mockResult as any);
+    repository.createFeatureFlag.mockResolvedValue(createdFeatureFlag);
     deleteFeatureFlagUseCase.execute.mockResolvedValue({ deleted: true } as any);
 
     const result = await useCase.execute(createFeatureFlagDto);
 
-    expect(result).toEqual(mockResult);
+    expect(result).toEqual(
+      GetFeatureFlagResponseMapper.toResponse(createdFeatureFlag),
+    );
     expect(deleteFeatureFlagUseCase.execute).toHaveBeenCalled();
     expect(repository.createFeatureFlag).toHaveBeenCalled();
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
@@ -178,13 +199,23 @@ describe('CreateFeatureFlagUseCase', () => {
       new Date('2023-06-01'),
     );
 
-    const mockResult = { id: 'flag-new', ...createFeatureFlagDto };
+    const createdFeatureFlag = new FeatureFlag(
+      'test-flag-7',
+      'test-flag',
+      100,
+      7,
+      true,
+      FeatureFlagType.PERCENTAGE,
+      'flag-new',
+    );
     repository.findByName.mockResolvedValue(softDeletedFeatureFlag);
-    repository.createFeatureFlag.mockResolvedValue(mockResult as any);
+    repository.createFeatureFlag.mockResolvedValue(createdFeatureFlag);
 
     const result = await useCase.execute(createFeatureFlagDto);
 
-    expect(result).toEqual(mockResult);
+    expect(result).toEqual(
+      GetFeatureFlagResponseMapper.toResponse(createdFeatureFlag),
+    );
     expect(deleteFeatureFlagUseCase.execute).not.toHaveBeenCalled();
     expect(repository.createFeatureFlag).toHaveBeenCalledWith(
       expect.objectContaining({

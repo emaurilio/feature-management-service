@@ -4,6 +4,7 @@ import { DeleteUXResearchResponseDto } from 'src/modules/ux-research/application
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
+import { GetUxResearchResponseItemMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response-item.mapper';
 
 describe('DeleteUXResearchResponseUseCase', () => {
   let deleteUXResearchResponseUseCase: DeleteUXResearchResponseUseCase;
@@ -81,14 +82,11 @@ describe('DeleteUXResearchResponseUseCase', () => {
           message: 'UX Research response deleted successfully',
         },
       });
-      expect(result).toEqual({
-        id: 'response-1',
-        uxResearchId: 'ux-research-1',
-        userId: 'user-1',
-        companyId: 'company-1',
-        responseDate: '2024-01-01T00:00:00.000Z',
-        deleted: true,
-      });
+      expect(result).toEqual(
+        GetUxResearchResponseItemMapper.toResponse(mockUXResearchResponse, {
+          deleted: true,
+        }),
+      );
     });
 
     it('should throw when UX research response is not found', async () => {

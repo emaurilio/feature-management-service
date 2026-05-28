@@ -1,11 +1,11 @@
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
-import { DeleteFeatureFlagResponseDto } from '../dto/response/delete-feature-flag-response.dto';
+import { GetFeatureFlagResponseDto } from '../dto/dto-response/get-feature-flag-response.dto';
 
-export class DeleteFeatureFlagResponseMapper {
+export class GetFeatureFlagResponseMapper {
   static toResponse(
     featureFlag: FeatureFlag,
-    deleted: boolean,
-  ): DeleteFeatureFlagResponseDto {
+    options?: { deleted?: boolean },
+  ): GetFeatureFlagResponseDto {
     return {
       id: featureFlag.id,
       name: featureFlag.name,
@@ -14,7 +14,10 @@ export class DeleteFeatureFlagResponseMapper {
       percentage: featureFlag.percentage,
       version: featureFlag.version,
       isActive: featureFlag.isActive,
-      deleted,
+      createdAt: featureFlag.createdAt,
+      updatedAt: featureFlag.updatedAt,
+      deletedAt: featureFlag.deletedAt,
+      ...(options?.deleted !== undefined && { deleted: options.deleted }),
     };
   }
 }

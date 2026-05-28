@@ -115,7 +115,12 @@ describe('ImportUsersIdsUseCase', () => {
     expect(
       cacheService.invalidateCacheEntityFlags,
     ).toHaveBeenCalled();
-    expect(result).toBeDefined();
+    expect(result).toEqual({
+      featureFlagName: 'test-flag',
+      totalReceived: 2,
+      imported: 2,
+      skipped: 0,
+    });
   });
 
   it('should throw when feature flag is not found', async () => {
@@ -168,13 +173,15 @@ describe('ImportUsersIdsUseCase', () => {
     userFeatureFlagRepository.findByUserIdAndFeatureFlagId.mockResolvedValue({
       id: 'existing-id',
     } as any);
-    userFeatureFlagRepository.createMany.mockResolvedValue([] as any);
+    const result = await useCase.execute(dto);
 
-    await useCase.execute(dto);
-
-    expect(userFeatureFlagRepository.createMany).toHaveBeenCalledWith([
-      { id: 'existing-id' },
-    ]);
+    expect(userFeatureFlagRepository.createMany).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      featureFlagName: 'test-flag',
+      totalReceived: 1,
+      imported: 0,
+      skipped: 1,
+    });
   });
 
   it('should throw an error and log if an exception occurs', async () => {
