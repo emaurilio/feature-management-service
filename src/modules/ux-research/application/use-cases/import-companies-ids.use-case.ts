@@ -6,11 +6,11 @@ import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { ImportUXResearchCompaniesIdsDto } from '../dto/import-companies-ids.dto';
 import { ImportUxResearchIdsResponseDto } from '../dto/dto-response/import-ux-research-ids-response.dto';
 import { ImportUxResearchIdsResponseMapper } from '../mappers/import-ux-research-ids-response.mapper';
+import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
-import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
-import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class ImportCompaniesIdsUseCase {

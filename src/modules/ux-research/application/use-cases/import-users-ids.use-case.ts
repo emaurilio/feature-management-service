@@ -7,10 +7,10 @@ import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXRes
 import { ImportUXResearchUsersIdsDto } from '../dto/import-users-ids.dto';
 import { ImportUxResearchIdsResponseDto } from '../dto/dto-response/import-ux-research-ids-response.dto';
 import { ImportUxResearchIdsResponseMapper } from '../mappers/import-ux-research-ids-response.mapper';
+import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
-import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
 
 @Injectable()
 export class ImportUsersIdsUseCase {

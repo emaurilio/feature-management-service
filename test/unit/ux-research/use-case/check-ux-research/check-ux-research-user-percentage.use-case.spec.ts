@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckUXResearchUserPercentageUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-user-percentage.use-case';
 import { CheckUXResearchDto } from 'src/modules/ux-research/application/dto/check-ux-research.dto';
-import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { HashUXResearchService } from 'src/modules/ux-research/application/services/hash-ux-research.service';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { UserUXResearch } from 'src/modules/ux-research/domain/entites/UserUXResearch';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 
 describe('CheckUXResearchUserPercentageUseCase', () => {
   let checkUXResearchUserPercentageUseCase: CheckUXResearchUserPercentageUseCase;

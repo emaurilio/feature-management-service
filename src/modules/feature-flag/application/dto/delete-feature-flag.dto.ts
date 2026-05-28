@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsObject, IsString } from 'class-validator';
-import type { UserData } from '../../../common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsFeatureFlagPresent } from 'src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 
 export class DeleteFeatureFlagDto {
   @IsNotEmpty({ message: 'Feature Flag Name is required' })

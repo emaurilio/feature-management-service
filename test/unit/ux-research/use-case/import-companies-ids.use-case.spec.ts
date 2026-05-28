@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
 import { ImportUXResearchCompaniesIdsDto } from 'src/modules/ux-research/application/dto/import-companies-ids.dto';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { CompanyUXResearch } from 'src/modules/ux-research/domain/entites/CompanyUXResearch';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 
 describe('ImportCompaniesIdsUseCase', () => {
   let importCompaniesIdsUseCase: ImportCompaniesIdsUseCase;

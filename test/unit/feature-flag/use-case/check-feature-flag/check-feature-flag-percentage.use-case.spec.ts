@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/modules/feature-flag/application/dto/check-feature-flag.dto';
 import { HashFeatureFlagService } from 'src/modules/feature-flag/application/services/hash-feature-flag.service';
 import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
 import { CheckFeatureFlagPercentageUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-percentage.use-case';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 
 describe('CheckFeatureFlagPercentageUseCase', () => {
   let hashFeatureFlagService: jest.Mocked<HashFeatureFlagService>;

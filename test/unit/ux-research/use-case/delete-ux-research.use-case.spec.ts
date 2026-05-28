@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeleteUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research.use-case';
 import { DeleteUXResearchDto } from 'src/modules/ux-research/application/dto/delete-ux-research.dto';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
-import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
+import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
 
 describe('DeleteUXResearchUseCase', () => {
   let deleteUXResearchUseCase: DeleteUXResearchUseCase;

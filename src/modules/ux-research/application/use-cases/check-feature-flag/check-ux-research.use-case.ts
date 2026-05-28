@@ -5,8 +5,6 @@ import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { CheckUXResearchValidateDto } from '../../dto/check-ux-research-validate.dto';
 import { CheckUxResearchResponseDto } from '../../dto/dto-response/check-ux-research.response.dto';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { CheckFeatureFlagResponseDto } from 'src/modules/feature-flag/application/dto/dto-response/check-feature-flag-response.dto';
 import { CheckUxResearchResponseMapper } from '../../mappers/check-ux-research-response.mapper';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
@@ -15,6 +13,8 @@ import { CheckUXResearchUserUseCase } from './check-ux-research-user.use-case';
 import { CheckUXResearchUserPercentageUseCase } from './check-ux-research-user-percentage.use-case';
 import { CheckUXResearchCompanyPercentageUseCase } from './check-ux-research-company-percentage.use-case';
 import { CheckUXResearchPercentageUseCase } from './check-ux-research-percentage.use-case';
+import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 export class CheckUXResearchUseCase {
   constructor(

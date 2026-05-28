@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
-import type { UserData } from '../../../common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 
 export class SearchFeatureFlagDto {
   @IsNotEmpty({ message: 'Feature Flag Name is required' })

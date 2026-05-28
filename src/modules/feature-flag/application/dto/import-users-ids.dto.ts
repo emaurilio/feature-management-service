@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsNotEmpty, IsObject, IsString, MinLength } from 'class-validator';
 import { IsFeatureFlagPresent } from 'src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator';
-import type { UserData } from '../../../common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 
 export class ImportUsersIdsDto {
   @Expose({ name: 'feature_flag_name' })

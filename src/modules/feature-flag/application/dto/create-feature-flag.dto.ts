@@ -10,8 +10,8 @@ import {
   Min,
 } from 'class-validator';
 import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
-import type { UserData } from '../../../common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 
 export class CreateFeatureFlagDto {
   @IsNotEmpty({ message: 'Feature Flag Name is required' })

@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeleteUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/delete-ux-research-response.use-case';
 import { DeleteUXResearchResponseDto } from 'src/modules/ux-research/application/dto/response/delete-ux-research-response.dto';
-import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
 import { GetUxResearchResponseItemMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response-item.mapper';
+import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 
 describe('DeleteUXResearchResponseUseCase', () => {
   let deleteUXResearchResponseUseCase: DeleteUXResearchResponseUseCase;

@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
 import { CheckUXResearchValidateDto } from 'src/modules/ux-research/application/dto/check-ux-research-validate.dto';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
-import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { ModuleRef } from '@nestjs/core';
@@ -13,6 +11,8 @@ import { CheckUXResearchUserUseCase } from 'src/modules/ux-research/application/
 import { CheckUXResearchPercentageUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-percentage.use-case';
 import { CheckUXResearchUserPercentageUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-user-percentage.use-case';
 import { CheckUXResearchCompanyPercentageUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research-company-percentage.use-case';
+import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 describe('CheckUXResearchUseCase', () => {
   let checkUXResearchUseCase: CheckUXResearchUseCase;

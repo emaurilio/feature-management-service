@@ -1,5 +1,5 @@
-import type { UpdateResult } from 'typeorm';
 import { FeatureFlag } from '../entities/FeatureFlag';
+import type { UpdateResult } from 'typeorm';
 
 export interface FeatureFlagRepositoryInterface {
   createFeatureFlag(featureFlag: FeatureFlag): Promise<FeatureFlag>;

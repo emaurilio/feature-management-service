@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
-import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
+import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 
 export class GetUXResearchResponsesDto {
   @IsNotEmpty({ message: 'UX Research Name is required' })

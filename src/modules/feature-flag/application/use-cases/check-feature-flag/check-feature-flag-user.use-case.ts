@@ -1,11 +1,11 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { AuditLogService } from '../../services/audit-log.service';
 import { Injectable } from '@nestjs/common';
-import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 import { Inject } from '@nestjs/common';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
+import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
 
 @Injectable()
 export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {

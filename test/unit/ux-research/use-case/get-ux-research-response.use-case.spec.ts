@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetUXResearchResponseUseCase } from 'src/modules/ux-research/application/use-cases/get-ux-research-response.use-case';
-import { GetUXResearchResponseDto } from 'src/modules/ux-research/application/dto/response/get-ux-research-response.dto';
 import { GetUxResearchResponsesResponseMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-responses-response.mapper';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
+import { GetUXResearchResponsesDto } from 'src/modules/ux-research/application/dto/response/get-ux-research-response.dto';
 
 describe('GetUXResearchResponseUseCase', () => {
   let getUXResearchUseCase: GetUXResearchResponseUseCase;
@@ -56,7 +56,7 @@ describe('GetUXResearchResponseUseCase', () => {
   });
 
   describe('execute', () => {
-    const mockGetUXResearchResponseDto: GetUXResearchResponseDto = {
+    const mockGetUXResearchResponseDto: GetUXResearchResponsesDto = {
       name: 'Test UX Research',
       page: 1,
       limit: 15,
@@ -228,7 +228,7 @@ describe('GetUXResearchResponseUseCase', () => {
     });
 
     it('should work with custom pagination', async () => {
-      const customPaginationDto: GetUXResearchResponseDto = {
+      const customPaginationDto: GetUXResearchResponsesDto = {
         name: 'Test UX Research',
         page: 2,
         limit: 25,
@@ -293,7 +293,7 @@ describe('GetUXResearchResponseUseCase', () => {
     });
 
     it('should work with empty string name', async () => {
-      const emptyNameDto: GetUXResearchResponseDto = {
+      const emptyNameDto: GetUXResearchResponsesDto = {
         name: '',
         page: 1,
         limit: 15,
@@ -314,7 +314,7 @@ describe('GetUXResearchResponseUseCase', () => {
     });
 
     it('should work with special characters in name', async () => {
-      const specialCharsDto: GetUXResearchResponseDto = {
+      const specialCharsDto: GetUXResearchResponsesDto = {
         name: 'Test UX Research & Special Characters! @#$%',
         page: 1,
         limit: 15,
@@ -347,7 +347,7 @@ describe('GetUXResearchResponseUseCase', () => {
     });
 
     it('should work with empty response data', async () => {
-      const emptyResponseDto: GetUXResearchResponseDto = {
+      const emptyResponseDto: GetUXResearchResponsesDto = {
         name: 'Empty UX Research',
         page: 1,
         limit: 15,

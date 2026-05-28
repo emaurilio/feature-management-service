@@ -9,9 +9,9 @@ import { CheckFeatureFlagResponseDto } from '../../dto/dto-response/check-featur
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
 import { AuditLogService } from '../../services/audit-log.service';
 import { Inject } from '@nestjs/common';
-import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { CheckFeatureFlagResponseMapper } from '../../mappers/check-feature-flag-response.mapper';
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 
 export class CheckFeatureFlagUseCase {
   constructor(

@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { CreateUXResearchResponseDto } from '../dto/response/create-ux-research-response.dto';
-import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { UXResearchResponse } from 'src/modules/ux-research/domain/entites/UXResearchResponse';
 import { GetUxResearchResponseItemDto } from '../dto/dto-response/response/get-ux-research-response-item.dto';
 import { GetUxResearchResponseItemMapper } from '../mappers/get-ux-research-response-item.mapper';
 import { UXResearchResponseMapper } from 'src/modules/ux-research/infraestructure/persistence/mappers/ux-research-response.mapper';
+import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 @Injectable()
 export class CreateUXResearchResponseUseCase {

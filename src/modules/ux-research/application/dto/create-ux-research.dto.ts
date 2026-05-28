@@ -10,10 +10,10 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { UXResearchType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 import { IsFeatureFlagPresent } from 'src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator';
+import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 
 export class CreateUXResearchDto {
   @IsNotEmpty({ message: 'UX Research Name is required' })

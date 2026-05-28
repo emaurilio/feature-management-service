@@ -3,8 +3,8 @@ import { Inject } from '@nestjs/common';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { Injectable } from '@nestjs/common';
-import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import { AuditLogService } from '../../services/audit-log.service';
+import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 
 @Injectable()

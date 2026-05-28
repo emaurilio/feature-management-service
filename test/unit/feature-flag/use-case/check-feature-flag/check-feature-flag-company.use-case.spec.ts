@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CheckFeatureFlagDto } from 'src/modules/feature-flag/application/dto/check-feature-flag.dto';
 import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
 import { CheckFeatureFlagCompanyUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag-company.use-case';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 
 describe('CheckFeatureFlagCompanyUseCase', () => {

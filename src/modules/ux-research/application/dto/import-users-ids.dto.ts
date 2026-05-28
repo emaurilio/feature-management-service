@@ -7,9 +7,9 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUXResearchPresent } from 'src/modules/ux-research/infraestructure/validators/ux-research-exists.validator';
+import type { UserData } from 'src/modules/common/utils/types/user-data.type';
 
 export class ImportUXResearchUsersIdsDto {
   @Expose({ name: 'ux_research_name' })
