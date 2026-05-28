@@ -57,7 +57,6 @@ export class StsUXResearchController {
 
     @Version('1')
     @Post('import-companies-ids')
-    @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: ImportUxResearchIdsResponseDto })
     async importCompaniesIds(
         @Body() importCompaniesIdsDto: ImportUXResearchCompaniesIdsDto,
@@ -67,7 +66,6 @@ export class StsUXResearchController {
 
     @Version('1')
     @Post('import-users-ids')
-    @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: ImportUxResearchIdsResponseDto })
     async importUsersIds(@Body() importUsersIdsDto: ImportUXResearchUsersIdsDto) {
         return this.importUsersIdsUseCase.execute(importUsersIdsDto);
@@ -120,7 +118,6 @@ export class StsUXResearchController {
 
     @Version('1')
     @Delete('delete-ux-research-response')
-    @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: GetUxResearchResponseItemDto })
     async deleteUXResearchResponse(@Body() deleteUXResearchResponseDto: DeleteUXResearchResponseDto) {
         return await this.deleteUXResearchResponseUseCase.execute(deleteUXResearchResponseDto);

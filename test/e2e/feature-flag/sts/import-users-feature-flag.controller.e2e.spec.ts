@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { CreateFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
@@ -86,7 +86,7 @@ describe('FeatureFlagController Import Users (E2E)', () => {
     }
   });
 
-  describe('POST /feature-flags/import-users-ids', () => {
+  describe('POST /feature-flag/import-users-ids', () => {
     const importUserIdDto = {
       feature_flag_name: 'test-feature-flag',
       users_ids: ['user-1', 'user-2'],
@@ -111,11 +111,11 @@ describe('FeatureFlagController Import Users (E2E)', () => {
       mockImportUserIdUseCase.execute.mockResolvedValue(mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/import-users-ids')
+        .post('/sts/feature-flag/import-users-ids')
         .set('Authorization', API_KEY)
         .send(importUserIdDto);
 
-      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toEqual(mockResult);
     });
 
@@ -123,7 +123,7 @@ describe('FeatureFlagController Import Users (E2E)', () => {
       mockFeatureFlagRepository.findByName.mockResolvedValue(null);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/import-users-ids')
+        .post('/sts/feature-flag/import-users-ids')
         .set('Authorization', API_KEY)
         .send(importUserIdDto);
 
@@ -133,7 +133,7 @@ describe('FeatureFlagController Import Users (E2E)', () => {
 
     it('should return 401 Unauthorized if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/import-users-ids')
+        .post('/sts/feature-flag/import-users-ids')
         .send(importUserIdDto);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);

@@ -24,7 +24,7 @@ import { ActiveFeatureFlagDto } from './application/dto/active-feature-flag.dto'
 
 @ApiTags('Internal')
 @ApiSecurity('STS-Token')
-@Controller('sts/feature-flags')
+@Controller('sts/feature-flag')
 @UseGuards(SimpleTokenGuard)
 export class StsFeatureFlagController {
   constructor(
@@ -46,7 +46,6 @@ export class StsFeatureFlagController {
 
   @Version('1')
   @Post('import-companies-ids')
-  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: ImportFeatureFlagIdsResponseDto })
   async importCompaniesIds(
     @Body() importCompaniesIdsDto: ImportCompaniesIdsDto,
@@ -56,7 +55,6 @@ export class StsFeatureFlagController {
 
   @Version('1')
   @Post('import-users-ids')
-  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: ImportFeatureFlagIdsResponseDto })
   async importUsersIds(@Body() importUsersIdsDto: ImportUsersIdsDto) {
     return this.importUsersIdsUseCase.execute(importUsersIdsDto);
@@ -64,7 +62,6 @@ export class StsFeatureFlagController {
 
   @Version('1')
   @Delete('delete')
-  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: GetFeatureFlagResponseDto })
   async delete(@Body() deleteFeatureFlagDto: DeleteFeatureFlagDto) {
     return await this.deleteFeatureFlagUseCase.execute(deleteFeatureFlagDto);

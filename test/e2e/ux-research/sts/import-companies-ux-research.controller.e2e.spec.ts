@@ -1,6 +1,6 @@
+import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import request from 'supertest';
 import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
 import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
 import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
@@ -119,7 +119,7 @@ describe('StsUXResearchController - Import Companies IDs (e2e)', () => {
         .post('/sts/ux-research/import-companies-ids')
         .set('Authorization', 'test-api-key')
         .send(validImportDto)
-        .expect(200)
+        .expect(201)
         .expect((res) => {
           expect(res.body).toEqual({
             uxResearchName: 'Test UX Research',

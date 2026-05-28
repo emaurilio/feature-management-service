@@ -1,10 +1,10 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { METRICS_OBSERVER } from 'src/modules/common/metrics/metrics.observer';
-import type { MetricsObserver } from 'src/modules/common/metrics/metrics.observer';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { CacheServiceInterface } from './cache-service.interface';
 import { mapWithConcurrencyLimit } from 'src/modules/common/utils/concurrency-limit.util';
+import type { MetricsObserver } from 'src/modules/common/metrics/metrics.observer';
 
 @Injectable()
 export class AppCacheService implements CacheServiceInterface {

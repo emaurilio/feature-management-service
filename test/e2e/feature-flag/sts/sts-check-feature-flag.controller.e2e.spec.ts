@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
@@ -61,7 +61,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
         }
     });
 
-    describe('POST /sts/feature-flags/check-feature-flag', () => {
+    describe('POST /sts/feature-flag/check-feature-flag', () => {
         const checkFeatureFlagDto = {
             name: 'test-feature-flag',
             user_id: 'user-123',
@@ -83,7 +83,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
             mockCheckFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/check-feature-flag')
+                .post('/sts/feature-flag/check-feature-flag')
                 .set('Authorization', API_KEY)
                 .send(checkFeatureFlagDto);
 
@@ -102,7 +102,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
             const { name, ...invalidDto } = checkFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/check-feature-flag')
+                .post('/sts/feature-flag/check-feature-flag')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -114,7 +114,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
             const invalidDto = { ...checkFeatureFlagDto, user_id: 123 };
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/check-feature-flag')
+                .post('/sts/feature-flag/check-feature-flag')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -126,7 +126,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
             const invalidDto = { ...checkFeatureFlagDto, company_id: 123 };
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/check-feature-flag')
+                .post('/sts/feature-flag/check-feature-flag')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -136,7 +136,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/check-feature-flag')
+                .post('/sts/feature-flag/check-feature-flag')
                 .send(checkFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -144,7 +144,7 @@ describe('StsFeatureFlagController CheckFeatureFlag (E2E)', () => {
 
         it('should return 401 Unauthorized if token is invalid', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/check-feature-flag')
+                .post('/sts/feature-flag/check-feature-flag')
                 .set('Authorization', 'wrong-token')
                 .send(checkFeatureFlagDto);
 

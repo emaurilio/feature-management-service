@@ -1,6 +1,6 @@
+import request from 'supertest';
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
 import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
 import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
@@ -111,7 +111,7 @@ describe('StsUXResearchController - Import Users IDs (e2e)', () => {
         .set('Authorization', API_KEY)
         .send(validBody);
 
-      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toEqual({
         uxResearchName: 'Test UX Research',
         totalReceived: validBody.users_ids.length,

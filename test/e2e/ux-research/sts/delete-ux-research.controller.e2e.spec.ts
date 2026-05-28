@@ -1,6 +1,6 @@
+import request from 'supertest';
 import { HttpStatus, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
 import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
 import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';

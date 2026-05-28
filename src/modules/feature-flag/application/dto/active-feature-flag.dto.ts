@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsObject, IsString } from 'class-validator';
-import type { UserData } from '../../../common/utils/types/user-data.type';
 import { IsFeatureFlagPresent } from 'src/modules/feature-flag/infraestructure/validators/feature-flag-exists.validator';
 import { ApiProperty } from '@nestjs/swagger';
+import type { UserData } from '../../../common/utils/types/user-data.type';
 
 export class ActiveFeatureFlagDto {
   @Expose({ name: 'feature_flag_name' })

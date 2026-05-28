@@ -1,6 +1,6 @@
+import request from 'supertest';
 import { HttpStatus, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { UXResearchController } from 'src/modules/ux-research/ux-research.controller';
 import { CheckUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/check-feature-flag/check-ux-research.use-case';
 import { JwtAuthGuard } from 'src/modules/common/guards/jwt.guard';

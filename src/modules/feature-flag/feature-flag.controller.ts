@@ -7,7 +7,7 @@ import { CheckFeatureFlagResponseDto } from './application/dto/dto-response/chec
 
 @ApiTags('Public')
 @ApiBearerAuth('JWT-auth')
-@Controller('feature-flags')
+@Controller('feature-flag')
 @UseGuards(JwtAuthGuard)
 export class FeatureFlagController {
   constructor(

@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
 import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
@@ -11,6 +10,7 @@ import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-f
 import { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import { ImportCompaniesIdsUseCase } from 'src/modules/feature-flag/application/use-cases/import-companies-ids.use-case';
 import { ImportCompaniesIdsDto } from 'src/modules/feature-flag/application/dto/import-companies-ids.dto';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 
 describe('ImportCompaniesIdsUseCase', () => {
   let useCase: ImportCompaniesIdsUseCase;

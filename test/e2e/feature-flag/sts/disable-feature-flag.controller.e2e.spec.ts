@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
+import { INestApplication, HttpStatus, ValidationPipe, VersioningType } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
@@ -57,6 +57,10 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
         }).compile();
 
         app = moduleFixture.createNestApplication();
+        app.enableVersioning({
+            type: VersioningType.URI,
+            defaultVersion: '1',
+        });
         app.useGlobalPipes(
             new ValidationPipe({ transform: true, whitelist: true }),
         );
@@ -72,7 +76,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
         }
     });
 
-    describe('POST /sts/feature-flags/disable', () => {
+    describe('PATCH /v1/sts/feature-flag/disable', () => {
         const disableFeatureFlagDto = {
             feature_flag_name: 'test-feature-flag',
             user_data: {
@@ -82,7 +86,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
             },
         };
 
-        it('should disable a feature flag (201 Created)', async () => {
+        it('should disable a feature flag (200 OK)', async () => {
             const mockResult = {
                 id: 'flag-id',
                 name: 'test-feature-flag',
@@ -96,11 +100,11 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
             mockDisableFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/disable')
+                .patch('/v1/sts/feature-flag/disable')
                 .set('Authorization', API_KEY)
                 .send(disableFeatureFlagDto);
 
-            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.status).toBe(HttpStatus.OK);
             expect(response.body).toEqual(mockResult);
             expect(mockDisableFeatureFlagUseCase.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -114,7 +118,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
             mockFeatureFlagRepository.findByName.mockResolvedValue(null);
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/disable')
+                .patch('/v1/sts/feature-flag/disable')
                 .set('Authorization', API_KEY)
                 .send(disableFeatureFlagDto);
 
@@ -126,7 +130,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
             const { feature_flag_name, ...invalidDto } = disableFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/disable')
+                .patch('/v1/sts/feature-flag/disable')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -138,7 +142,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
             const { user_data, ...invalidDto } = disableFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/disable')
+                .patch('/v1/sts/feature-flag/disable')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -148,7 +152,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/disable')
+                .patch('/v1/sts/feature-flag/disable')
                 .send(disableFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -156,7 +160,7 @@ describe('StsFeatureFlagController Disable (E2E)', () => {
 
         it('should return 401 Unauthorized if token is invalid', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/disable')
+                .patch('/v1/sts/feature-flag/disable')
                 .set('Authorization', 'wrong-token')
                 .send(disableFeatureFlagDto);
 

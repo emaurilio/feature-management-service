@@ -3,7 +3,7 @@ import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteUXResearchResponseDto } from '../dto/response/delete-ux-research-response.dto';
 import { GetUxResearchResponseItemDto } from '../dto/dto-response/response/get-ux-research-response-item.dto';
-import { DeleteUxResearchItemResponseMapper } from '../mappers/delete-ux-research-item-response.mapper';
+import { GetUxResearchResponseItemMapper } from '../mappers/get-ux-research-response-item.mapper';
 import type { UXResearchResponseRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research-response.repository.interface';
 
 @Injectable()
@@ -41,9 +41,9 @@ export class DeleteUXResearchResponseUseCase {
         },
       });
 
-      return DeleteUxResearchItemResponseMapper.toResponse(
+      return GetUxResearchResponseItemMapper.toResponse(
         uxResearchResponse,
-        deleted,
+        { deleted: deleted },
       );
     } catch (error) {
       void this.auditLogService.dispatchLog({

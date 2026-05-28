@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import {
     INestApplication,
     HttpStatus,
@@ -19,7 +20,6 @@ import { ImportCompaniesIdsUseCase } from 'src/modules/feature-flag/application/
 import { ImportUsersIdsUseCase } from 'src/modules/feature-flag/application/use-cases/import-users-ids.use-case';
 import { SearchFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/search-feature-flag.use-case';
 import { FeatureFlagController } from 'src/modules/feature-flag/feature-flag.controller';
-import request from 'supertest';
 
 describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
     let app: INestApplication;
@@ -76,7 +76,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
         }
     });
 
-    describe('POST /v1/feature-flags/check-feature-flag', () => {
+    describe('POST /v1/feature-flag/check-feature-flag', () => {
         const checkFeatureFlagDto = {
             name: 'test-feature-flag',
             user_id: 'user-123',
@@ -99,7 +99,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
             mockCheckFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .post('/v1/feature-flags/check-feature-flag')
+                .post('/v1/feature-flag/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(checkFeatureFlagDto);
 
@@ -120,7 +120,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             const response = await request(app.getHttpServer())
-                .post('/v1/feature-flags/check-feature-flag')
+                .post('/v1/feature-flag/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(invalidDto);
 
@@ -133,7 +133,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             const response = await request(app.getHttpServer())
-                .post('/v1/feature-flags/check-feature-flag')
+                .post('/v1/feature-flag/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(invalidDto);
 
@@ -146,7 +146,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
             mockJwtService.verifyTokenAsync.mockResolvedValue(true);
             const response = await request(app.getHttpServer())
-                .post('/v1/feature-flags/check-feature-flag')
+                .post('/v1/feature-flag/check-feature-flag')
                 .set('Authorization', BEARER_TOKEN)
                 .send(invalidDto);
 
@@ -156,7 +156,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .post('/v1/feature-flags/check-feature-flag')
+                .post('/v1/feature-flag/check-feature-flag')
                 .send(checkFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -165,7 +165,7 @@ describe('FeatureFlagController CheckFeatureFlag (E2E)', () => {
         it('should return 401 Unauthorized if token is invalid', async () => {
             mockJwtService.verifyTokenAsync.mockRejectedValue(new Error('Invalid token'));
             const response = await request(app.getHttpServer())
-                .post('/v1/feature-flags/check-feature-flag')
+                .post('/v1/feature-flag/check-feature-flag')
                 .set('Authorization', 'Bearer wrong-token')
                 .send(checkFeatureFlagDto);
 

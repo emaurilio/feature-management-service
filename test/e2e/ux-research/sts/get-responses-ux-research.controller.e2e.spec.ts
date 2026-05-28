@@ -101,7 +101,7 @@ describe('StsUXResearchController - Get UX Research Responses (e2e)', () => {
       },
     };
 
-    it('should return UX research responses (201 Created)', async () => {
+    it('should return UX research responses (200 OK)', async () => {
       mockGetUXResearchResponseUseCase.execute.mockImplementation(async () => mockPaginatedResult);
 
       const response = await request(app.getHttpServer())
@@ -109,7 +109,7 @@ describe('StsUXResearchController - Get UX Research Responses (e2e)', () => {
         .set('Authorization', API_KEY)
         .send(validBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toEqual(mockPaginatedResult);
       expect(mockGetUXResearchResponseUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({

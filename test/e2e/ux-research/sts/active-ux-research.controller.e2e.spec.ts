@@ -1,6 +1,6 @@
-import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
+import { HttpStatus, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
 import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
 import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
@@ -66,6 +66,10 @@ describe('StsUXResearchController - Active (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.enableVersioning({
+      type: VersioningType.URI,
+      defaultVersion: '1',
+    });
     app.useGlobalPipes(
       new ValidationPipe({ transform: true, whitelist: true }),
     );
@@ -83,7 +87,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
     }
   });
 
-  describe('POST /sts/ux-research/active', () => {
+  describe('PATCH /v1/sts/ux-research/active', () => {
     const activeBody = {
       ux_research_name: 'Test UX Research',
       user_data: {
@@ -93,7 +97,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
       },
     };
 
-    it('should activate UX research (201 Created)', async () => {
+    it('should activate UX research (200 OK)', async () => {
       const mockResult = {
         id: 'ux-research-id',
         isActive: true,
@@ -102,11 +106,11 @@ describe('StsUXResearchController - Active (e2e)', () => {
       mockActiveUXResearchUseCase.execute.mockResolvedValue(mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', API_KEY)
         .send(activeBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toEqual(mockResult);
       expect(mockActiveUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -118,7 +122,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
 
     it('should return 400 if UX research does not exist', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', API_KEY)
         .send({
           ...activeBody,
@@ -135,7 +139,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
       const { ux_research_name: _name, ...invalidBody } = activeBody;
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', API_KEY)
         .send(invalidBody);
 
@@ -145,7 +149,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
 
     it('should return 400 if ux_research_name is empty', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', API_KEY)
         .send({
           ...activeBody,
@@ -160,7 +164,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
       const { user_data: _user, ...invalidBody } = activeBody;
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', API_KEY)
         .send(invalidBody);
 
@@ -170,7 +174,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
 
     it('should return 400 if user_data is not an object', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', API_KEY)
         .send({
           ...activeBody,
@@ -183,7 +187,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
 
     it('should return 401 if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .send(activeBody);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -191,7 +195,7 @@ describe('StsUXResearchController - Active (e2e)', () => {
 
     it('should return 401 if token is invalid', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/active')
+        .patch('/v1/sts/ux-research/active')
         .set('Authorization', 'wrong-token')
         .send(activeBody);
 

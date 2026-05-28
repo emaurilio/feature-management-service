@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { CreateFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
 import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
@@ -112,11 +112,11 @@ describe('FeatureFlagController Import Companies (E2E)', () => {
       mockImportCompaniesIdsUseCase.execute.mockResolvedValue(mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/import-companies-ids')
+        .post('/sts/feature-flag/import-companies-ids')
         .set('Authorization', API_KEY)
         .send(importCompanyIdsDto);
 
-      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toEqual(mockResult);
     });
 
@@ -124,7 +124,7 @@ describe('FeatureFlagController Import Companies (E2E)', () => {
       mockFeatureFlagRepository.findByName.mockResolvedValue(null);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/import-companies-ids')
+        .post('/sts/feature-flag/import-companies-ids')
         .set('Authorization', API_KEY)
         .send(importCompanyIdsDto);
 
@@ -134,7 +134,7 @@ describe('FeatureFlagController Import Companies (E2E)', () => {
 
     it('should return 401 Unauthorized if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/import-companies-ids')
+        .post('/sts/feature-flag/import-companies-ids')
         .send(importCompanyIdsDto);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);

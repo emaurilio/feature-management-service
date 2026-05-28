@@ -112,7 +112,7 @@ describe('DeleteUXResearchUseCase', () => {
           user: mockDeleteUXResearchDto.userData,
           name: 'Test UX Research',
           type: UXResearchType.PERCENTAGE,
-          error: 'UX Research deleted successfully',
+          message: 'UX Research deleted successfully',
         },
       });
       expect(result.deleted).toBe(true);
@@ -346,7 +346,7 @@ describe('DeleteUXResearchUseCase', () => {
           user: specialCharsDto.userData,
           type: UXResearchType.PERCENTAGE,
           name: 'Test UX Research & Special Characters! @#$%',
-          error: 'UX Research deleted successfully',
+          message: 'UX Research deleted successfully',
         },
       });
     });

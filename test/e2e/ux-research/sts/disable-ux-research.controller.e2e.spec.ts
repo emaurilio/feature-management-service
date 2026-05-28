@@ -1,6 +1,6 @@
-import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
+import { HttpStatus, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { StsUXResearchController } from 'src/modules/ux-research/sts-ux-research.controller';
 import { CreateUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/create-ux-research.use-case';
 import { ImportCompaniesIdsUseCase } from 'src/modules/ux-research/application/use-cases/import-companies-ids.use-case';
@@ -66,6 +66,10 @@ describe('StsUXResearchController - Disable (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.enableVersioning({
+      type: VersioningType.URI,
+      defaultVersion: '1',
+    });
     app.useGlobalPipes(
       new ValidationPipe({ transform: true, whitelist: true }),
     );
@@ -83,7 +87,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
     }
   });
 
-  describe('POST /sts/ux-research/disable', () => {
+  describe('PATCH /v1/sts/ux-research/disable', () => {
     const disableBody = {
       ux_research_name: 'Test UX Research',
       user_data: {
@@ -93,7 +97,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
       },
     };
 
-    it('should disable UX research (201 Created)', async () => {
+    it('should disable UX research (200 OK)', async () => {
       const mockResult = {
         id: 'ux-research-id',
         isActive: false,
@@ -102,11 +106,11 @@ describe('StsUXResearchController - Disable (e2e)', () => {
       mockDisableUXResearchUseCase.execute.mockImplementation(async () => mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', API_KEY)
         .send(disableBody);
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toEqual(mockResult);
       expect(mockDisableUXResearchUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -118,7 +122,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
 
     it('should return 400 if UX research does not exist', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', API_KEY)
         .send({
           ...disableBody,
@@ -136,7 +140,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
       delete invalidBody.ux_research_name;
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', API_KEY)
         .send(invalidBody);
 
@@ -146,7 +150,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
 
     it('should return 400 if ux_research_name is empty', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', API_KEY)
         .send({
           ...disableBody,
@@ -162,7 +166,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
       delete invalidBody.user_data;
 
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', API_KEY)
         .send(invalidBody);
 
@@ -172,7 +176,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
 
     it('should return 400 if user_data is not an object', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', API_KEY)
         .send({
           ...disableBody,
@@ -185,7 +189,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
 
     it('should return 401 if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .send(disableBody);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -193,7 +197,7 @@ describe('StsUXResearchController - Disable (e2e)', () => {
 
     it('should return 401 if token is invalid', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/ux-research/disable')
+        .patch('/v1/sts/ux-research/disable')
         .set('Authorization', 'wrong-token')
         .send(disableBody);
 

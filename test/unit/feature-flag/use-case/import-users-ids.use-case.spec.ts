@@ -2,16 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import { Test, TestingModule } from '@nestjs/testing';
-import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
-import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
-import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
+import { AuditLogService } from 'src/modules/feature-flag/application/services/audit-log.service';
 import { FeatureFlagType } from 'src/modules/feature-flag/domain/enums/feature-flag-type.enum';
 import { ImportUsersIdsUseCase } from 'src/modules/feature-flag/application/use-cases/import-users-ids.use-case';
 import { ImportUsersIdsDto } from 'src/modules/feature-flag/application/dto/import-users-ids.dto';
-import { ImportUXResearchUsersIdsDto } from 'src/modules/ux-research/application/dto/import-users-ids.dto';
+import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
+import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
+import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 
 describe('ImportUsersIdsUseCase', () => {
   let useCase: ImportUsersIdsUseCase;

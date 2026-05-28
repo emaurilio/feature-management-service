@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ActiveUXResearchUseCase } from 'src/modules/ux-research/application/use-cases/active-ux-research.use-case';
 import { ActiveUXResearchDto } from 'src/modules/ux-research/application/dto/active-ux-research.dto';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { AuditLogService } from 'src/modules/ux-research/application/services/log.service';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { GetUxResearchResponseMapper } from 'src/modules/ux-research/application/mappers/get-ux-research-response.mapper';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 describe('ActiveUXResearchUseCase', () => {
   let activeUXResearchUseCase: ActiveUXResearchUseCase;

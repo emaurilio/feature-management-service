@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { CreateFeatureFlagDto } from '../../../../src/modules/feature-flag/application/dto/create-feature-flag.dto';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { CreateFeatureFlagUseCase } from '../../../../src/modules/feature-flag/application/use-cases/create-feature-flag.use-case';
@@ -98,7 +98,7 @@ describe('FeatureFlagController', () => {
     }
   });
 
-  describe('POST /feature-flags/create', () => {
+  describe('POST /feature-flag/create', () => {
     it('should create a new feature flag (201 Created)', async () => {
       const mockResult = {
         id: 'flag-id',
@@ -110,7 +110,7 @@ describe('FeatureFlagController', () => {
       mockCreateFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .set('Authorization', API_KEY)
         .send(createFeatureFlagDto);
 
@@ -128,7 +128,7 @@ describe('FeatureFlagController', () => {
 
     it('should return 401 Unauthorized if token is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .send(createFeatureFlagDto);
 
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -137,7 +137,7 @@ describe('FeatureFlagController', () => {
 
     it('should return 401 Unauthorized if token is invalid', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .set('Authorization', 'wrong-token')
         .send(createFeatureFlagDto);
 
@@ -150,7 +150,7 @@ describe('FeatureFlagController', () => {
     it('should return 400 Bad Request if name is missing', async () => {
       const { name, ...invalidDto } = createFeatureFlagDto;
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .set('Authorization', API_KEY)
         .send(invalidDto);
 
@@ -161,7 +161,7 @@ describe('FeatureFlagController', () => {
     it('should return 400 Bad Request if type is missing', async () => {
       const { type, ...invalidDto } = createFeatureFlagDto;
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .set('Authorization', API_KEY)
         .send(invalidDto);
 
@@ -171,7 +171,7 @@ describe('FeatureFlagController', () => {
 
     it('should return 400 Bad Request if userData is missing', async () => {
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .set('Authorization', API_KEY)
         .send({
           name: 'test',
@@ -188,7 +188,7 @@ describe('FeatureFlagController', () => {
       );
 
       const response = await request(app.getHttpServer())
-        .post('/sts/feature-flags/create')
+        .post('/sts/feature-flag/create')
         .set('Authorization', API_KEY)
         .send(createFeatureFlagDto);
 

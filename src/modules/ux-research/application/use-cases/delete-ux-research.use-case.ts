@@ -3,8 +3,8 @@ import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteUXResearchDto } from '../dto/delete-ux-research.dto';
 import { GetUxResearchResponseDto } from '../dto/dto-response/get-ux-research.response.dto';
-import { DeleteUxResearchResponseMapper } from '../mappers/delete-ux-research-response.mapper';
 import { isCompanyType, isUserType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
+import { GetUxResearchResponseMapper } from '../mappers/get-ux-research-response.mapper';
 import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import type { CompanyUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/company-ux-research.repository.interface';
 import type { UserUXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/user-ux-research.repository.interface';
@@ -58,13 +58,13 @@ export class DeleteUXResearchUseCase {
           user: deleteUXResearchDto.userData,
           name: deleteUXResearchDto.name,
           type: uxResearchExists.type,
-          error: 'UX Research deleted successfully',
+          message: 'UX Research deleted successfully',
         },
       });
 
-      return DeleteUxResearchResponseMapper.toResponse(
+      return GetUxResearchResponseMapper.toResponse(
         uxResearchExists,
-        (result.affected ?? 0) > 0,
+        { deleted: (result.affected ?? 0) > 0 },
       );
     } catch (error) {
       void this.auditLogService.dispatchLog({

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import { INestApplication, HttpStatus, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
@@ -73,7 +73,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
         }
     });
 
-    describe('POST /sts/feature-flags/delete', () => {
+    describe('POST /sts/feature-flag/delete', () => {
         const deleteFeatureFlagDto = {
             name: 'test-feature-flag',
             user_data: {
@@ -97,7 +97,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
             mockDeleteFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .delete('/v1/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flag/delete')
                 .set('Authorization', API_KEY)
                 .send(deleteFeatureFlagDto);
 
@@ -116,7 +116,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
             const { name, ...invalidDto } = deleteFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .delete('/v1/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flag/delete')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -128,7 +128,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
             const { user_data, ...invalidDto } = deleteFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .delete('/v1/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flag/delete')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -138,7 +138,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .delete('/v1/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flag/delete')
                 .send(deleteFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -146,7 +146,7 @@ describe('StsFeatureFlagController Delete (E2E)', () => {
 
         it('should return 401 Unauthorized if token is invalid', async () => {
             const response = await request(app.getHttpServer())
-                .delete('/v1/sts/feature-flags/delete')
+                .delete('/v1/sts/feature-flag/delete')
                 .set('Authorization', 'wrong-token')
                 .send(deleteFeatureFlagDto);
 

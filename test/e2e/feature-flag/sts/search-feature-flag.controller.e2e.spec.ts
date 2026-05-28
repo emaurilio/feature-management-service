@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import request from 'supertest';
 import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { StsFeatureFlagController } from '../../../../src/modules/feature-flag/sts-feature-flag.controller';
 import { SimpleTokenGuard } from '../../../../src/modules/common/guards/simple-token.guard';
 import { useContainer } from 'class-validator';
@@ -61,7 +61,7 @@ describe('StsFeatureFlagController Search (E2E)', () => {
         }
     });
 
-    describe('POST /sts/feature-flags/search', () => {
+    describe('POST /sts/feature-flag/search', () => {
         const searchFeatureFlagDto = {
             name: 'test-feature-flag',
             page: 1,
@@ -72,7 +72,7 @@ describe('StsFeatureFlagController Search (E2E)', () => {
             },
         };
 
-        it('should search for feature flags (201 Created)', async () => {
+        it('should search for feature flags (200 OK)', async () => {
             const mockResult = {
                 data: [
                     {
@@ -88,11 +88,11 @@ describe('StsFeatureFlagController Search (E2E)', () => {
             mockSearchFeatureFlagUseCase.execute.mockResolvedValue(mockResult);
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/search')
+                .post('/sts/feature-flag/search')
                 .set('Authorization', API_KEY)
                 .send(searchFeatureFlagDto);
 
-            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.status).toBe(HttpStatus.OK);
             expect(response.body).toEqual(mockResult);
             expect(mockSearchFeatureFlagUseCase.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -107,7 +107,7 @@ describe('StsFeatureFlagController Search (E2E)', () => {
             const { name, ...invalidDto } = searchFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/search')
+                .post('/sts/feature-flag/search')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -119,7 +119,7 @@ describe('StsFeatureFlagController Search (E2E)', () => {
             const { user_data, ...invalidDto } = searchFeatureFlagDto;
 
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/search')
+                .post('/sts/feature-flag/search')
                 .set('Authorization', API_KEY)
                 .send(invalidDto);
 
@@ -129,7 +129,7 @@ describe('StsFeatureFlagController Search (E2E)', () => {
 
         it('should return 401 Unauthorized if token is missing', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/search')
+                .post('/sts/feature-flag/search')
                 .send(searchFeatureFlagDto);
 
             expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -137,7 +137,7 @@ describe('StsFeatureFlagController Search (E2E)', () => {
 
         it('should return 401 Unauthorized if token is invalid', async () => {
             const response = await request(app.getHttpServer())
-                .post('/sts/feature-flags/search')
+                .post('/sts/feature-flag/search')
                 .set('Authorization', 'wrong-token')
                 .send(searchFeatureFlagDto);
 
