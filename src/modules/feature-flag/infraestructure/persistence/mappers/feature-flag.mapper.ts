@@ -25,6 +25,7 @@ export class FeatureFlagMapper {
       percentage: domain.percentage,
       version: domain.version,
       isActive: domain.isActive,
+      type: domain.type,
       createdAt: domain.createdAt,
       updatedAt: domain.updatedAt,
       deletedAt: domain.deletedAt ?? undefined,

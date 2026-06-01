@@ -77,10 +77,26 @@ describe('FeatureFlagMapper', () => {
         percentage: domain.percentage,
         version: domain.version,
         isActive: domain.isActive,
+        type: domain.type,
         createdAt: domain.createdAt,
         updatedAt: domain.updatedAt,
         deletedAt: undefined,
       });
+    });
+
+    it('should persist non-default type (e.g. user)', () => {
+      const domain = new FeatureFlag(
+        'feature-v1',
+        'feature',
+        0,
+        1,
+        true,
+        FeatureFlagType.USER,
+      );
+
+      const persistence = FeatureFlagMapper.toPersistence(domain);
+
+      expect(persistence.type).toBe(FeatureFlagType.USER);
     });
 
     it('should convert null deletedAt to undefined', () => {
