@@ -1,98 +1,207 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Feature Flag API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> API de **feature flags** e **UX research** em produção-ready: rollout gradual, segmentação por usuário/empresa, cache, filas assíncronas e observabilidade completa.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Tests](https://img.shields.io/badge/Testes-117+_specs-22C55E)](./test)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Em uma frase
 
-## Project setup
+Microserviço backend que permite **ligar e desligar funcionalidades sem deploy**, com cinco estratégias de rollout, auditoria em Elasticsearch e stack de observabilidade (Prometheus + Grafana + Kibana) — pensado para times que precisam de **releases seguras e experimentação controlada**.
 
-```bash
-$ npm install
+---
+
+## Por que olhar este repositório?
+
+| O que você vê aqui | O que isso demonstra |
+|---|---|
+| **Clean Architecture** (domain → application → infrastructure) | Separação de responsabilidades e código testável |
+| **Strategy pattern** no check de flags | Extensibilidade sem `if/else` gigante |
+| **117+ arquivos de teste** (unit, integration, e2e) | Cultura de qualidade e regressão controlada |
+| **Docker Compose** com 8 serviços | Experiência com infra local e integração real |
+| **BullMQ + Redis** para logs de auditoria | Processamento assíncrono e resiliência (dead-letter) |
+| **Swagger** separado por domínio | Documentação de API como produto |
+| **Husky pre-commit** | Segurança (bloqueio de `.env`) + testes antes do commit |
+
+---
+
+## Destaques técnicos
+
+### Feature flags com rollout inteligente
+
+Cada flag suporta um tipo de segmentação:
+
+| Tipo | Comportamento |
+|------|----------------|
+| `percentage` | Rollout global por percentual |
+| `user` | Lista explícita de usuários |
+| `company` | Lista explícita de empresas |
+| `user_percentage` | Percentual dentro de um conjunto de usuários |
+| `company_percentage` | Percentual dentro de um conjunto de empresas |
+
+O `CheckFeatureFlagUseCase` delega para a estratégia correta via `ModuleRef`, mantendo o fluxo principal enxuto e aberto a novos tipos.
+
+### Dois domínios, uma base sólida
+
+- **Feature Flag** — CRUD administrativo (STS), check público e importação em massa de IDs.
+- **UX Research** — Mesmo padrão arquitetural, com coleta e consulta de respostas de pesquisa.
+
+### Observabilidade de ponta a ponta
+
+- **Prometheus** + interceptor customizado para métricas HTTP
+- **Grafana** em `/metrics/`
+- **Elasticsearch** + **Kibana** em `/logs/` para trilha de auditoria
+- **Nginx** como reverse proxy unificando app, logs e métricas
+
+```mermaid
+flowchart LR
+  Client[Cliente / App] --> Nginx[Nginx :80]
+  Nginx --> API[NestJS API]
+  API --> MySQL[(MySQL)]
+  API --> Redis[(Redis)]
+  API --> Bull[BullMQ Workers]
+  Bull --> ES[(Elasticsearch)]
+  API --> Prom[Prometheus]
+  Prom --> Graf[Grafana]
+  ES --> Kib[Kibana]
 ```
 
-## Compile and run the project
+---
+
+## Stack
+
+| Camada | Tecnologias |
+|--------|-------------|
+| **Runtime** | Node.js, NestJS 11, TypeScript |
+| **Persistência** | TypeORM, MySQL 8, migrations |
+| **Cache** | Redis + `cache-manager` |
+| **Filas** | BullMQ |
+| **Busca / logs** | Elasticsearch 8 |
+| **API** | Swagger/OpenAPI, versionamento URI (`/v1`) |
+| **Auth** | JWT + API Key (endpoints STS vs públicos) |
+| **Qualidade** | Jest, ESLint, Prettier, Husky |
+| **Infra local** | Docker Compose, Nginx |
+
+---
+
+## Como rodar (recomendado)
+
+### Pré-requisitos
+
+- [Docker](https://www.docker.com/) e Docker Compose
+- Node.js 22+ (opcional, para rodar fora do container)
+
+### Subir o ambiente completo
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker compose up --build
 ```
 
-## Run tests
+| Serviço | URL |
+|---------|-----|
+| API (via Nginx) | http://localhost |
+| Swagger — Feature Flag | http://localhost/api/docs/feature-flag |
+| Swagger — UX Research | http://localhost/api/docs/ux-research |
+| Kibana (logs) | http://localhost/logs/ |
+| Grafana (métricas) | http://localhost/metrics/ |
+
+### Variáveis de ambiente
+
+Copie o exemplo e preencha com seus valores:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Desenvolvimento local (sem Docker)
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+A API sobe na porta definida em `PORT` (padrão **3001**).
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## Testes
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+O projeto prioriza confiança em refatorações:
 
-## Support
+```bash
+# Unitários (~90 specs)
+npm run test:unit
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Integração com banco (7 specs)
+npm run test:integration
 
-## Stay in touch
+# End-to-end (20 specs)
+npm run test:e2e
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Cobertura
+npm run test:cov
+```
 
-## License
+Antes de cada commit, o **Husky** executa os testes unitários e impede vazamento de secrets (`.env` e tokens no `.env.example`).
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## Estrutura do projeto
+
+```
+src/
+├── modules/
+│   ├── feature-flag/     # Domínio de feature flags
+│   │   ├── domain/       # Entidades, enums, interfaces de repositório
+│   │   ├── application/  # Use cases, DTOs, mappers, services
+│   │   └── infraestructure/  # TypeORM, controllers, processors
+│   ├── ux-research/      # Domínio de pesquisas UX (mesmo padrão)
+│   └── common/           # Auth, cache, metrics, logging, filas
+├── app.module.ts
+└── main.ts
+test/
+├── unit/
+├── integration/
+└── e2e/
+```
+
+---
+
+## Endpoints principais
+
+### Públicos (consumo da aplicação)
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/v1/feature-flag/check-feature-flag` | Verifica se a flag está ativa para o contexto |
+| `POST` | `/v1/ux-research/check` | Verifica elegibilidade para UX research |
+
+### Administrativos — STS (autenticação)
+
+Gestão completa: criar, ativar/desativar, buscar, importar IDs em massa e excluir — disponível para **feature-flag** e **ux-research**. Detalhes e schemas no Swagger.
+
+---
+
+## O que eu aprendi / apliquei neste projeto
+
+- Modelar **domínios distintos** reutilizando padrões (não copy-paste cego).
+- Escolher **estratégias de rollout** adequadas a cada cenário de produto.
+- Garantir **rastreabilidade** com filas, dead-letter e índice de auditoria.
+- Entregar API **documentada, versionada e testada em camadas**.
+- Montar ambiente de desenvolvimento que espelha preocupações de **produção** (proxy, métricas, logs).
+
+---
+
+## Repositório e contato
+
+- **GitHub:** [@emaurilio/feature-flag](https://github.com/emaurilio/feature-flag)
+- **Autor:** Maurilio Eduardo:
+
+  > [![LinkedIn](https://img.shields.io/badge/LinkedIn-conectar-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/maur%C3%ADlio-eduardo-8b51aa172/)
