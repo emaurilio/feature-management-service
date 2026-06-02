@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nginx:
-    image: nginx:1.27-alpine
+    image: nginx:1.27.5-alpine
     container_name: ff-nginx
     ports:
       - "80:80"
@@ -14,7 +14,7 @@ services:
       - ff-network
 
   db:
-    image: mysql:8.0
+    image: mysql:8.0.46
     container_name: ff-mysql
     restart: always
     environment:
@@ -28,7 +28,7 @@ services:
       - ff-network
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.8
     container_name: ff-elasticsearch
     environment:
       - discovery.type=single-node
@@ -40,7 +40,7 @@ services:
       - ff-network
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.1
+    image: docker.elastic.co/kibana/kibana:8.17.8
     container_name: ff-kibana
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
@@ -52,7 +52,7 @@ services:
       - ff-network
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.4.3
     container_name: ff-grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -64,7 +64,7 @@ services:
       - ff-network
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v3.11.3
     container_name: prometheus-1
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
@@ -72,7 +72,7 @@ services:
       - ff-network
   
   redis:
-    image: redis:7-alpine
+    image: redis:7.4.9-alpine
     container_name: ff-redis
     networks:
       - ff-network
