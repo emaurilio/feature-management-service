@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository, DataSource, Like } from 'typeorm';
 import { FeatureFlagEntity } from '../entities/FeatureFlag.entity';
 import { FeatureFlagMapper } from '../mappers/feature-flag.mapper';
@@ -57,7 +57,7 @@ export class FeatureFlagRepository
     await this.update(id, partialEntity);
     const updatedEntity = await this.findOne({ where: { id } });
     if (!updatedEntity) {
-      throw new Error('Feature Flag not found after update');
+      throw new NotFoundException('Feature Flag not found after update');
     }
     return FeatureFlagMapper.toDomain(updatedEntity);
   }

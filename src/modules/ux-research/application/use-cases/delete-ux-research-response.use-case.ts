@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteUXResearchResponseDto } from '../dto/response/delete-ux-research-response.dto';
@@ -23,7 +23,7 @@ export class DeleteUXResearchResponseUseCase {
       );
 
       if (!uxResearchResponse) {
-        throw new Error('UX Research response not found');
+        throw new NotFoundException('UX Research response not found');
       }
 
       const deleted = await this.uxResearchResponseRepository.deleteUXResearchResponse(
@@ -56,7 +56,7 @@ export class DeleteUXResearchResponseUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

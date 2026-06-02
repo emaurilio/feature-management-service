@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DisableFeatureFlagDto } from '../dto/disable-feature-flag.dto';
@@ -23,7 +23,7 @@ export class DisableFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        throw new Error('Feature Flag not found');
+        throw new NotFoundException('Feature flag not found');
       }
 
       const result = await this.featureFlagRepository.updateFeatureFlag(
@@ -56,7 +56,7 @@ export class DisableFeatureFlagUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

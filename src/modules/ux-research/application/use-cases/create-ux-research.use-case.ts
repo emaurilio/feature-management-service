@@ -1,13 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUXResearchDto } from '../dto/create-ux-research.dto';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
-import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 import { isPercentageType } from 'src/modules/ux-research/domain/enums/ux-research-type.enum';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
 import { GetUxResearchResponseDto } from '../dto/dto-response/get-ux-research.response.dto';
 import { GetUxResearchResponseMapper } from '../mappers/get-ux-research-response.mapper';
 import { DeleteUXResearchUseCase } from './delete-ux-research.use-case';
+import type { UXResearchRepositoryInterface } from 'src/modules/ux-research/domain/repositories/persistence/ux-research.repository.interface';
 
 @Injectable()
 export class CreateUXResearchUseCase {
@@ -26,8 +26,8 @@ export class CreateUXResearchUseCase {
         isPercentageType(createUXResearchDto.type) &&
         createUXResearchDto.percentage == null
       ) {
-        throw new Error(
-          'Percentage value is not allowed for this ux research type',
+        throw new BadRequestException(
+          'Percentage is required for this ux research type',
         );
       }
       const uxResearchExists = await this.uxResearchRepository.findByName(
@@ -83,7 +83,7 @@ export class CreateUXResearchUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 
@@ -113,7 +113,7 @@ export class CreateUXResearchUseCase {
       });
 
       if (!deleteOldUXResearch.deleted) {
-        throw new Error('Failed to delete old UX Research');
+        throw new InternalServerErrorException('Failed to delete old UX Research');
       }
     }
 

@@ -1,3 +1,5 @@
+import { InternalServerErrorException } from "@nestjs/common";
+
 export async function mapWithConcurrencyLimit<T, R>(
   items: readonly T[],
   concurrency: number,
@@ -8,7 +10,7 @@ export async function mapWithConcurrencyLimit<T, R>(
   }
 
   if (concurrency < 1) {
-    throw new Error('concurrency must be at least 1');
+    throw new InternalServerErrorException('Concurrency must be at least 1');
   }
 
   const results = new Array<R>(items.length);

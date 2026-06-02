@@ -254,7 +254,7 @@ describe('CreateUXResearchUseCase', () => {
       auditLogService.dispatchLog.mockResolvedValue(true);
 
       await expect(createUXResearchUseCase.execute(invalidDto))
-        .rejects.toThrow('Percentage value is not allowed for this ux research type');
+        .rejects.toThrow('Percentage is required for this ux research type');
 
       expect(uxResearchRepository.findByName).not.toHaveBeenCalled();
       expect(uxResearchRepository.createUXResearch).not.toHaveBeenCalled();
@@ -264,7 +264,7 @@ describe('CreateUXResearchUseCase', () => {
         timestamp: expect.any(String),
         data: {
           user: invalidDto.userData,
-          error: 'Percentage value is not allowed for this ux research type',
+          error: 'Percentage is required for this ux research type',
         },
       });
     });

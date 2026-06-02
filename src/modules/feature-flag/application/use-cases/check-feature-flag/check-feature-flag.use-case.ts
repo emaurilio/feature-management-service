@@ -8,7 +8,7 @@ import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagResponseDto } from '../../dto/dto-response/check-feature-flag-response.dto';
 import { CheckFeatureFlagCompanyPercentageUseCase } from './check-feature-flag-company-percentage.use-case';
 import { AuditLogService } from '../../services/audit-log.service';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { CheckFeatureFlagResponseMapper } from '../../mappers/check-feature-flag-response.mapper';
 import { FeatureFlag } from 'src/modules/feature-flag/domain/entities/FeatureFlag';
 import type { FeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/feature-flag.repository.interface';
@@ -33,9 +33,7 @@ export class CheckFeatureFlagUseCase {
     checkFeatureFlagValidateDto: CheckFeatureFlagValidateDto,
   ): Promise<CheckFeatureFlagResponseDto> {
     if (!checkFeatureFlagValidateDto.userId && !checkFeatureFlagValidateDto.companyId) {
-      throw new Error(
-        `User ID or Company ID is required`,
-      );
+      throw new BadRequestException('User ID or Company ID is required');
     }
 
     const getFeatureFlag = await this.featureFlagRepository.findByName(
@@ -55,7 +53,7 @@ export class CheckFeatureFlagUseCase {
         },
       });
 
-      throw new Error(
+      throw new NotFoundException(
         `Feature Flag ${checkFeatureFlagValidateDto.name} not found`,
       );
     }
@@ -90,7 +88,7 @@ export class CheckFeatureFlagUseCase {
           check_method: 'database',
         },
       });
-      throw new Error(`Strategy for ${getFeatureFlag.type} not found`);
+      throw new NotFoundException(`Strategy for ${getFeatureFlag.type} not found`);
     }
 
     const checkFeatureFlagDto: CheckFeatureFlagDto = {

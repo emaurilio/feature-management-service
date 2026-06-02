@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { CreateUXResearchResponseDto } from '../dto/response/create-ux-research-response.dto';
@@ -36,13 +36,11 @@ export class CreateUXResearchResponseUseCase {
             responseDate: createUXResearchResponseDto.responseDate,
             userId: createUXResearchResponseDto.userId,
             companyId: createUXResearchResponseDto.companyId,
-            error: 'Company_id or user_id is required',
+            error: 'Company ID or User ID is required',
           }
         });
 
-        throw new Error(
-          'Company_id or user_id is required',
-        );
+        throw new BadRequestException('Company ID or User ID is required');
       }
 
       const entityID = createUXResearchResponseDto.companyId ?
@@ -62,12 +60,10 @@ export class CreateUXResearchResponseUseCase {
             responseDate: createUXResearchResponseDto.responseDate,
             userId: createUXResearchResponseDto.userId,
             companyId: createUXResearchResponseDto.companyId,
-            error: 'UX Research must exists in database',
+            error: 'UX Research or Feature Flag must exists in database',
           }
         });
-        throw new Error(
-          'UX Research name or feature flag name is required',
-        );
+        throw new BadRequestException('UX Research or Feature Flag must exists in database');
       }
 
       const uxResearchExists = createUXResearchResponseDto.uxResearchName ?
@@ -90,12 +86,10 @@ export class CreateUXResearchResponseUseCase {
             responseDate: createUXResearchResponseDto.responseDate,
             userId: createUXResearchResponseDto.userId,
             companyId: createUXResearchResponseDto.companyId,
-            error: 'UX Research must exists in database',
+            error: 'UX Research or Feature Flag must exists in database',
         },
       });
-        throw new Error(
-          'UX Research must exists in database',
-        );
+        throw new BadRequestException('UX Research or Feature Flag must exists in database');
       }
 
       const newUXResearchResponse = new UXResearchResponse(
@@ -142,7 +136,7 @@ export class CreateUXResearchResponseUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

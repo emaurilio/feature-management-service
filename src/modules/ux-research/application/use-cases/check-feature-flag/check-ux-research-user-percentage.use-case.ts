@@ -1,5 +1,5 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
@@ -32,7 +32,7 @@ export class CheckUXResearchUserPercentageUseCase implements CheckUXResearchInte
         },
       });
 
-      throw new Error('User ID is required');
+      throw new BadRequestException('User ID is required');
     }
 
     const hashName = `${checkUXResearchDto.userId}-${checkUXResearchDto.name}-${checkUXResearchDto.version}`;

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateFeatureFlagDto } from '../dto/create-feature-flag.dto';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
@@ -26,9 +26,7 @@ export class CreateFeatureFlagUseCase {
         isPercentageType(createFeatureFlagDto.type) &&
         createFeatureFlagDto.percentage == null
       ) {
-        throw new Error(
-          'Percentage value is not allowed for this feature flag type',
-        );
+        throw new BadRequestException('Percentage is required for this feature flag type');
       }
       const featureFlagExists = await this.featureFlagRepository.findByName(
         createFeatureFlagDto.name,
@@ -77,7 +75,7 @@ export class CreateFeatureFlagUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 
@@ -104,7 +102,7 @@ export class CreateFeatureFlagUseCase {
       });
 
       if (!deleteOldFeatureFlag.deleted) {
-        throw new Error('Failed to delete old feature flag');
+        throw new InternalServerErrorException('Failed to delete old feature flag');
       }
     }
 

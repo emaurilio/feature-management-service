@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { GetUxResearchResponsesPaginatedResponseDto } from '../dto/dto-response/response/get-ux-research-responses-paginated-response.dto';
@@ -37,11 +37,11 @@ export class GetUXResearchResponseUseCase {
         },
       });
 
-        throw new Error('UX Research not found');
+        throw new NotFoundException('UX Research not found');
       }
 
       if (!getUxResearch.id) {
-        throw new Error('UX Research ID is undefined');
+        throw new BadRequestException('UX Research ID is required');
       }
 
       const getUXResearchResponse = await this.uxResearchResponseRepository.getByUXResearchIdPaginated(
@@ -62,7 +62,7 @@ export class GetUXResearchResponseUseCase {
           },
         });
 
-        throw new Error('UX Research Response not found');
+        throw new NotFoundException('UX Research Response not found');
       }
 
       void this.auditLogService.dispatchLog({
@@ -89,7 +89,7 @@ export class GetUXResearchResponseUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

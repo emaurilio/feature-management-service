@@ -1,5 +1,5 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { CheckUXResearchDto } from '../../dto/check-ux-research.dto';
@@ -31,7 +31,7 @@ export class CheckUXResearchUserUseCase implements CheckUXResearchInterface {
         },
       });
 
-      throw new Error('User ID is required');
+      throw new BadRequestException('User ID is required');
     }
 
     const cacheKey = `${checkUXResearchDto.userId}-

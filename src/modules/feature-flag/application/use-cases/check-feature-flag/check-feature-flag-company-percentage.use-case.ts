@@ -3,7 +3,7 @@ import { HashFeatureFlagService } from '../../services/hash-feature-flag.service
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { AuditLogService } from '../../services/audit-log.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import type { CompanyFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/company-feature-flag.repository.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 
@@ -20,7 +20,7 @@ export class CheckFeatureFlagCompanyPercentageUseCase implements CheckFeatureFla
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     if (!checkFeatureFlagDto.companyId) {
-      throw new Error('Company ID is required');
+      throw new BadRequestException('Company ID is required');
     }
 
     const hashName = `${checkFeatureFlagDto.companyId}-

@@ -2,7 +2,7 @@ import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface'
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { AuditLogService } from '../../services/audit-log.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
 import type { UserFeatureFlagRepositoryInterface } from 'src/modules/feature-flag/domain/repositories/user-feature-flag.repository.interface';
@@ -19,7 +19,7 @@ export class CheckFeatureFlagUserUseCase implements CheckFeatureFlagInterface {
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     if (!checkFeatureFlagDto.userId) {
-      throw new Error('User ID is required');
+      throw new BadRequestException('User ID is required');
     }
 
     const cacheKey = `${checkFeatureFlagDto.userId}-

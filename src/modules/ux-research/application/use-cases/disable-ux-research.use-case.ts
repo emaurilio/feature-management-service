@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DisableUXResearchDto } from '../dto/desable-ux-research.dto';
@@ -23,7 +23,7 @@ export class DisableUXResearchUseCase {
       );
 
       if (!uxResearchExists) {
-        throw new Error('UX Research not found');
+        throw new NotFoundException('UX Research not found');
       }
 
       const result = await this.uxResearchRepository.updateUXResearch(
@@ -56,7 +56,7 @@ export class DisableUXResearchUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

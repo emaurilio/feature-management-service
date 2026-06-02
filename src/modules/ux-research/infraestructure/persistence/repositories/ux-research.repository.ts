@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository, DataSource, Like, UpdateResult } from 'typeorm';
 import { UXResearchEntity } from '../entities/ux-research.entity';
 import { UXResearch } from 'src/modules/ux-research/domain/entites/UXResearch';
@@ -55,7 +55,7 @@ export class UXResearchRepository
         const updatedEntity = await this.findOne({ where: { id } });
 
         if (!updatedEntity) {
-          throw new Error('UX Research not found after update');
+          throw new NotFoundException('UX Research not found after update');
         }
 
         return UXResearchMapper.toDomain(updatedEntity);

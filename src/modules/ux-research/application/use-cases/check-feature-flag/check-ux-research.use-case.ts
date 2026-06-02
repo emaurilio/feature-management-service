@@ -1,7 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
 import { CheckUXResearchDto } from '../../dto/check-ux-research.dto';
 import { AuditLogService } from '../../services/log.service';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { CheckFeatureFlagUseCase } from 'src/modules/feature-flag/application/use-cases/check-feature-flag/check-feature-flag.use-case';
 import { CheckUXResearchValidateDto } from '../../dto/check-ux-research-validate.dto';
 import { CheckUxResearchResponseDto } from '../../dto/dto-response/check-ux-research.response.dto';
@@ -50,9 +50,7 @@ export class CheckUXResearchUseCase {
         },
       });
 
-      throw new Error(
-        `User ID or Company ID is required`,
-      );
+      throw new BadRequestException('User ID or Company ID is required');
     }
 
     const getUXResearch = await this.uxResearchRepository.findByName(
@@ -72,9 +70,7 @@ export class CheckUXResearchUseCase {
         },
       });
 
-      throw new Error(
-        `UX Research ${checkUXResearchValidateDto.name} not found`,
-      );
+      throw new NotFoundException(`UX Research ${checkUXResearchValidateDto.name} not found`);
     }
 
     if (!getUXResearch.isActive) {
@@ -106,7 +102,7 @@ export class CheckUXResearchUseCase {
         },
       });
 
-      throw new Error(
+      throw new BadRequestException(
         `UX Research ${checkUXResearchValidateDto.name} is not within the research period`,
       );
     }
@@ -129,9 +125,7 @@ export class CheckUXResearchUseCase {
           },
         });
 
-        throw new Error(
-          `Feature Flag ${checkUXResearchValidateDto.name} not found`,
-        );
+        throw new NotFoundException(`Feature Flag ${checkUXResearchValidateDto.name} not found`);
       }
 
       const checkByFeatureFlag = await this.checkFeatureFlagByFlagNameUseCase.execute({
@@ -150,7 +144,7 @@ export class CheckUXResearchUseCase {
     const useCaseClass = this.strategies[getUXResearch.type];
 
     if (!useCaseClass) {
-      throw new Error(`Strategy for ${getUXResearch.type} not found`);
+      throw new NotFoundException(`Strategy for ${getUXResearch.type} not found`);
     }
 
     const checkUXResearchDto: CheckUXResearchDto = {

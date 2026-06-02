@@ -60,7 +60,7 @@ export class SearchUXResearchUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

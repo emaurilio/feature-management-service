@@ -1,5 +1,5 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
@@ -43,7 +43,7 @@ export class ImportCompaniesIdsUseCase {
             error: 'Feature Flag not found',
           },
         });
-        throw new Error('Feature Flag not found');
+        throw new NotFoundException('Feature flag not found');
       }
 
       const id = featureFlagExists.id;
@@ -109,7 +109,7 @@ export class ImportCompaniesIdsUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

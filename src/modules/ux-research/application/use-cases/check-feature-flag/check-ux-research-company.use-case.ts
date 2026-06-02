@@ -1,5 +1,5 @@
 import { AuditLogService } from '../../services/log.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CheckUXResearchDto } from '../../dto/check-ux-research.dto';
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
 import type { CacheServiceInterface } from 'src/modules/common/cache/cache-service.interface';
@@ -30,7 +30,7 @@ export class CheckUXResearchCompanyUseCase implements CheckUXResearchInterface {
         },
       });
 
-      throw new Error('Company ID is required');
+      throw new BadRequestException('Company ID is required');
     }
 
     const cacheKey = `${checkUXResearchDto.companyId}-${checkUXResearchDto.name}-${checkUXResearchDto.version}`;

@@ -17,7 +17,7 @@ export class JwtService {
   async verifyTokenAsync(token: string): Promise<JwtPayload> {
     const key = this.publicKey;
     if (!key) {
-      throw new BadRequestException('Nenhuma chave de verificação configurada');
+      throw new BadRequestException('No verification key configured');
     }
 
     const options: VerifyOptions = this.publicKey
@@ -27,7 +27,7 @@ export class JwtService {
     try {
       return await verifyAsync(token, key, options);
     } catch {
-      throw new UnauthorizedException('Token inválido ou expirado');
+      throw new UnauthorizedException('Invalid or expired token');
     }
   }
 }

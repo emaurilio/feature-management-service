@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { AuditLogService } from '../services/audit-log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
 import { DeleteFeatureFlagDto } from '../dto/delete-feature-flag.dto';
@@ -33,7 +33,7 @@ export class DeleteFeatureFlagUseCase {
       );
 
       if (!featureFlagExists) {
-        throw new Error('Feature flag not found');
+        throw new NotFoundException('Feature flag not found');      
       }
 
       const result = await this.featureFlagRepository.softDelete(
@@ -79,7 +79,7 @@ export class DeleteFeatureFlagUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

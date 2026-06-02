@@ -1,5 +1,5 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { CheckFeatureFlagInterface } from 'src/modules/feature-flag/domain/use-cases/check-feature-flag.use-case.interface';
 import { CheckFeatureFlagDto } from '../../dto/check-feature-flag.dto';
 import { HashFeatureFlagService } from '../../services/hash-feature-flag.service';
@@ -21,7 +21,7 @@ export class CheckFeatureFlagUserPercentageUseCase implements CheckFeatureFlagIn
 
   async execute(checkFeatureFlagDto: CheckFeatureFlagDto): Promise<boolean> {
     if (!checkFeatureFlagDto.userId) {
-      throw new Error('User ID is required');
+      throw new BadRequestException('User ID is required');
     }
 
     const hashName = `${checkFeatureFlagDto.userId}-${checkFeatureFlagDto.featureName}-${checkFeatureFlagDto.version}`;

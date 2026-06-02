@@ -288,7 +288,7 @@ describe('CreateFeatureFlagUseCase', () => {
     };
 
     await expect(useCase.execute(createFeatureFlagDto)).rejects.toThrow(
-      'Percentage value is not allowed for this feature flag type',
+      'Percentage is required for this feature flag type',
     );
     expect(auditLogService.dispatchLog).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -301,7 +301,7 @@ describe('CreateFeatureFlagUseCase', () => {
             email: 'maurilio@teste.com',
             name: 'Maurilio',
           },
-          error: 'Percentage value is not allowed for this feature flag type',
+          error: 'Percentage is required for this feature flag type',
         },
       }),
     );

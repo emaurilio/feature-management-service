@@ -1,5 +1,5 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { AuditLogService } from '../../services/log.service';
 import { Injectable } from '@nestjs/common';
 import { HashUXResearchService } from '../../services/hash-ux-research.service';
@@ -33,7 +33,7 @@ export class CheckUXResearchCompanyPercentageUseCase implements CheckUXResearchI
         },
       });
 
-      throw new Error('Company ID is required');
+      throw new BadRequestException('Company ID is required');
     }
 
     const hashName = `${checkUXResearchCompanyPercentageDto.companyId}-${checkUXResearchCompanyPercentageDto.name}-${checkUXResearchCompanyPercentageDto.version}`;

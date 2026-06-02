@@ -60,7 +60,7 @@ export class SearchFeatureFlagUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }

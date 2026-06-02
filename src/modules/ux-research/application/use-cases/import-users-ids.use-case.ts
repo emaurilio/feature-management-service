@@ -1,5 +1,5 @@
 import { CACHE_SERVICE } from 'src/modules/common/cache/cache-service.interface';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { AuditLogService } from '../services/log.service';
 import { getErrorMessage } from 'src/modules/common/utils/error.utils';
@@ -43,7 +43,7 @@ export class ImportUsersIdsUseCase {
             error: 'UX Research not found',
           },
         });
-        throw new Error('UX Research not found');
+        throw new NotFoundException('UX Research not found');
       }
 
       const id = uxResearchExists.id;
@@ -109,7 +109,7 @@ export class ImportUsersIdsUseCase {
         },
       });
 
-      throw new Error(getErrorMessage(error));
+      throw error;
     }
   }
 }
