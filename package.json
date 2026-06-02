@@ -22,6 +22,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config ./test/jest-unit.json --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:integration": "jest --config ./test/jest-integration.json",
+    "test:api": "jest --config ./test/jest-api.json",
+    "test:file:api": "jest --config ./test/jest-api.json --testPathPatterns",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm -- migration:generate -d data-source.ts",
     "migration:run": "npm run typeorm -- migration:run -d data-source.ts",

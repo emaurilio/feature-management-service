@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/src/$1"
+  },
+  "rootDir": "..",
+  "roots": ["<rootDir>/src", "<rootDir>/test/api/feature-flag", "<rootDir>/test/api/ux-research", "<rootDir>/test/api/helpers"],
+  "testEnvironment": "node",
+  "testRegex": ".*\\.api\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "testTimeout": 30000,
+  "maxWorkers": 1,
+  "coverageDirectory": "../coverage"
+}
