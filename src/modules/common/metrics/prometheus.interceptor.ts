@@ -16,6 +16,11 @@ export class PrometheusInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest<NestRequest>();
     const path = req.route?.path || req.url;
+
+    if (path === '/metrics' || path?.startsWith('/metrics?')) {
+      return next.handle();
+    }
+
     const start = Date.now();
 
     return next.handle().pipe(

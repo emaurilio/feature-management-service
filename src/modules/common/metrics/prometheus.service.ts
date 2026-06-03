@@ -89,4 +89,12 @@ export class PrometheusService implements MetricsObserver {
       .labels(flagName, status)
       .observe(durationMs / 1000);
   }
+
+  getContentType(): string {
+    return register.contentType;
+  }
+
+  async getMetrics(): Promise<string> {
+    return register.metrics();
+  }
 }
